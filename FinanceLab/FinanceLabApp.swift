@@ -11,7 +11,7 @@ import SwiftUI
 struct FinanceLabApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainTabView()
         }
     }
 }
