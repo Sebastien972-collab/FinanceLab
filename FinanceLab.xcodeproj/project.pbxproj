@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		CF8833FF2E8579C200EBF048 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = CF8833FE2E8579C200EBF048 /* FinanceCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		CF7DC9672E85715A0084762E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -39,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CF8833FF2E8579C200EBF048 /* FinanceCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -90,6 +95,7 @@
 			);
 			name = FinanceLab;
 			packageProductDependencies = (
+				CF8833FE2E8579C200EBF048 /* FinanceCore */,
 			);
 			productName = FinanceLab;
 			productReference = CF7DC9592E8571580084762E /* FinanceLab.app */;
@@ -146,6 +152,9 @@
 			);
 			mainGroup = CF7DC9502E8571570084762E;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				CF8833FD2E8579C200EBF048 /* XCRemoteSwiftPackageReference "FinanceCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = CF7DC95A2E8571580084762E /* Products */;
 			projectDirPath = "";
@@ -468,6 +477,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CF8833FD2E8579C200EBF048 /* XCRemoteSwiftPackageReference "FinanceCore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Sebastien972-collab/FinanceCore.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CF8833FE2E8579C200EBF048 /* FinanceCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CF8833FD2E8579C200EBF048 /* XCRemoteSwiftPackageReference "FinanceCore" */;
+			productName = FinanceCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CF7DC9512E8571580084762E /* Project object */;
 }

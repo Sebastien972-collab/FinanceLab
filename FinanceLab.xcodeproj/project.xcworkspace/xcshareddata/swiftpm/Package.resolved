@@ -1,0 +1,15 @@
+{
+  "originHash" : "b468d032d456d5b730bc535f324a1870f3f02019302cc51c15ee21f1865ae34b",
+  "pins" : [
+    {
+      "identity" : "financecore",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Sebastien972-collab/FinanceCore.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c7ac4f2a7984b062e94ef171d7e6bc79a61aca63"
+      }
+    }
+  ],
+  "version" : 3
+}
