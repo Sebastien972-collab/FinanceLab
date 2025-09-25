@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Call gradients in your project like in the following exemple :
+// Use gradients in your views like in the following exemple :
 //
 // Rectangle()
 //     .fill(LinearGradient.redGradient)
