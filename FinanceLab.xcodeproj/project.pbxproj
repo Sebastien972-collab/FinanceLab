@@ -14,19 +14,11 @@
 			remoteGlobalIDString = CF7DC9582E8571580084762E;
 			remoteInfo = FinanceLab;
 		};
-		CF7DC9712E85715A0084762E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = CF7DC9512E8571580084762E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CF7DC9582E8571580084762E;
-			remoteInfo = FinanceLab;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		CF7DC9592E8571580084762E /* FinanceLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF7DC9662E85715A0084762E /* FinanceLabTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceLabTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		CF7DC9702E85715A0084762E /* FinanceLabUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceLabUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -38,11 +30,6 @@
 		CF7DC9692E85715A0084762E /* FinanceLabTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = FinanceLabTests;
-			sourceTree = "<group>";
-		};
-		CF7DC9732E85715A0084762E /* FinanceLabUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = FinanceLabUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -62,13 +49,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF7DC96D2E85715A0084762E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -77,7 +57,6 @@
 			children = (
 				CF7DC95B2E8571580084762E /* FinanceLab */,
 				CF7DC9692E85715A0084762E /* FinanceLabTests */,
-				CF7DC9732E85715A0084762E /* FinanceLabUITests */,
 				CF7DC95A2E8571580084762E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -87,7 +66,6 @@
 			children = (
 				CF7DC9592E8571580084762E /* FinanceLab.app */,
 				CF7DC9662E85715A0084762E /* FinanceLabTests.xctest */,
-				CF7DC9702E85715A0084762E /* FinanceLabUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -140,29 +118,6 @@
 			productReference = CF7DC9662E85715A0084762E /* FinanceLabTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		CF7DC96F2E85715A0084762E /* FinanceLabUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = CF7DC9802E85715A0084762E /* Build configuration list for PBXNativeTarget "FinanceLabUITests" */;
-			buildPhases = (
-				CF7DC96C2E85715A0084762E /* Sources */,
-				CF7DC96D2E85715A0084762E /* Frameworks */,
-				CF7DC96E2E85715A0084762E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CF7DC9722E85715A0084762E /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				CF7DC9732E85715A0084762E /* FinanceLabUITests */,
-			);
-			name = FinanceLabUITests;
-			packageProductDependencies = (
-			);
-			productName = FinanceLabUITests;
-			productReference = CF7DC9702E85715A0084762E /* FinanceLabUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -177,10 +132,6 @@
 						CreatedOnToolsVersion = 26.0.1;
 					};
 					CF7DC9652E85715A0084762E = {
-						CreatedOnToolsVersion = 26.0.1;
-						TestTargetID = CF7DC9582E8571580084762E;
-					};
-					CF7DC96F2E85715A0084762E = {
 						CreatedOnToolsVersion = 26.0.1;
 						TestTargetID = CF7DC9582E8571580084762E;
 					};
@@ -202,7 +153,6 @@
 			targets = (
 				CF7DC9582E8571580084762E /* FinanceLab */,
 				CF7DC9652E85715A0084762E /* FinanceLabTests */,
-				CF7DC96F2E85715A0084762E /* FinanceLabUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -216,13 +166,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		CF7DC9642E85715A0084762E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CF7DC96E2E85715A0084762E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -246,13 +189,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CF7DC96C2E85715A0084762E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -260,11 +196,6 @@
 			isa = PBXTargetDependency;
 			target = CF7DC9582E8571580084762E /* FinanceLab */;
 			targetProxy = CF7DC9672E85715A0084762E /* PBXContainerItemProxy */;
-		};
-		CF7DC9722E85715A0084762E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CF7DC9582E8571580084762E /* FinanceLab */;
-			targetProxy = CF7DC9712E85715A0084762E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -413,12 +344,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sebastiendaguin.FinanceLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -445,12 +380,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.sebastiendaguin.FinanceLab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -498,46 +437,6 @@
 			};
 			name = Release;
 		};
-		CF7DC9812E85715A0084762E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P9TXP3LGTK;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sebastiendaguin.FinanceLabUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FinanceLab;
-			};
-			name = Debug;
-		};
-		CF7DC9822E85715A0084762E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = P9TXP3LGTK;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sebastiendaguin.FinanceLabUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = FinanceLab;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -564,15 +463,6 @@
 			buildConfigurations = (
 				CF7DC97E2E85715A0084762E /* Debug */,
 				CF7DC97F2E85715A0084762E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CF7DC9802E85715A0084762E /* Build configuration list for PBXNativeTarget "FinanceLabUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CF7DC9812E85715A0084762E /* Debug */,
-				CF7DC9822E85715A0084762E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
