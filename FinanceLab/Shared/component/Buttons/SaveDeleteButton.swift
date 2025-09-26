@@ -19,7 +19,8 @@ struct SaveDeleteButton: View {
                 .foregroundColor(.white)
                 .frame(width: 120, height: 44)
                 .background(LinearGradient.greenGradient)
-                .cornerRadius(30)
+                .clipShape(RoundedRectangle(cornerRadius: 30))
+    
         }
         .padding(.horizontal)
     }
