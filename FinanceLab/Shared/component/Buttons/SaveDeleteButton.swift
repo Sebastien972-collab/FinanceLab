@@ -12,17 +12,10 @@ struct SaveDeleteButton: View {
     var action: () -> Void
     
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(width: 120, height: 44)
-                .background(LinearGradient.greenGradient)
-                .clipShape(RoundedRectangle(cornerRadius: 30))
-    
+        ContinuButtonView(title: "Enregistrer", state: .validate) {
+            action()
         }
-        .padding(.horizontal)
+        .frame(width: 160, height: 44)
     }
 }
 
