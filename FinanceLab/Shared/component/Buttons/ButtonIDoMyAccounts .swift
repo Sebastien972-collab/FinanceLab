@@ -8,30 +8,69 @@
 import SwiftUI
 
 
-struct ButtonIDoMyAccounts: View {
+struct ContinuButtonView: View {
     var title: String
+    
+    enum ButtonState {
+        case normal, validate, cancel
+    }
+    var state: ButtonState = .normal
     var action: () -> Void
+   @State private var textColor = Color.white
     
     var body: some View {
         Button(action: action) {
             Text(title)
                 .font(.headline)
                 .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(width: 370, height: 46)
+                .foregroundColor(textColor)
+                .frame(maxWidth: .infinity)
                 .padding()
-                .background(LinearGradient.greenGradient)
-                .cornerRadius(30)
+                .background(getColor())
+                .clipShape(RoundedRectangle(cornerRadius: 30))
         }
         .padding(.horizontal)
+        .onAppear(){
+            if state == .normal{
+                textColor = .black
+            }
+        }
+        
+    }
+   private func getColor() -> LinearGradient {
+        switch state {
+        case .normal:
+          
+            return LinearGradient.primaryGradient
+        case .validate:
+            return LinearGradient.greenGradient
+        case .cancel:
+            return LinearGradient.redGradient
+        }
+        
     }
 }
 
 
 
 #Preview {
-    ButtonIDoMyAccounts(
-        title: "Je fais mes comptes !",
-        action: {}
-    )
+    VStack{
+        ContinuButtonView(
+            title: "Je fais mes comptes !",
+            action: {}
+        )
+        
+        ContinuButtonView(
+            title: "Je fais mes comptes !",
+            state: .validate,
+            action: {}
+        )
+        
+        ContinuButtonView(
+            title: "Je fais mes comptes !",
+            state: .cancel,
+            action: {}
+        )
+        
+    }
 }
