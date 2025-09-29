@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    let onboarding = Onboarding()
     @State private var currentStep: Int = 0
         
     var body: some View {
@@ -18,16 +19,33 @@ struct OnboardingView: View {
                     .frame(width: geo.size.width)
             }
             VStack(spacing: 12) {
-                Image(onboardingSteps[currentStep].icon)
+                Spacer()
+                Image(onboarding.steps[currentStep].icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(LinearGradient.greenGradient)
                     .frame(width: 100, height: 100)
-                Text(onboardingSteps[currentStep].title)
+                Text(onboarding.steps[currentStep].title)
                     .font(.title)
-                Text(LocalizedStringKey(onboardingSteps[currentStep].content))
+                Text(LocalizedStringKey(onboarding.steps[currentStep].content))
                     .font(.header)
                     .multilineTextAlignment(.center)
+                Spacer()
+                if currentStep < onboarding.steps.count - 1 {
+                    Button(action: {
+                        currentStep+=1
+                    }, label: {
+                        Text("Suivant")
+                    }
+                    )
+                } else {
+                    Button(action: {
+                        // dismiss
+                    }, label: {
+                        Text("C'est parti !")
+                    }
+                    )
+                }
             }
         }
     }

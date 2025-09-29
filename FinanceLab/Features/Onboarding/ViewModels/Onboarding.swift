@@ -5,7 +5,8 @@
 //  Created by Anne Ferret on 29/09/2025.
 //
 
-let onboardingSteps : [OnboardingStep] = [
+struct Onboarding {
+    let steps : [OnboardingStep] = [
     OnboardingStep(
         title: "Bienvenue !",
         content: "Cette application va te permettre de te familiariser avec la notion de **santé financière**, et de mieux gérer ton budget au quotidien.",
@@ -31,4 +32,5 @@ let onboardingSteps : [OnboardingStep] = [
         content: "Explore des **articles et conseils** simples pour renforcer ta santé financière, avec un glossaire pour décoder les termes compliqués.",
         icon: "newspaper-clipping-fill",
     ),
-]
+    ]
+}
