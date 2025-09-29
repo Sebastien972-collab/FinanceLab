@@ -9,37 +9,41 @@ import SwiftUI
 
 struct OnboardingView: View {
     let onboarding = OnboardingFlow()
-    
+        
     private func cardContent(step: Int) -> some View {
         VStack {
-            Image(onboarding.steps[step].icon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(LinearGradient.greenGradient)
-                .frame(width: 100, height: 100)
+            HStack {
+                Spacer()
+                Image(onboarding.steps[step].icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundStyle(LinearGradient.greenGradient)
+                Spacer()
+            }
+                .frame(height: 100)
             Text(onboarding.steps[step].title)
                 .font(.title)
             Text(LocalizedStringKey(onboarding.steps[step].content))
                 .font(.header)
                 .multilineTextAlignment(.center)
+                .frame(height: 150)
         }
+        .frame(height: 500)
+        .padding(.horizontal, 16)
+        .foregroundStyle(Color.Text.contrasted)
+        .background(Color.white.opacity(0.2))
+        .cornerRadius(100)
     }
     
     private func nextButton() -> some View {
         if onboarding.currentStep < onboarding.steps.count - 1 {
-            Button(action: {
-                onboarding.currentStep+=1
-            }, label: {
-                Text("Suivant")
-            }
-            )
+            ContinuButtonView(title: "Suivant", state: .normal, action: {
+                onboarding.currentStep += 1
+            })
         } else {
-            Button(action: {
+            ContinuButtonView(title: "C'est parti !", state: .validate, action: {
                 // dismiss
-            }, label: {
-                Text("C'est parti !")
-            }
-            )
+            })
         }
     }
         
@@ -50,8 +54,11 @@ struct OnboardingView: View {
                     .ignoresSafeArea()
                     .frame(width: geo.size.width)
             }
-            VStack(spacing: 32) {
+            VStack {
+                Spacer()
                 cardContent(step: onboarding.currentStep)
+                    .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
+                Spacer()
                 nextButton()
             }
             .padding(16)
