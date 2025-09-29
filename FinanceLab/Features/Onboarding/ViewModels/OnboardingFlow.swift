@@ -5,7 +5,12 @@
 //  Created by Anne Ferret on 29/09/2025.
 //
 
-struct Onboarding {
+import SwiftUI
+
+@Observable
+class OnboardingFlow {
+    var currentStep: Int = 0
+
     let steps : [OnboardingStep] = [
     OnboardingStep(
         title: "Bienvenue !",
