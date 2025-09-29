@@ -16,7 +16,7 @@ struct ContinuButtonView: View {
     }
     var state: ButtonState = .normal
     var action: () -> Void
-   @State private var textColor = Color.white
+    @State private var textColor = Color.white
     
     var body: some View {
         Button(action: action) {
@@ -37,10 +37,10 @@ struct ContinuButtonView: View {
         }
         
     }
-   private func getColor() -> LinearGradient {
+    private func getColor() -> LinearGradient {
         switch state {
         case .normal:
-          
+            
             return LinearGradient.primaryGradient
         case .validate:
             return LinearGradient.greenGradient

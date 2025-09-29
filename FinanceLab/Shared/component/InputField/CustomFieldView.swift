@@ -10,9 +10,9 @@ import SwiftUI
 
 struct CustomFieldView: View {
     enum FieldState {
-        case amount     // Label à gauche, valeur en gras
-        case standard   // Label à gauche, zone texte normale
-        case project    // Label en haut, zone texte en dessous
+        case amount
+        case standard
+        case project    
     }
     
     var label: String
@@ -27,36 +27,18 @@ struct CustomFieldView: View {
                 Text(label)
                     .font(.subheadline)
                     .foregroundColor(Color.Text.contrasted)
-
                 Spacer()
-                TextField(placeholder, text: $text)
-                    .font(.title3)
-                    .fontWeight(.bold)
-                    .padding(.vertical, 14)
-                    .padding(.horizontal, 20)
-                    .frame(width: 250, height: 42)
-                    .background(Color.Segmented.background)
-                    .clipShape(RoundedRectangle(cornerRadius: 50))
-                    
-
+                CustomTextFieldView(placeholder: placeholder, text: $text, isBold: true)
             }
             .padding(.horizontal)
-            
         case .standard:
             HStack {
                 Text(label)
                     .font(.subheadline)
                     .foregroundColor(Color.Text.contrasted)
-
                 Spacer()
+                CustomTextFieldView(placeholder: placeholder, text: $text)
                 
-                TextField(placeholder, text: $text)
-                    .font(.body)
-                    .padding(.vertical, 14)
-                    .padding(.horizontal, 20)
-                    .frame(width: 250, height: 42)
-                    .background(Color.Segmented.background)
-                    .clipShape(RoundedRectangle(cornerRadius: 30))
             }
             .padding(.horizontal)
             
@@ -65,14 +47,7 @@ struct CustomFieldView: View {
                 Text(label)
                     .font(.subheadline)
                     .foregroundColor(Color.Text.contrasted)
-                
-                TextField(placeholder, text: $text)
-                    .font(.body)
-                    .padding(.vertical, 14)
-                    .padding(.horizontal, 20)
-                    .frame(width: 250, height: 42)
-                    .background(Color.Segmented.background)
-                    .clipShape(RoundedRectangle(cornerRadius: 30))
+                CustomTextFieldView(placeholder: placeholder, text: $text)
             }
             .padding(.horizontal)
         }
