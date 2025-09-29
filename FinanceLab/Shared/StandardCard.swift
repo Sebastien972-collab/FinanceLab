@@ -15,16 +15,16 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-        VStack() {
-            self.content
-        }
-        .multilineTextAlignment(.leading)
-        .lineSpacing(1.6)
-//        .foregroundStyle(Color.primary)
-        .background(Color.gray.opacity(0.3))
-        .clipShape(RoundedRectangle(cornerRadius: 30))
-        .frame(width: 370)
-        .shadow(radius: 3)
+//            FinancialBackground() // Petite aperçu avec le background. Rajouter une ZStack.
+            VStack() {
+                self.content
+            }
+            .multilineTextAlignment(.leading)
+            .lineSpacing(1.6)
+            .background(Color.Card.background.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 30))
+            .frame(width: 370)
+            .shadow(radius: 3)
     }
 }
 

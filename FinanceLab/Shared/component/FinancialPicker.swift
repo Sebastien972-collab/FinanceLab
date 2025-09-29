@@ -24,27 +24,31 @@ struct FinancialPicker: View {
     @Binding var selected : Int
 
     var body: some View {
-        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: options.count)) {
-            ForEach(options.enumerated(), id: \.element) { index, choice in
-                Button(action: {
-                    selected = index
-                }) {
-                    HStack {
-                        Spacer()
-                        Text(choice)
-                        Spacer()
-                    }
+        if #available(iOS 26.0, *) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: options.count)) {
+                ForEach(options.enumerated(), id: \.element) { index, choice in
+                    Button(action: {
+                        selected = index
+                    }) {
+                        HStack {
+                            Spacer()
+                            Text(choice)
+                            Spacer()
+                        }
                         .frame(height: 34)
                         .background(selected == index ? LinearGradient.greenGradient : LinearGradient.linearGradient(colors: [.clear], startPoint: .top, endPoint: .bottom))
                         .foregroundStyle(selected == index ? Color.Text.primary : Color.Text.contrasted)
                         .font(.system(size: 12))
                         .clipShape(RoundedRectangle(cornerRadius: 50))
+                    }
                 }
             }
+            .padding(4)
+            .background(Color.Segmented.background)
+            .cornerRadius(50)
+        } else {
+            // Fallback on earlier versions
         }
-        .padding(4)
-        .background(Color.Segmented.background)
-        .cornerRadius(50)
     }
 }
 
