@@ -25,9 +25,22 @@
 		CF7DC9662E85715A0084762E /* FinanceLabTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceLabTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		439D72AA2E8A6EA30048A89E /* Exceptions for "FinanceLab" folder in "FinanceLab" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CF7DC9582E8571580084762E /* FinanceLab */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		CF7DC95B2E8571580084762E /* FinanceLab */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				439D72AA2E8A6EA30048A89E /* Exceptions for "FinanceLab" folder in "FinanceLab" target */,
+			);
 			path = FinanceLab;
 			sourceTree = "<group>";
 		};
@@ -340,6 +353,7 @@
 				DEVELOPMENT_TEAM = P9TXP3LGTK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinanceLab/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -376,6 +390,7 @@
 				DEVELOPMENT_TEAM = P9TXP3LGTK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FinanceLab/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
