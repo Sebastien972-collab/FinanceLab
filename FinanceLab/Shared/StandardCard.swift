@@ -15,7 +15,7 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-//            FinancialBackground() // Petite aperçu avec le background. Rajouter une ZStack.
+//            FinancialBackground() // Petit aperçu avec le background. Rajouter une ZStack.
             VStack() {
                 self.content
             }
