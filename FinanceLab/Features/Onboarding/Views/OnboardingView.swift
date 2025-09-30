@@ -48,20 +48,16 @@ struct OnboardingView: View {
     }
         
     var body: some View {
-        ZStack {
-            GeometryReader { geo in
-                FinancialBackground()
-                    .ignoresSafeArea()
-                    .frame(width: geo.size.width)
-            }
-            VStack {
-                Spacer()
-                cardContent(step: onboarding.currentStep)
-                    .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
-                Spacer()
-                nextButton()
-            }
-            .padding(16)
+        VStack {
+            Spacer()
+            cardContent(step: onboarding.currentStep)
+                .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
+            Spacer()
+            nextButton()
+        }
+        .padding(16)
+        .background {
+            FinancialBackground().ignoresSafeArea()
         }
     }
 }
