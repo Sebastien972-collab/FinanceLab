@@ -1,0 +1,50 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.96863,0.65882,0.58824,1.00000",
+      "srgb:0.95686,0.36471,0.26275,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blend-mode" : "normal",
+      "blur-material" : 0.5,
+      "layers" : [
+        {
+          "blend-mode" : "normal",
+          "fill" : "automatic",
+          "glass" : false,
+          "hidden-specializations" : [
+            {
+              "appearance" : "light",
+              "value" : false
+            }
+          ],
+          "image-name" : "Mascot.svg",
+          "name" : "Mascot"
+        }
+      ],
+      "lighting" : "individual",
+      "position" : {
+        "scale" : 0.93,
+        "translation-in-points" : [
+          0,
+          24
+        ]
+      },
+      "shadow" : {
+        "kind" : "layer-color",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "iOS"
+    ]
+  }
+}
