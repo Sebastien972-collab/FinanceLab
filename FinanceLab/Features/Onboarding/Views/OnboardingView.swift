@@ -29,7 +29,7 @@ struct OnboardingView: View {
                 .frame(height: 150)
         }
         .frame(height: 500)
-        .padding(.horizontal, 16)
+        .padding()
         .foregroundStyle(Color.Text.contrasted)
         .background(Color.white.opacity(0.2))
         .cornerRadius(100)
@@ -52,10 +52,10 @@ struct OnboardingView: View {
             Spacer()
             cardContent(step: onboarding.currentStep)
                 .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
+                .padding()
             Spacer()
             nextButton()
         }
-        .padding(16)
         .background {
             FinancialBackground().ignoresSafeArea()
         }
