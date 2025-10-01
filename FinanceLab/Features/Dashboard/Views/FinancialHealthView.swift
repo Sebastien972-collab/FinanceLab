@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FinancialHealthView : View {
-    @State var healthScore : Double = 0.5
+    @State var healthScore : Double
     
     var body: some View {
         VStack {
@@ -61,7 +61,7 @@ struct FinancialHealthView : View {
 }
 
 #Preview {
-    FinancialHealthView()
+    FinancialHealthView(healthScore: 0.5)
         .padding()
         .background {
             ZStack {
