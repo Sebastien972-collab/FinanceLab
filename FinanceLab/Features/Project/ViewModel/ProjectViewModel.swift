@@ -18,7 +18,7 @@ final class ProjectViewModel {
         guard !projects.contains(project) else { return }
     }
     func remove(_ project: Project) {
-        guard projects.contains(project) && else { return }
+        guard projects.contains(project) else { return }
     }
 
     
