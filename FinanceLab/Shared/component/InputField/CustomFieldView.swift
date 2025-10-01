@@ -24,18 +24,14 @@ struct CustomFieldView: View {
         switch state {
         case .amount:
             HStack {
-                Text(label)
-                    .font(.subheadline)
-                    .foregroundColor(Color.Text.contrasted)
+                HeaderView(label: label)
                 Spacer()
                 CustomTextFieldView(placeholder: placeholder, text: $text, isBold: true)
             }
             .padding(.horizontal)
         case .standard:
             HStack {
-                Text(label)
-                    .font(.subheadline)
-                    .foregroundColor(Color.Text.contrasted)
+                HeaderView(label: label)
                 Spacer()
                 CustomTextFieldView(placeholder: placeholder, text: $text)
                 
@@ -44,13 +40,21 @@ struct CustomFieldView: View {
             
         case .project:
             VStack(alignment: .leading, spacing: 8) {
-                Text(label)
-                    .font(.subheadline)
-                    .foregroundColor(Color.Text.contrasted)
+                HeaderView(label: label)
                 CustomTextFieldView(placeholder: placeholder, text: $text)
             }
             .padding(.horizontal)
         }
+    }
+   
+}
+
+fileprivate struct HeaderView: View {
+    var label: String
+    var body: some View {
+        Text(label)
+            .font(Font.listHeader)
+            .foregroundColor(Color.Text.contrasted)
     }
 }
 
