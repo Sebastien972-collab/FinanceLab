@@ -29,22 +29,32 @@ struct SingleTransactionView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    VStack {
-                        HStack {
-                            Text("Nouvelle entrée")
-                                .font(.title)
-                            Spacer()
-                        }
+                    VStack(alignment: .leading) {
+                        Text("Nouvelle entrée")
+                            .font(.title)
                         FinancialPicker(options: ["Dépense", "Recette"], selected: $pickerSelected)
                     }
                     .padding(.horizontal)
                     VStack(spacing: 24) {
                         FormRow(label: "Montant", text: $transaction.contractor)
-                        FormRow(label: "Nom", text: $transaction.contractor)
+                        FormRow(label: "Nom", text: $transaction.name)
                         FormRow(label: "Catégorie", text: $transaction.contractor)
                         FormRow(label: "À", text: $transaction.contractor)
                         FormRow(label: "Date", text: $transaction.contractor)
                     }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button("Précédent", image: .backFill) {
+                            // dismiss
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Enregistrer", image: .checkFatFill) {
+                        // action
+                    }
+                    .buttonStyle(.glassProminent)
                 }
             }
             .background {
