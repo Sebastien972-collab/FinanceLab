@@ -8,16 +8,21 @@
 import SwiftUI
 
 struct DashboardView : View {
-    var currentMonth: String = "Septembre 2025"
-    var healthScore: Double = 0.8
+
+    var healthScore: Double = 0.5
     
     var body: some View {
-        VStack {
+        ScrollView {
             StandardCard {
                 VStack(spacing: 16) {
-                    Text(currentMonth)
-                        .font(.cardTitle)
-                    FinancialHealth(healthScore: healthScore)
+                    Text(Date()
+                        .formatted(.dateTime
+                                .month(.wide)
+                                .year()
+                                .locale(Locale(identifier: "fr_FR")))
+                        .capitalized)
+                    .font(.cardTitle)
+                    FinancialHealthView(healthScore: healthScore)
                 }
                 .padding(.vertical, 24)
                 .padding(.horizontal, 16)

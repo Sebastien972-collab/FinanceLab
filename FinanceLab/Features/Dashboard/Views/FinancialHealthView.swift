@@ -1,5 +1,5 @@
 //
-//  FinancialHealth.swift
+//  FinancialHealthView.swift
 //  FinanceLab
 //
 //  Created by Anne Ferret on 01/10/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct FinancialHealth : View {
+struct FinancialHealthView : View {
     @State var healthScore : Double = 0.5
     
     var body: some View {
@@ -61,7 +61,7 @@ struct FinancialHealth : View {
 }
 
 #Preview {
-    FinancialHealth()
+    FinancialHealthView()
         .padding()
         .background {
             ZStack {
