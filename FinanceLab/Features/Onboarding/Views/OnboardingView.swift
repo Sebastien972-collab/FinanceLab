@@ -48,13 +48,27 @@ struct OnboardingView: View {
     }
         
     var body: some View {
-        VStack {
-            Spacer()
-            cardContent(step: onboarding.currentStep)
-                .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
-                .padding()
-            Spacer()
-            nextButton()
+        ZStack {
+            VStack {
+                Spacer()
+                cardContent(step: onboarding.currentStep)
+                    .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
+                    .padding()
+                Spacer()
+                nextButton()
+            }
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Image(.mascot)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 200)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 60)
+            }
         }
         .background {
             FinancialBackground().ignoresSafeArea()
