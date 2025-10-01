@@ -8,20 +8,6 @@
 import SwiftUI
 
 struct SingleTransactionView: View {
-    
-    struct FormRow: View {
-        let label: String
-        @Binding var text: String
-        var body: some View {
-            HStack {
-                Text(label)
-                    .frame(width: 100, alignment: .trailing)
-                    .font(.listHeader)
-                CustomTextFieldView(placeholder: "", text: $text)
-            }
-        }
-    }
-    
     @State var pickerSelected = 0
     @State var transaction : Transaction
     
@@ -59,6 +45,19 @@ struct SingleTransactionView: View {
             }
             .background {
                 FinancialBackground().ignoresSafeArea()
+            }
+        }
+    }
+    
+    struct FormRow: View {
+        let label: String
+        @Binding var text: String
+        var body: some View {
+            HStack(spacing: 18) {
+                Text(label)
+                    .frame(width: 100, alignment: .trailing)
+                    .font(.listHeader)
+                CustomTextFieldView(placeholder: "", text: $text)
             }
         }
     }
