@@ -19,8 +19,9 @@ struct TransactionsView: View {
                     FinancialPicker(options: ["Dépenses et recettes", "Par catégories"], selected: $pickerSelected)
                 }
                 switch pickerSelected {
-                    case 0: SpendingRepartition(amountSpent: 1000.12, amountGained: 2200.22)
-                    default: EmptyView()
+                    case 0: SpendingRepartition(amountSpent: 1000.12, amountGained: 1820.11)
+                    default: Text("TODO")
+                        // TODO: Budget par catégories
                 }
             }
             .foregroundStyle(Color.Text.contrasted)
