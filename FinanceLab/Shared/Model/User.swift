@@ -16,16 +16,16 @@ class User: Identifiable {
     var displayName: String { "\(self.firstName) \(self.lastName)" }
     var dateOfRegistration: Date = Date()
     var balance: Decimal = 0.00
-    var profilePictureUrl: URL?
+    var profilePictureUrl: String?
     
-    init(firstName: String, lastName: String, email: String, profilePictureUrl: URL? = nil) {
+    init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
         self.profilePictureUrl = profilePictureUrl
     }
     
-    convenience init(firstName: String, lastName: String, email: String, dateOfRegistration: Date, balance: Decimal, profilePictureUrl: URL? = nil ) {
+    convenience init(firstName: String, lastName: String, email: String, dateOfRegistration: Date, balance: Decimal, profilePictureUrl: String? = nil ) {
         self.init(firstName: firstName, lastName: lastName, email: email, profilePictureUrl: profilePictureUrl)
         self.dateOfRegistration = dateOfRegistration
         self.balance = balance
