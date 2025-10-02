@@ -24,9 +24,9 @@ struct SingleTransactionView: View {
                     VStack(spacing: 24) {
                         FormRow(label: "Montant", text: $transaction.contractor)
                         FormRow(label: "Nom", text: $transaction.name)
-                        FormRow(label: "Catégorie", text: $transaction.contractor)
-                        FormRow(label: "À", text: $transaction.contractor)
-                        FormRow(label: "Date", text: $transaction.contractor)
+                        FormRow(label: "Catégorie", text: $transaction.name)
+                        FormRow(label: "À", text: $transaction.name)
+                        FormRow(label: "Date", text: $transaction.name)
                     }
                 }
             }
