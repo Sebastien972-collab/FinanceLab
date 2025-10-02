@@ -12,7 +12,7 @@ struct CustomFieldView: View {
     enum FieldState {
         case amount
         case standard
-        case project    
+        case project
     }
     
     var label: String
@@ -47,9 +47,9 @@ struct CustomFieldView: View {
                 Text(label)
                     .font(.subheadline)
                     .foregroundColor(Color.Text.contrasted)
+                    .padding(.leading)
                 CustomTextFieldView(placeholder: placeholder, text: $text)
             }
-            .padding(.horizontal)
         }
     }
 }

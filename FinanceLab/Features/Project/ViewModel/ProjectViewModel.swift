@@ -11,6 +11,8 @@ import FinanceCore
 @Observable
 final class ProjectViewModel {
     private(set) var projects: [Project] = []
+    var manager: ProjectCreatorManager = .init()
+    var creatorMode: Bool = false
     func fetchProjects() {
         projects = Project.previews
     }
@@ -21,6 +23,6 @@ final class ProjectViewModel {
     func remove(_ project: Project) {
         guard projects.contains(project) else { return }
     }
-
+    
     
 }

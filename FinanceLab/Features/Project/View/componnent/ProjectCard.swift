@@ -17,25 +17,24 @@ struct ProjectCard: View {
                 } else {
                     ImageCard(imageName: "target")
                 }
-                    VStack(alignment: .leading) {
-                        Text(project.name)
-                            .font(Font.cardTitle)
-                            .foregroundStyle(Color.Text.primary)
-                        Text(project.formattedAmount)
-                            .font(Font.cardNumber)
-                            .foregroundStyle(Color.Text.primary)
-                    }
-                    Spacer()
-                    VStack {
-                        Text("terminé à")
-                            .font(Font.cardCallout)
-                            .foregroundStyle(Color.Text.primary)
-                        Text("\(Int(project.progressPercentage)) %")
-                            .font(Font.cardNumber)
-                            .foregroundStyle(Color.Text.primary)
-                    }
+                VStack(alignment: .leading) {
+                    Text(project.name)
+                        .font(Font.cardTitle)
+                        .foregroundStyle(Color.Text.primary)
+                    Text(project.formattedAmount)
+                        .font(Font.cardNumber)
+                        .foregroundStyle(Color.Text.primary)
+                }
+                Spacer()
+                VStack {
+                    Text("terminé à")
+                        .font(Font.cardCallout)
+                        .foregroundStyle(Color.Text.primary)
+                    Text("\(Int(project.progressPercentage)) %")
+                        .font(Font.cardNumber)
+                        .foregroundStyle(Color.Text.primary)
+                }
             }
-            .frame(maxWidth: .infinity)
             .padding(.horizontal)
             
         }
@@ -43,11 +42,11 @@ struct ProjectCard: View {
 }
 
 #Preview {
-    ZStack {
-        FinancialBackground()
-            .ignoresSafeArea()
-        ProjectCard(project: .preview)
-    }
+    ProjectCard(project: .preview)
+        .background {
+            FinancialBackground()
+                .ignoresSafeArea(.all)
+        }
 }
 
 private struct ImageCard: View {

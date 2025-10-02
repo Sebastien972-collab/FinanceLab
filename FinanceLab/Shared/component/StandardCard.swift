@@ -15,7 +15,6 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-//            FinancialBackground() // Petit aperçu avec le background. Rajouter une ZStack.
             VStack() {
                 self.content
             }
@@ -23,7 +22,7 @@ struct StandardCard<Content: View>: View {
             .lineSpacing(1.6)
             .background(Color.Card.background.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: 30))
-            .frame(maxWidth: 370)
+            .frame(maxWidth: .infinity)
             .shadow(radius: 3)
     }
 }
@@ -37,5 +36,9 @@ struct StandardCard<Content: View>: View {
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
             .padding()
+    }
+    .background {
+        FinancialBackground()
+            .ignoresSafeArea(.all)
     }
 }

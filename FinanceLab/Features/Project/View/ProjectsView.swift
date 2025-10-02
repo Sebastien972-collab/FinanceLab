@@ -6,18 +6,28 @@
 //
 
 import SwiftUI
+import FinanceCore
 
 struct ProjectsView: View {
-    let projectVM: ProjectViewModel = .init()
+    @State private var projectVM: ProjectViewModel = .init()
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
+                VStack(alignment: .center) {
                     ForEach(projectVM.projects) { project in
-                        ProjectCard(project: project)
+                        NavigationLink {
+                            Text("Détails du projet \(project.name)")
+                        } label: {
+                            ProjectCard(project: project)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                        }
+
                     }
                     .padding(.bottom)
-                    ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {}
+                    ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
+                        projectVM.creatorMode.toggle()
+                    }
                 }
                 .navigationTitle(Text("Mes Projects"))
                 .onAppear {
@@ -27,6 +37,11 @@ struct ProjectsView: View {
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
+            }
+            .sheet(isPresented: $projectVM.creatorMode) {
+                ProjectCreatorView(projectManager: projectVM.manager)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }
