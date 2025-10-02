@@ -17,13 +17,13 @@ struct CircleImageProfil: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipShape(Circle())
-                        .frame(maxWidth: 120, maxHeight: 120)
+                        .frame(maxWidth: 67, maxHeight: 67)
                 } else {
                     Image(systemName: "person.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipShape(Circle())
-                        .frame(maxWidth: 120, maxHeight: 120)
+                        .frame(maxWidth: 67, maxHeight: 67)
                 }
             }
         }
@@ -31,7 +31,6 @@ struct CircleImageProfil: View {
 }
 
 #Preview {
-    CircleImageProfil(url: User.preview.)
-   
+    CircleImageProfil(url: User.userDatabase[2].profilePictureUrl)
 }
 
