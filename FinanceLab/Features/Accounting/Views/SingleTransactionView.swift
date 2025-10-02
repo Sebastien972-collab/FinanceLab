@@ -29,15 +29,16 @@ struct SingleTransactionView: View {
                         FormRow(label: "Date", text: $transaction.name)
                     }
                 }
+                .foregroundStyle(Color.Text.contrasted)
             }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
-                    Button("Précédent", image: .backFill) {
-                            // dismiss
+                    Button("Précédent", systemImage: "chevron.left") {
+                        // dismiss
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Enregistrer", image: .checkFatFill) {
+                    Button("Enregistrer") {
                         // action
                     }
                     .buttonStyle(.glassProminent)
