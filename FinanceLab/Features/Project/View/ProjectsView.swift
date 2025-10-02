@@ -8,8 +8,27 @@
 import SwiftUI
 
 struct ProjectsView: View {
+    let projectVM: ProjectViewModel = .init()
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                VStack {
+                    ForEach(projectVM.projects) { project in
+                        ProjectCard(project: project)
+                    }
+                    .padding(.bottom)
+                    ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {}
+                }
+                .navigationTitle(Text("Mes Projects"))
+                .onAppear {
+                    projectVM.fetchProjects()
+                }
+            }
+            .background {
+                FinancialBackground()
+                    .ignoresSafeArea(.all)
+            }
+        }
     }
 }
 

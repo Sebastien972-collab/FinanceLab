@@ -12,13 +12,14 @@ import FinanceCore
 final class ProjectViewModel {
     private(set) var projects: [Project] = []
     func fetchProjects() {
+        projects = Project.previews
     }
     
     func add(_ project: Project) {
         guard !projects.contains(project) else { return }
     }
     func remove(_ project: Project) {
-        guard projects.contains(project) && else { return }
+        guard projects.contains(project) else { return }
     }
 
     

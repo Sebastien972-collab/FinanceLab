@@ -23,7 +23,7 @@ struct StandardCard<Content: View>: View {
             .lineSpacing(1.6)
             .background(Color.Card.background.opacity(0.5))
             .clipShape(RoundedRectangle(cornerRadius: 30))
-            .frame(width: 370)
+            .frame(maxWidth: 370)
             .shadow(radius: 3)
     }
 }
