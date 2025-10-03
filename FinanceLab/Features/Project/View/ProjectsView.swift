@@ -10,26 +10,31 @@ import FinanceCore
 
 struct ProjectsView: View {
     @State private var projectVM: ProjectViewModel = .init()
+    @State private var selectedProject: Project? = nil
+    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .center) {
                     ForEach(projectVM.projects) { project in
-                        NavigationLink {
-                            Text("Détails du projet \(project.name)")
-                        } label: {
+                        SwipeableCard {
                             ProjectCard(project: project)
                                 .frame(maxWidth: .infinity)
                                 .padding(.horizontal)
+                                .onTapGesture {
+                                    selectedProject = project
+                                }
+                        } onDelete: {
+                            projectVM.remove(project)
                         }
-
                     }
                     .padding(.bottom)
+                    
                     ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
                         projectVM.creatorMode.toggle()
                     }
                 }
-                .navigationTitle(Text("Mes Projects"))
+                .navigationTitle(Text("Mes Projets"))
                 .onAppear {
                     projectVM.fetchProjects()
                 }
@@ -43,9 +48,13 @@ struct ProjectsView: View {
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
             }
+            .navigationDestination(item: $selectedProject) { project in
+                Text("Détail du projet \(project.name)")
+            }
         }
     }
 }
+
 
 #Preview {
     ProjectsView()
