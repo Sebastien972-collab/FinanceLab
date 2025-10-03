@@ -38,6 +38,7 @@ struct SingleTransactionView: View {
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
+//                    SaveDeleteButton(title: "Titre", action: {})
                     Button("Enregistrer") {
                         // action
                     }
