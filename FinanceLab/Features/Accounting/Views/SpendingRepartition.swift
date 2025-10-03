@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SpendingRepartition: View {
-    @State var amountSpent: Double
-    @State var amountGained: Double
+    var amountSpent: Double
+    var amountGained: Double
     
     var body: some View {
         VStack {
@@ -41,6 +41,7 @@ struct SpendingRepartition: View {
                 Spacer()
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
+                        Text("+")
                         Text(amountGained.description.split(separator: ".")[0])
                             .font(.listLargeNumber)
                         Text(",")

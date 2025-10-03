@@ -22,10 +22,13 @@ struct TransactionsView: View {
                                 .locale(Locale(identifier: "fr_FR")))
                                 .capitalized)
                         .font(.title)
-                        FinancialPicker(options: ["Dépenses et recettes", "Par catégories"], selected: $pickerSelected)
+                        FinancialPicker(options: [
+                            "Dépenses et recettes",
+                            "Par catégories"
+                        ], selected: $pickerSelected)
                     }
                     switch pickerSelected {
-                        case 0: SpendingRepartition(amountSpent: 1000.12, amountGained: 1820.11)
+                        case 0: SpendingRepartition(amountSpent: 846.12, amountGained: 1820.11)
                         default: Text("TODO")
                             // TODO: Budget par catégories
                     }
