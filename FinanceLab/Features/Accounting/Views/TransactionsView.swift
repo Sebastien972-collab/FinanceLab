@@ -9,6 +9,9 @@ import SwiftUI
 
 struct TransactionsView: View {
     @State var pickerSelected = 0
+    private let testTransactions : [Transaction] = [
+        Transaction(name: "Assurance", amount: 2100, date: Date(), contractor: "AXA Assurance")
+    ]
 
     var body: some View {
         NavigationStack {
@@ -32,6 +35,9 @@ struct TransactionsView: View {
                         default: Text("TODO")
                             // TODO: Budget par catégories
                     }
+                    VStack {
+                        SingleTransactionRow()
+                    }
                 }
                 .foregroundStyle(Color.Text.contrasted)
                 .padding(.horizontal)
@@ -51,6 +57,39 @@ struct TransactionsView: View {
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
+        }
+    }
+    
+    struct SingleTransactionRow: View {
+        var body: some View {
+            HStack {
+                HStack {
+                    Image(.circlesThreePlusFill)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 24)
+                        .foregroundStyle(LinearGradient.primaryGradient)
+                    Text("Assurance")
+                }
+                .padding(.horizontal, 10)
+                .font(.cardSubtitle)
+                Spacer()
+                HStack(spacing: 2) {
+                    Text("42")
+                        .font(.listLargeNumber)
+                    Text(",")
+                    Text("24")
+                    Text("€")
+                }
+                .frame(height: 42)
+                .padding(.horizontal, 10)
+                .background(LinearGradient.redGradient)
+                .font(.listNumber)
+            }
+            .frame(height: 42)
+            .foregroundStyle(Color.Text.primary)
+            .background(Color.Card.background)
+            .cornerRadius(50)
         }
     }
 }
