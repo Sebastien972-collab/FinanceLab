@@ -15,7 +15,7 @@ struct FinancialHealthView : View {
             Text("Indice de santé financière")
                 .font(.cardSubtitle)
             HStack {
-                Image(.smileyFill)
+                Image(.smileySadFill)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(LinearGradient.primaryGradient)
@@ -24,23 +24,23 @@ struct FinancialHealthView : View {
                     VStack {
                         HStack(spacing:0) {
                             Rectangle()
-                                .fill(LinearGradient.primaryGradient)
-                            Rectangle()
                                 .fill(LinearGradient.greenGradient)
                                 .frame(width: geo.size.width * healthScore)
+                            Rectangle()
+                                .fill(LinearGradient.primaryGradient)
                         }
                         .frame(height: 10)
                         .cornerRadius(50)
                         HStack(spacing:0) {
                             Spacer()
+                                .frame(width: geo.size.width * healthScore - 5)
                             Image(.polygonFill)
                                 .foregroundStyle(LinearGradient.redGradient)
                             Spacer()
-                                .frame(width: geo.size.width * healthScore - 5)
                         }
                     }
                 }
-                Image(.smileySadFill)
+                Image(.smileyFill)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(LinearGradient.primaryGradient)
@@ -61,7 +61,7 @@ struct FinancialHealthView : View {
 }
 
 #Preview {
-    FinancialHealthView(healthScore: 0.5)
+    FinancialHealthView(healthScore: 0.8)
         .padding()
         .background {
             ZStack {
