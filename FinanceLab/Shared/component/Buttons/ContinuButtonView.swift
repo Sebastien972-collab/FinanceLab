@@ -32,7 +32,7 @@ struct ContinuButtonView: View {
         .padding(.horizontal)
         .onAppear(){
             if state == .normal{
-                textColor = .black
+                textColor = Color.Text.quaternary
             }
         }
         
