@@ -9,8 +9,12 @@ import SwiftUI
 
 
 struct YesNoButtonQuestion: View {
-    var title: String
+    enum YesOrNo: String {
+    case yes = "Oui"
+    case no = "Non"
+    }
     
+    var selection: YesOrNo
     enum ButtonState {
         case normal, validate
     }
@@ -19,51 +23,31 @@ struct YesNoButtonQuestion: View {
    @State private var textColor = Color.white
     
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(textColor)
+        switch selection {
+        case .yes:
+            ContinuButtonView(title: selection.rawValue, state: .validate, action: action)
                 .frame(width: 126, height: 46)
-                .padding()
-                .background(getColor())
-                .clipShape(RoundedRectangle(cornerRadius: 30))
+        case .no:
+            ContinuButtonView(title: selection.rawValue, state: .normal, action: action)
+                .frame(width: 126, height: 46)
         }
-        .padding(.horizontal)
-        .onAppear(){
-            if state == .normal{
-                textColor = .black
-            }
-        }
-        
     }
-   private func getColor() -> LinearGradient {
-        switch state {
-        case .normal:
-          
-            return LinearGradient.primaryGradient
-        case .validate:
-            return LinearGradient.greenGradient
-       
-        }
-        
-    }
+    
 }
 
 
 
 #Preview {
-    VStack{
+    VStack(spacing: 10) {
         YesNoButtonQuestion(
-            title: "Non",
+            selection: .no,
+            state: .normal,
             action: {}
         )
-        
         YesNoButtonQuestion(
-            title: "Oui",
+            selection: .yes,
             state: .validate,
             action: {}
         )
-        
     }
 }

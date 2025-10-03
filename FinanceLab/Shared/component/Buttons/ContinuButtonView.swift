@@ -21,7 +21,7 @@ struct ContinuButtonView: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.headline)
+                .font(Font.buttonLabel)
                 .fontWeight(.semibold)
                 .foregroundColor(textColor)
                 .frame(maxWidth: .infinity)
@@ -32,7 +32,7 @@ struct ContinuButtonView: View {
         .padding(.horizontal)
         .onAppear(){
             if state == .normal{
-                textColor = .black
+                textColor = .Text.quaternary
             }
         }
         
@@ -40,7 +40,6 @@ struct ContinuButtonView: View {
     private func getColor() -> LinearGradient {
         switch state {
         case .normal:
-            
             return LinearGradient.primaryGradient
         case .validate:
             return LinearGradient.greenGradient
