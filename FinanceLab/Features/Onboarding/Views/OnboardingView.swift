@@ -37,13 +37,15 @@ struct OnboardingView: View {
     
     private func nextButton() -> some View {
         if onboarding.currentStep < onboarding.steps.count - 1 {
-            ContinuButtonView(title: "Suivant", state: .normal, action: {
+            Button("Suivant") {
                 onboarding.currentStep += 1
-            })
+            }
+            .buttonStyle(FinanceButton())
         } else {
-            ContinuButtonView(title: "C'est parti !", state: .validate, action: {
+            Button("C'est parti !") {
                 // dismiss
-            })
+            }
+            .buttonStyle(FinanceButton(state: .validate))
         }
     }
         
@@ -56,6 +58,7 @@ struct OnboardingView: View {
                     .padding()
                 Spacer()
                 nextButton()
+                    .padding(.horizontal)
             }
             VStack {
                 Spacer()
