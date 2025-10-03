@@ -36,14 +36,16 @@ struct SingleTransactionView: View {
                     Button("Précédent", systemImage: "chevron.left") {
                         // dismiss
                     }
+                    .buttonStyle(FinanceButton(size: .round))
                 }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
-//                    SaveDeleteButton(title: "Titre", action: {})
                     Button("Enregistrer") {
                         // action
                     }
-                    .buttonStyle(.glassProminent)
+                    .buttonStyle(FinanceButton(state: .validate, size: .mini))
                 }
+                .sharedBackgroundVisibility(.hidden)
             }
             .background {
                 FinancialBackground().ignoresSafeArea()

@@ -45,12 +45,17 @@ struct TransactionListView: View {
                     Button("Précédent", systemImage: "chevron.left") {
                         // dismiss
                     }
+                    .buttonStyle(FinanceButton(size: .round))
                 }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
                         // action
                     }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(FinanceButton(size: .round))
                 }
+                .sharedBackgroundVisibility(.hidden)
             }
             .background {
                 FinancialBackground().ignoresSafeArea()
