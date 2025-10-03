@@ -12,7 +12,7 @@ struct ProjectCreatorView: View {
     @Environment(\.dismiss) private var dismiss
     
     enum InputField {
-    case name, goalAmount, goalDate
+        case name, goalAmount, goalDate
     }
     @FocusState private var selection: InputField?
     var body: some View {
@@ -34,15 +34,16 @@ struct ProjectCreatorView: View {
                         .focused($selection, equals: .goalAmount)
                         .submitLabel(.send)
                         .onSubmit {
-                            projectManager.recalculator()
+                            projectManager.recalculator(100)
                         }
                     CustomFieldView(label: "Date de fin de projet", text: $projectManager.stringGoalAmount, state: .project)
-                    
                 }
                 Spacer()
                 
                 VStack {
-                    ContinuButtonView(title: "Calculer", state: .normal, action: projectManager.recalculator)
+                    ContinuButtonView(title: "Calculer", state: .normal) {
+                        projectManager.recalculator(1000)
+                    }
                     ContinuButtonView(title: "Valider", state: .validate, action: projectManager.validate)
                 }
             }
@@ -60,7 +61,6 @@ struct ProjectCreatorView: View {
                                 .font(.buttonLabel)
                         }
                     }
-
                 }
                 ToolbarItem(placement: .principal) {
                     Text("Mon projet")
@@ -74,10 +74,7 @@ struct ProjectCreatorView: View {
                     } label: {
                         Image(systemName: "trash.fill")
                             .foregroundStyle(LinearGradient.redGradient)
-                        
                     }
-                    
-                    
                 }
             }
         }

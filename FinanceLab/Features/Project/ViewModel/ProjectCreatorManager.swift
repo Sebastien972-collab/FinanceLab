@@ -15,18 +15,26 @@ class ProjectCreatorManager {
     var finalDate: Date =  .now
     var imageName: String = ""
     var stringGoalAmount: String = ""
+    var error: Error = ProjectCreatorError.emptyFiels
+    var showError: Bool = false
     var goalAmount: Decimal {
         convertStringToDecimal()
     }
     
     
-    func recalculator() {
-//        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-//        newProject.feasibilityCalculation(availableSavingsCapacity)
+    func recalculator(_ asc : Decimal) {
+        check()
+        let createProject = self.createProject()
+        let itsOk = createProject.feasibilityCalculation(asc)
+        if itsOk {
+        } else {
+            self.error = ProjectCreatorError.insufficientFunds
+        }
     }
     func validate() {
-//        guard !name.isEmpty, !stringGoalAmount.isEmpty else { throw ProjectCreatorError.emptyFiels}
-//        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+        check()
+        //        guard !name.isEmpty, !stringGoalAmount.isEmpty else { throw ProjectCreatorError.emptyFiels}
+        //        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
     }
     private func convertStringToDecimal() -> Decimal {
         guard !stringGoalAmount.isEmpty else { return 0 }
@@ -45,5 +53,17 @@ class ProjectCreatorManager {
         stringGoalAmount.removeAll()
         after?()
         
+    }
+    
+    private func createProject() -> Project {
+        Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+    }
+    
+    func check()  {
+        guard !stringGoalAmount.isEmpty else {
+            self.error = ProjectCreatorError.emptyFiels
+            self.showError.toggle()
+            return
+        }
     }
 }

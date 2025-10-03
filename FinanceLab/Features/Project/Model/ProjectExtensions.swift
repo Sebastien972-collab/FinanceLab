@@ -8,15 +8,12 @@
 import Foundation
 import FinanceCore
 
-extension Project: @retroactive Hashable {
+extension Project {
     var progressPercentage: Double {
         guard goalAmount > 0 else { return 0 }
         let ratio = (amountSaved as NSDecimalNumber).doubleValue /
         (goalAmount as NSDecimalNumber).doubleValue
         return min(max(ratio * 100, 0), 100) // borne entre 0 et 100%
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
     }
 }
 extension Project {
