@@ -15,27 +15,30 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-//            FinancialBackground() // Petit aperçu avec le background. Rajouter une ZStack.
-            VStack() {
-                self.content
-            }
-            .multilineTextAlignment(.leading)
-            .lineSpacing(1.6)
-            .background(Color.Card.background.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 30))
-            .frame(width: 370)
-            .shadow(radius: 3)
+        VStack() {
+            self.content.padding()
+        }
+        .multilineTextAlignment(.leading)
+        .lineSpacing(1.6)
+        .background(Color.Card.background)
+        .clipShape(RoundedRectangle(cornerRadius: 30))
+        .frame(maxWidth: .infinity)
     }
 }
 
 #Preview {
-    StandardCard{
-        Text("Aperçu du contenu de la cartecartcartcartca")
+    ZStack{
+        FinancialBackground()
+        HStack{
+            StandardCard{
+                Text("Aperçu du contenu de la cartecartcartcartca")
                     .padding()
-        Text("Aperçu du contenu de la carte")
-        Text("Aperçu du contenu de la carte")
-        Text("Aperçu du contenu de la carte")
-        Text("Aperçu du contenu de la carte")
-            .padding()
+                Text("Aperçu du contenu de la carte")
+                Text("Aperçu du contenu de la carte")
+                Text("Aperçu du contenu de la carte")
+                Text("Aperçu du contenu de la carte")
+                    .padding()
+            }
+        }
     }
 }
