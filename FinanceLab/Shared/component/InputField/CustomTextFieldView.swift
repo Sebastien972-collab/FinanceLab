@@ -22,6 +22,7 @@ struct CustomTextFieldView: View {
             .background(Color.Segmented.background)
             .clipShape(RoundedRectangle(cornerRadius: 50))
             .padding(.horizontal)
+            .minimumScaleFactor(0.9)
     }
 }
 

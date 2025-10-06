@@ -10,11 +10,12 @@ import SwiftUI
 struct ProjectCreatorView: View {
     @State var projectManager: ProjectCreatorManager = .init()
     @Environment(\.dismiss) private var dismiss
-    
-    enum InputField {
+    @State private var isPresented: Bool = false
+    private enum InputField {
         case name, goalAmount, goalDate
     }
     @FocusState private var selection: InputField?
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -36,7 +37,22 @@ struct ProjectCreatorView: View {
                         .onSubmit {
                             projectManager.recalculator(100)
                         }
-                    CustomFieldView(label: "Date de fin de projet", text: $projectManager.stringGoalAmount, state: .project)
+                    CustomFieldView(label: "Date de fin de projet", text: .constant(projectManager.finalDateFormatted), state: .project)
+                        .disabled(true)
+                        .onTapGesture {
+                            isPresented.toggle()
+                        }
+                        .navigationDestination(isPresented: $isPresented) {
+                            ZStack {
+                                FinancialBackground()
+                                    .ignoresSafeArea(.all)
+                                DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
+                                    .datePickerStyle(.graphical)
+                            }
+                            
+                        }
+                    
+                    
                 }
                 Spacer()
                 

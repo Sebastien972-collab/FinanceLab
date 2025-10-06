@@ -20,6 +20,13 @@ class ProjectCreatorManager {
     var goalAmount: Decimal {
         convertStringToDecimal()
     }
+    var finalDateFormatted: String {
+        let formatter = DateFormatter()
+            formatter.dateStyle = .long  
+            formatter.timeStyle = .none
+            formatter.locale = Locale(identifier: "fr_FR")
+            return formatter.string(from: finalDate)
+    }
     
     
     func recalculator(_ asc : Decimal) {

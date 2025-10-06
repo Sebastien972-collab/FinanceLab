@@ -20,6 +20,7 @@ struct ProjectDetailsView: View {
                     .opacity(0.15)
                     .offset(x: 125, y: 20)
                     .foregroundStyle(LinearGradient.greenGradient)
+                    .padding(.bottom)
                 
             }
             VStack(alignment: .leading) {
@@ -60,7 +61,7 @@ struct ProjectDetailsView: View {
                             .font(Font.custom("Host Grotesk", size: 18))
                             .fontWeight(.bold)
                             .foregroundStyle(Color.Text.contrasted)
-                        ProjectDetailsCardView(title: "Épargne mensuelle", subtitle: "Je mets de côté chaque mois", info: "100 €")
+                        ProjectDetailsCardView(title: "Épargne mensuelle", subtitle: "Je mets de côté chaque mois", info: "\(project.scheduler.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €")
                         ProjectDetailsCardView(title: "Durée", subtitle: "Ce projet dure depuis", info: "\(project.numberOfMonthsToReachGoal) mois ")
                         ProjectDetailsCardView(title: "Fin", subtitle: "À ce rythme, ce projet sera fini en", info: project.deadlineFormatted)
                     }

@@ -13,7 +13,7 @@ extension Project {
         guard goalAmount > 0 else { return 0 }
         let ratio = (amountSaved as NSDecimalNumber).doubleValue /
         (goalAmount as NSDecimalNumber).doubleValue
-        return min(max(ratio * 100, 0), 100) // borne entre 0 et 100%
+        return min(max(ratio * 100, 0), 100)
     }
     
     var numberOfMonthsToReachGoal: Int {
@@ -21,12 +21,14 @@ extension Project {
     }
     
     var deadlineFormatted: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy" // Exemple : décembre 2025
-        formatter.locale = Locale(identifier: "fr_FR") // Pour avoir le mois en français
-        return formatter.string(from: deadline)
+        Project.formattedDate(deadline)
     }
-    
+    static func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy"
+        formatter.locale = Locale(identifier: "fr_FR")
+        return formatter.string(from: date)
+    }
 }
 extension Project {
     static var preview: Project {
