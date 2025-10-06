@@ -10,45 +10,43 @@ import SwiftUI
 struct UserProfileView: View {
     var body: some View {
         NavigationStack{
-            ZStack{
-                FinancialBackground()
-                    .ignoresSafeArea()
-                VStack{
-                    StandardCard {
-                        HStack{
-                            VStack(alignment: .leading) {
-                                Text("Sophie")
-                                Text("sophie.martin@example.com")
-                            }
-                            .font(Font.cardCallout)
-                            .foregroundStyle(Color.Text.contrasted)
-                            
-                            Spacer()
-                            CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
-                            
+            VStack{
+                StandardCard {
+                    HStack{
+                        VStack(alignment: .leading) {
+                            Text("Sophie")
+                            Text("sohphie@gmail.com")
                         }
-                        .padding()
+                        .foregroundStyle(Color.white)
+                        
+                        Spacer()
+                        
+                        CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
                     }
-                    
-                    ContinuButtonView(
-                        title: "Répond à une autre question ",
-                        state: .validate,
-                        action: {}
-                    )
-                    .frame(maxWidth: 390)
-                    .font( Font.buttonLabel)
-                    .foregroundStyle(Color.Text.primary)
-                    
+                    .padding(.vertical, 5)
+                    .padding(.horizontal)
                 }
+                .padding(.horizontal)
                 
-             
+                ContinuButtonView(
+                    title: "Répond à une autre question ",
+                    state: .validate,
+                    action: {}
+                )
+                
+                Spacer()
+                
             }
             .navigationTitle(Text("Mon profil"))
-            .font(Font.title)
-            .foregroundStyle(Color.Text.contrasted)
+            .background {
+                FinancialBackground()
+                    .ignoresSafeArea(.all)
+            }
+            
+            
         }
-       
-       
+        
+        
     }
 }
 

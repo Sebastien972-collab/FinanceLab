@@ -16,12 +16,12 @@ struct ContinuButtonView: View {
     }
     var state: ButtonState = .normal
     var action: () -> Void
-    @State private var textColor = Color.white
+    @State private var textColor = Color.Text.primary
     
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.headline)
+                .font( Font.buttonLabel)
                 .fontWeight(.semibold)
                 .foregroundColor(textColor)
                 .frame(maxWidth: .infinity)
@@ -32,7 +32,7 @@ struct ContinuButtonView: View {
         .padding(.horizontal)
         .onAppear(){
             if state == .normal{
-                textColor = .black
+                textColor = .Text.quaternary
             }
         }
         
