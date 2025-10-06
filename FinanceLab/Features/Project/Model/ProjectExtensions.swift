@@ -15,6 +15,18 @@ extension Project {
         (goalAmount as NSDecimalNumber).doubleValue
         return min(max(ratio * 100, 0), 100) // borne entre 0 et 100%
     }
+    
+    var numberOfMonthsToReachGoal: Int {
+        Int(deadline.timeIntervalSinceNow / (60 * 60 * 24 * 30))
+    }
+    
+    var deadlineFormatted: String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM yyyy" // Exemple : décembre 2025
+        formatter.locale = Locale(identifier: "fr_FR") // Pour avoir le mois en français
+        return formatter.string(from: deadline)
+    }
+    
 }
 extension Project {
     static var preview: Project {

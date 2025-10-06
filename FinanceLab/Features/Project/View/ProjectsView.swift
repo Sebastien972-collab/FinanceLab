@@ -49,7 +49,7 @@ struct ProjectsView: View {
                     .presentationDragIndicator(.visible)
             }
             .navigationDestination(item: $selectedProject) { project in
-                Text("Détail du projet \(project.name)")
+                ProjectDetailsView(project: project)
             }
         }
     }
