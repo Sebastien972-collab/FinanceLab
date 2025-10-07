@@ -10,6 +10,7 @@ import FinanceCore
 
 struct ProjectDetailsView: View {
     var project: Project
+    @State var manager: ProjectCreatorManager = .init()
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             if let imageName = project.currentImage {
@@ -71,9 +72,15 @@ struct ProjectDetailsView: View {
                 Spacer()
             }
             .padding()
+            .fullScreenCover(isPresented: $manager.isEditing) {
+                ProjectCreatorView(projectManager: manager)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        manager.update(project: project)
                     } label: {
                         Text("Modifier")
                             .frame(width: 120, height: 44)

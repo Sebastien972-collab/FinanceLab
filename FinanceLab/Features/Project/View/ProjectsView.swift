@@ -31,7 +31,7 @@ struct ProjectsView: View {
                     .padding(.bottom)
                     
                     ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
-                        projectVM.creatorMode.toggle()
+                        projectVM.add()
                     }
                 }
                 .navigationTitle(Text("Mes Projets"))
@@ -43,7 +43,7 @@ struct ProjectsView: View {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
             }
-            .sheet(isPresented: $projectVM.creatorMode) {
+            .sheet(isPresented: $projectVM.manager.isEditing) {
                 ProjectCreatorView(projectManager: projectVM.manager)
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)

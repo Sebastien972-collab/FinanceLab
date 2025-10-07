@@ -22,11 +22,13 @@ class ProjectCreatorManager {
     }
     var finalDateFormatted: String {
         let formatter = DateFormatter()
-            formatter.dateStyle = .long  
-            formatter.timeStyle = .none
-            formatter.locale = Locale(identifier: "fr_FR")
-            return formatter.string(from: finalDate)
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "fr_FR")
+        return formatter.string(from: finalDate)
     }
+    var isEditing: Bool = false
+    var manager: ProjectViewModel = .init()
     
     
     func recalculator(_ asc : Decimal) {
@@ -40,8 +42,10 @@ class ProjectCreatorManager {
     }
     func validate() {
         check()
-        //        guard !name.isEmpty, !stringGoalAmount.isEmpty else { throw ProjectCreatorError.emptyFiels}
-        //        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+        manager
+        self.isEditing = false
+        
     }
     private func convertStringToDecimal() -> Decimal {
         guard !stringGoalAmount.isEmpty else { return 0 }
@@ -58,7 +62,9 @@ class ProjectCreatorManager {
         name.removeAll()
         imageName.removeAll()
         stringGoalAmount.removeAll()
+        self.isEditing = false
         after?()
+        
         
     }
     
@@ -72,5 +78,18 @@ class ProjectCreatorManager {
             self.showError.toggle()
             return
         }
+        guard !name.isEmpty, !stringGoalAmount.isEmpty else {
+            self.error = ProjectCreatorError.emptyFiels
+            self.showError = true
+            return
+        }
+    }
+    func update(project: Project) {
+        self.name = project.name
+        self.startedDate = project.startedDate
+        self.finalDate = project.deadline
+        self.imageName = project.currentImage ?? ""
+        self.stringGoalAmount = project.goalAmount.formatted()
+        self.isEditing = true
     }
 }
