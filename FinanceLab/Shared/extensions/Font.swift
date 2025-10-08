@@ -32,7 +32,7 @@ extension Font {
     }
     
     static var buttonLabel: Font {
-        .custom(customFontBold, size: 18)
+        .custom(customFontBold, size: 16)
     }
     
     static var cardTitle: Font {
