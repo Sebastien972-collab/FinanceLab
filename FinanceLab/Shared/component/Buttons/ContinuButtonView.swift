@@ -29,7 +29,6 @@ struct ContinuButtonView: View {
                 .background(getColor())
                 .clipShape(RoundedRectangle(cornerRadius: 30))
         }
-        .padding(.horizontal)
         .onAppear(){
             if state == .normal{
                 textColor = .Text.quaternary

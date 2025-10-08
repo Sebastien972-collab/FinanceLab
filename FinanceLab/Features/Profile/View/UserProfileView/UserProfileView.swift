@@ -11,33 +11,47 @@ struct UserProfileView: View {
     var body: some View {
         NavigationStack{
             VStack{
-                StandardCard {
-                    HStack{
-                        VStack(alignment: .leading) {
-                            Text("Sophie")
-                            Text("sohphie@gmail.com")
+                VStack(alignment: .leading) {
+                    Text("Réglages du compte")
+                        .font(Font.header)
+                        .foregroundStyle(Color.Text.contrasted)
+                    StandardCard {
+                        HStack{
+                            VStack(alignment: .leading) {
+                                Text("Sophie")
+                                    .font(Font.custom("Host Grotesk", size: 12))
+                                Text(verbatim: "sohphie@gmail.com")
+                                    .font(Font.custom("Host Grotesk", size: 12))
+                            }
+                            .foregroundStyle(Color.Text.primary)
+                            Spacer()
+                            CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
                         }
-                        .foregroundStyle(Color.white)
-                        
-                        Spacer()
-                        
-                        CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
                     }
-                    .padding(.vertical, 5)
-                    .padding(.horizontal)
                 }
                 .padding(.horizontal)
                 
-                ContinuButtonView(
-                    title: "Répond à une autre question ",
-                    state: .validate,
-                    action: {}
-                )
+                VStack(alignment: .leading){
+                    Text("Profil Financier ")
+                        .font(Font.header)
+                        .foregroundStyle(Color.Text.contrasted)
+                    ContinuButtonView(
+                        title: "Répond à une autre question ",
+                        state: .validate,
+                        action: {}
+                    )
+                
+                }
+                .padding(.horizontal)
                 
                 Spacer()
                 
             }
             .navigationTitle(Text("Mon profil"))
+            .foregroundStyle(Color.Text.contrasted)
+            .font(Font.title)
+            
+            
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)

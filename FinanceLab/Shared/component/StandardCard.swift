@@ -15,30 +15,30 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-        VStack() {
-            self.content
+        HStack{
+            VStack(alignment: .leading, spacing: 16) {
+                self.content
+            }
+            Spacer()
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 24)
         .multilineTextAlignment(.leading)
-        .lineSpacing(1.6)
-        .background(Color.Card.background.opacity(0.5))
+        .background(Color.Card.background)
         .clipShape(RoundedRectangle(cornerRadius: 30))
         .frame(maxWidth: .infinity)
-        .shadow(radius: 3)
     }
 }
 
 #Preview {
-    ZStack {
-        FinancialBackground()
-            .ignoresSafeArea()
-        StandardCard{
-            Text("Aperçu du contenu de la cartecartcartcartca")
-                .padding()
-            Text("Aperçu du contenu de la carte")
-            Text("Aperçu du contenu de la carte")
-            Text("Aperçu du contenu de la carte")
-            Text("Aperçu du contenu de la carte")
-                .padding()
-        }
+    StandardCard{
+        Text("Aperçu du contenu de la cartecartcartcartca")
+        Text("Aperçu du contenu de la carte")
+        Text("Aperçu du contenu de la carte")
+        Text("Aperçu du contenu de la carte")
+        Text("Aperçu du contenu de la carte")
+    }
+    .background {
+        FinancialBackground().ignoresSafeArea()
     }
 }
