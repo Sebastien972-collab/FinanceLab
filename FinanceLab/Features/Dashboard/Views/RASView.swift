@@ -8,29 +8,48 @@
 import SwiftUI
 
 struct RASView: View {
-    var monthlyRAS: Double = 150.02
-    var dailyRAS: Double = 5.55
+    var monthlyRAS: Double
+    var dailyRAS: Double
+    var endOfMonth: String = "30 septembre" // TODO: replace with dynamic end of month
     
     var body: some View {
-        VStack {
+        VStack(spacing: 4) {
             Text("Reste à s'amuser")
                 .font(.cardSubtitle)
                 .foregroundStyle(Color.Text.secondary)
             HStack {
-                HStack(spacing: 4) {
-                    Text(monthlyRAS.description)
-                        .font(.cardNumber)
-                    Text("€")
-                        .font(.cardCurrency)
+                VStack {
+                    HStack(spacing: 4) {
+                        Spacer()
+                        Text(monthlyRAS.description.split(separator: ".")[0])
+                            .font(.cardNumber)
+                        Text("€")
+                            .font(.cardCurrency)
+                        Spacer()
+                    }
+                    Text("jusqu'au " + endOfMonth)
+                        .font(.cardCallout)
+                        .foregroundStyle(Color.Text.secondary)
                 }
                 Spacer()
-                HStack(spacing: 4) {
-                    Text("~")
-                        .font(.cardCurrency)
-                    Text(dailyRAS.description)
-                        .font(.cardNumber)
-                    Text("€")
-                        .font(.cardCurrency)
+                Rectangle()
+                    .foregroundStyle(Color.Text.secondary)
+                    .frame(width: 2, height: 33)
+                Spacer()
+                VStack {
+                    HStack(spacing: 4) {
+                        Spacer()
+                        Text("~")
+                            .font(.cardCurrency)
+                        Text(dailyRAS.description)
+                            .font(.cardNumber)
+                        Text("€")
+                            .font(.cardCurrency)
+                        Spacer()
+                    }
+                    Text("par jour")
+                        .font(.cardCallout)
+                        .foregroundStyle(Color.Text.secondary)
                 }
             }
         }
@@ -39,7 +58,7 @@ struct RASView: View {
 }
 
 #Preview {
-    RASView()
+    RASView(monthlyRAS: 150.24, dailyRAS: 5.55)
         .padding()
         .background {
             ZStack {

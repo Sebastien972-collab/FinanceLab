@@ -9,6 +9,8 @@ import SwiftUI
 
 struct BudgetCard: View {
     var healthScore: Double
+    var monthlyRAS: Double
+    var dailyRAS: Double
     
     var body: some View {
         StandardCard {
@@ -21,6 +23,7 @@ struct BudgetCard: View {
                         .capitalized)
                 .font(.cardTitle)
                 FinancialHealthView(healthScore: healthScore)
+                RASView(monthlyRAS: monthlyRAS, dailyRAS: dailyRAS)
             }
             .padding(.vertical, 24)
             .padding(.horizontal, 16)
@@ -30,11 +33,10 @@ struct BudgetCard: View {
 }
 
 #Preview {
-    BudgetCard(healthScore: 0.5)
+    BudgetCard(healthScore: 0.5, monthlyRAS: 120, dailyRAS: 5.55)
         .padding()
         .background {
             ZStack {
-                BudgetCard(healthScore: 0.5).ignoresSafeArea()
                 Rectangle()
                     .fill(Color.Card.background)
             }
