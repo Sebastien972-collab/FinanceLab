@@ -23,6 +23,7 @@ extension Project {
     var deadlineFormatted: String {
         Project.formattedDate(deadline)
     }
+    
     static func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"

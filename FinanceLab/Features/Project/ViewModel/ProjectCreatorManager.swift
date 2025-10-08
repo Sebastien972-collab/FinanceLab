@@ -15,7 +15,7 @@ class ProjectCreatorManager {
     var finalDate: Date =  .now
     var imageName: String = ""
     var stringGoalAmount: String = ""
-    var error: Error = ProjectCreatorError.emptyFiels
+    var error: LocalizedError = ProjectCreatorError.emptyFiels
     var showError: Bool = false
     var goalAmount: Decimal {
         convertStringToDecimal()
@@ -40,10 +40,11 @@ class ProjectCreatorManager {
             self.error = ProjectCreatorError.insufficientFunds
         }
     }
-    func validate() {
+     func validate() {
         check()
         let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-        manager
+        manager.addProject(newProject)
+         
         self.isEditing = false
         
     }
@@ -72,12 +73,7 @@ class ProjectCreatorManager {
         Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
     }
     
-    func check()  {
-        guard !stringGoalAmount.isEmpty else {
-            self.error = ProjectCreatorError.emptyFiels
-            self.showError.toggle()
-            return
-        }
+    private func check()  {
         guard !name.isEmpty, !stringGoalAmount.isEmpty else {
             self.error = ProjectCreatorError.emptyFiels
             self.showError = true

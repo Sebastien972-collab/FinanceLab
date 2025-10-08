@@ -10,6 +10,7 @@ import FinanceCore
 
 struct ProjectDetailsView: View {
     var project: Project
+    @Environment(ProjectViewModel.self) private var projectVM
     @State var manager: ProjectCreatorManager = .init()
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -72,14 +73,15 @@ struct ProjectDetailsView: View {
                 Spacer()
             }
             .padding()
-            .fullScreenCover(isPresented: $manager.isEditing) {
+            .navigationDestination(isPresented: $manager.isEditing, destination: {
                 ProjectCreatorView(projectManager: manager)
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
-            }
+            })
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        manager.manager = projectVM
                         manager.update(project: project)
                     } label: {
                         Text("Modifier")
@@ -105,6 +107,7 @@ struct ProjectDetailsView: View {
 #Preview {
     NavigationStack {
         ProjectDetailsView(project: .preview)
+            .environment(ProjectViewModel())
     }
 }
 

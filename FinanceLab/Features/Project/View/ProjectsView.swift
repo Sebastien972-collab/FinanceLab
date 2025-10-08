@@ -9,9 +9,9 @@ import SwiftUI
 import FinanceCore
 
 struct ProjectsView: View {
-    @State private var projectVM: ProjectViewModel = .init()
+    @Environment(ProjectViewModel.self) private var projectVM
     @State private var selectedProject: Project? = nil
-    
+    @State private var projectCreatorVM: ProjectCreatorManager = .init()
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -22,6 +22,7 @@ struct ProjectsView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding(.horizontal)
                                 .onTapGesture {
+                                    projectCreatorVM.manager = projectVM
                                     selectedProject = project
                                 }
                         } onDelete: {
@@ -31,20 +32,21 @@ struct ProjectsView: View {
                     .padding(.bottom)
                     
                     ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
-                        projectVM.add()
+                        projectCreatorVM.manager = projectVM
+                        projectCreatorVM.isEditing.toggle()
                     }
                 }
                 .navigationTitle(Text("Mes Projets"))
                 .onAppear {
-                    projectVM.fetchProjects()
+                   
                 }
             }
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
             }
-            .sheet(isPresented: $projectVM.manager.isEditing) {
-                ProjectCreatorView(projectManager: projectVM.manager)
+            .sheet(isPresented: $projectCreatorVM.isEditing) {
+                ProjectCreatorView(projectManager: projectCreatorVM)
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
             }
@@ -58,4 +60,5 @@ struct ProjectsView: View {
 
 #Preview {
     ProjectsView()
+        .environment(ProjectViewModel())
 }

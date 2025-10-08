@@ -19,6 +19,7 @@ struct MainTabView: View {
             }
             Tab("Mes Projets", systemImage: "powermeter") {
                 ProjectsView()
+                
             }
             Tab("Ressources", systemImage: "newspaper.fill") {
                 Text("S'informer")
@@ -29,4 +30,5 @@ struct MainTabView: View {
 
 #Preview {
     MainTabView()
+        .environment(ProjectViewModel())
 }

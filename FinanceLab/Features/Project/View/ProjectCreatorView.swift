@@ -20,7 +20,7 @@ struct ProjectCreatorView: View {
         NavigationStack {
             VStack {
                 HStack {
-                    CustomFieldView(label: "Nom du projet", text: $projectManager.name, state: .project)
+                    CustomFieldView(label: "Nom du projet", text: $projectManager.name, placeholder: "Le nom de mon projet", state: .project)
                         .focused($selection, equals: .name)
                         .submitLabel(.next)
                         .onSubmit {
@@ -30,7 +30,7 @@ struct ProjectCreatorView: View {
                         .padding(.trailing)
                 }
                 HStack {
-                    CustomFieldView(label: "Coût total du projet", text: $projectManager.stringGoalAmount, state: .project)
+                    CustomFieldView(label: "Coût total du projet", text: $projectManager.stringGoalAmount, placeholder: "Ex: 10 000", state: .project)
                         .keyboardType(.decimalPad)
                         .focused($selection, equals: .goalAmount)
                         .submitLabel(.send)
@@ -49,13 +49,9 @@ struct ProjectCreatorView: View {
                                 DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
                                     .datePickerStyle(.graphical)
                             }
-                            
                         }
-                    
-                    
                 }
                 Spacer()
-                
                 VStack {
                     ContinuButtonView(title: "Calculer", state: .normal) {
                         projectManager.recalculator(1000)
@@ -93,6 +89,18 @@ struct ProjectCreatorView: View {
                     }
                 }
             }
+            .alert("Error", isPresented: $projectManager.showError) {
+                Button {
+                    
+                } label: {
+                    Text("Ok")
+                }
+                
+            } message: {
+                Text(projectManager.error.localizedDescription)
+            }
+            
+            
         }
     }
 }
