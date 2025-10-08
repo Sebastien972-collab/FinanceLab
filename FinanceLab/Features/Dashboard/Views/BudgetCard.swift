@@ -14,7 +14,7 @@ struct BudgetCard: View {
     
     var body: some View {
         StandardCard {
-            VStack(spacing: 16) {
+            VStack(spacing: 20) {
                 Text(Date()
                     .formatted(.dateTime
                         .month(.wide)
