@@ -25,8 +25,6 @@ struct BudgetCard: View {
                 FinancialHealthView(healthScore: healthScore)
                 RASView(monthlyRAS: monthlyRAS, dailyRAS: dailyRAS)
             }
-            .padding(.vertical, 24)
-            .padding(.horizontal, 16)
             .foregroundStyle(Color.Text.primary)
         }
     }
