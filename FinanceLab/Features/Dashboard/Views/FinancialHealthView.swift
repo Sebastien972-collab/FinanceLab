@@ -14,6 +14,7 @@ struct FinancialHealthView : View {
         VStack {
             Text("Indice de santé financière")
                 .font(.cardSubtitle)
+                .foregroundStyle(Color.Text.secondary)
             HStack {
                 Image(.smileySadFill)
                     .resizable()
