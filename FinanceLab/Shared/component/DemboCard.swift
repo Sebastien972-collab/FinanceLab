@@ -1,13 +1,13 @@
 //
-//  StandardCard.swift
+//  DemboCard.swift
 //  FinanceLab
 //
-//  Created by YacineBahaka  on 26/09/2025.
+//  Created by Anne Ferret on 08/10/2025.
 //
 
 import SwiftUI
 
-struct StandardCard<Content: View>: View {
+struct DemboCard<Content: View>: View {
     let content: Content
 
     init(@ViewBuilder content: () -> Content) {
@@ -32,8 +32,8 @@ struct StandardCard<Content: View>: View {
 }
 
 #Preview {
-    StandardCard{
-        Text("Aperçu du contenu de la cartecartcartcartca")
+    DemboCard{
+        Text("Aperçu du contenu de la cartecartcartcartcartecarte")
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
