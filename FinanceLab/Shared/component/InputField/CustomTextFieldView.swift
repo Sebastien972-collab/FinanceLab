@@ -14,7 +14,7 @@ struct CustomTextFieldView: View {
     
     var body: some View {
         TextField(placeholder, text: $text)
-            .font(.title3)
+            .font(Font.inputFieldText)
             .bold(isBold)
             .padding(.vertical, 14)
             .padding(.horizontal, 20)

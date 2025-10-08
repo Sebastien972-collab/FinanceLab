@@ -30,12 +30,13 @@ struct StandardCard<Content: View>: View {
 #Preview {
     StandardCard{
         Text("Aperçu du contenu de la cartecartcartcartca")
-                    .padding()
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
         Text("Aperçu du contenu de la carte")
-            .padding()
+    }
+    .background {
+        FinancialBackground().ignoresSafeArea()
     }
     .background {
         FinancialBackground()
