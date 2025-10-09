@@ -49,7 +49,7 @@ struct DemboCard<Content: View>: View {
 }
 
 #Preview {
-    DemboCard{
+    DemboCard {
         Text("Aperçu du contenu de la carte")
     }
     .padding()
