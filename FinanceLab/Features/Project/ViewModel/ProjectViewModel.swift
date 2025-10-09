@@ -32,5 +32,4 @@ final class ProjectViewModel {
         projects.remove(at: index)
     }
     
-    
 }
