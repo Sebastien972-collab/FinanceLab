@@ -23,7 +23,7 @@
 //                    Text( "Je gagne 1300 € / mois ")
 //                        .font(Font.body)
 //                }
-//                .foregroundStyle(Color.Text.primary)
+//
 //                
 //                
 //            }
@@ -39,7 +39,7 @@
 import SwiftUI
 
 struct CardProfil: View {
-    var iconName: String
+    var iconName: ImageResource
     var title: String
     var subtitle: [String]
     
@@ -49,18 +49,24 @@ struct CardProfil: View {
     StandardCard{
         HStack{
          
-         
+            
+            Image(iconName)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 60, height: 60)
+                .foregroundStyle(LinearGradient.redGradient)
+            Spacer()
+               
                 VStack(alignment: .leading) {
                     Text(title)
-                        .font(.headline)
+                        .font(Font.cardTitle)
                         .foregroundColor(.white)
                     ForEach(subtitle, id:\.self) { sub in
                         Text(sub)
                             .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.9))
                     }
-                   
                 }
+                .foregroundStyle(Color.Text.primary)
             }
             
 
@@ -68,10 +74,11 @@ struct CardProfil: View {
         }
        
         
-        .padding(.horizontal)
+       
     }
 }
 
 #Preview {
-    CardProfil(iconName: "eurosign.ring", title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+    CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+    
 }

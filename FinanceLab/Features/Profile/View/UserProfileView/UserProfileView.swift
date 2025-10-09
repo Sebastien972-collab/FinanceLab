@@ -40,8 +40,10 @@ struct UserProfileView: View {
                         state: .validate,
                         action: {}
                     )
-                
+                    CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+                    CardProfil(iconName: .houseLineFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
                 }
+                
                 .padding(.horizontal)
                 
                 Spacer()
