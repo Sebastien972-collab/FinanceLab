@@ -56,7 +56,7 @@ extension Font {
     }
     
     static var listHeader: Font {
-        .custom(customFontBold, size: 13)
+        .custom(customFont, size: 13)
     }
     
     static var listLargeNumber: Font {

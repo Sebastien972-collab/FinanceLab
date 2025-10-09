@@ -1,0 +1,24 @@
+//
+//  Transaction.swift
+//  FinanceLab
+//
+//  Created by Anne Ferret on 01/10/2025.
+//
+
+import SwiftUI
+
+class Transaction: Identifiable {
+    var id = UUID()
+    var name : String
+    var amount : Double
+    var date : Date
+    var contractor : String
+    
+    init(id: UUID = UUID(), name: String, amount: Double, date: Date, contractor: String) {
+        self.id = id
+        self.name = name
+        self.amount = amount
+        self.date = date
+        self.contractor = contractor
+    }
+}
