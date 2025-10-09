@@ -29,15 +29,26 @@ struct QuestionCard<Content: View>: View {
                 )
                 .fill(LinearGradient.greenGradient, style: FillStyle(eoFill: true))
                 .hideQuarter(.bottomTrailing)
-                    VStack {
+                VStack(alignment: .center, spacing: 16) {
                         self.content
                     }
-                .padding()
+                .multilineTextAlignment(.center)
+                .padding(42)
+                HStack {
+                    Spacer()
+                    VStack {
+                        Spacer()
+                        Image(.mascot)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 120)
+                    }
+                }
             }
             Spacer()
         }
         .frame(height: 460)
-        .font(.demboAdvice)
+        .font(.body)
         .foregroundStyle(Color.Text.contrasted)
         .multilineTextAlignment(.leading)
         .clipShape(RoundedRectangle(cornerRadius: 30))
@@ -46,7 +57,7 @@ struct QuestionCard<Content: View>: View {
 
 #Preview {
     QuestionCard {
-        Text("Aperçu du contenu de la carte")
+        Text("Contenu de la carte")
     }
     .padding()
     .background {
