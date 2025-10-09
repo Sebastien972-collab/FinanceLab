@@ -21,8 +21,6 @@ struct StandardCard<Content: View>: View {
             }
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 24)
         .font(.body)
         .foregroundStyle(Color.Text.primary)
         .multilineTextAlignment(.leading)

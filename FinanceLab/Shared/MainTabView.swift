@@ -15,14 +15,20 @@ struct MainTabView: View {
     var body: some View {
         TabView {
             Tab("Mon budget", systemImage: "wallet.bifold.fill") {
-                Text("Home")
+                DashboardView(
+                       userName: "Jeanne Dupont",
+                       userCategory: "Bâtisseuse",
+                       healthScore: 0.5,
+                       monthlyRAS: 120,
+                       dailyRAS: 5.55
+                   )
             }
             Tab("Mes Projets", systemImage: "powermeter") {
                 ProjectsView()
                 
             }
             Tab("Ressources", systemImage: "newspaper.fill") {
-                Text("S'informer")
+                GlossaireView()
             }
         }
     }
