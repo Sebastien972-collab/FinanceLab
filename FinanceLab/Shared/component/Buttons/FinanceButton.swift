@@ -16,7 +16,7 @@ struct FinanceButton: ButtonStyle {
     }
     
     enum ButtonSize {
-        case mini, normal, large
+        case round, mini, normal, large
     }
     
     init(state: ButtonState = .normal, size: ButtonSize = .normal) {
@@ -42,16 +42,16 @@ struct FinanceButton: ButtonStyle {
     
     private func getButtonHeight() -> CGFloat {
         switch size {
-            case .mini: return 38
-            case .normal: return 42
+            case .round: return 42
+            case .mini: return 42
             case .large: return 64
-            default: return 64
+            default: return 42
         }
     }
     private func getButtonWidth() -> CGFloat {
         switch size {
+            case .round: return 42
             case .mini: return 120
-            case .normal: return .infinity
             case .large: return 152
             default: return .infinity
         }
@@ -62,8 +62,14 @@ struct FinanceButton: ButtonStyle {
             Spacer()
             HStack {
                 Spacer()
-                configuration.label
-                    .padding(.horizontal, 12)
+                if size == .round {
+                    configuration.label
+                        .frame(width: 20, height: 20)
+                        .padding(0)
+                } else {
+                    configuration.label
+                        .padding(.horizontal, 12)
+                }
                 Spacer()
             }
             Spacer()
