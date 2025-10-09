@@ -54,6 +54,7 @@ fileprivate struct HeaderView: View {
         Text(label)
             .font(Font.listHeader)
             .foregroundColor(Color.Text.contrasted)
+            .padding(.horizontal)
     }
 }
 

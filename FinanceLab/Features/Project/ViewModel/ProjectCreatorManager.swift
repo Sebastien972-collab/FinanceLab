@@ -29,7 +29,7 @@ class ProjectCreatorManager {
     }
     var isEditing: Bool = false
     var manager: ProjectViewModel = .init()
-    
+    var selectedIcon: CategoryIcon = .carFill
     
     func recalculator(_ asc : Decimal) {
         check()

@@ -26,7 +26,7 @@ struct ProjectCreatorView: View {
                         .onSubmit {
                             selection = .goalAmount
                         }
-                    IconCustomField()
+                    IconCustomFieldView(selected: $projectManager.selectedIcon)
                         .padding(.trailing)
                 }
                 HStack {
@@ -53,10 +53,10 @@ struct ProjectCreatorView: View {
                 }
                 Spacer()
                 VStack {
-                    ContinuButtonView(title: "Calculer", state: .normal) {
+                    ContinueButtonView(title: "Calculer", state: .normal) {
                         projectManager.recalculator(1000)
                     }
-                    ContinuButtonView(title: "Valider", state: .validate, action: projectManager.validate)
+                    ContinueButtonView(title: "Valider", state: .validate, action: projectManager.validate)
                 }
             }
             .background(content: {
@@ -69,7 +69,7 @@ struct ProjectCreatorView: View {
                         Button {
                             selection = nil
                         } label: {
-                            Text("Ok")
+                            Text("OK")
                                 .font(.buttonLabel)
                         }
                     }
@@ -111,24 +111,3 @@ struct ProjectCreatorView: View {
     }
 }
 
-fileprivate struct IconCustomField: View {
-    var body: some View {
-        VStack(alignment: .center) {
-            Text("Icône")
-                .font(Font.inputFieldText)
-            Button {
-            } label: {
-                ZStack {
-                    Color.Card.background.opacity(0.5)
-                        .clipShape(Circle())
-                        .frame(width: 40, height: 40)
-                    Image(systemName: "car.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 22, height: 16)
-                        .font(Font.inputFieldText)
-                }
-            }
-        }
-    }
-}

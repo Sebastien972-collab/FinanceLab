@@ -31,7 +31,7 @@ struct ProjectsView: View {
                     }
                     .padding(.bottom)
                     
-                    ContinuButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
+                    ContinueButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
                         projectCreatorVM.manager = projectVM
                         projectCreatorVM.isEditing.toggle()
                     }
