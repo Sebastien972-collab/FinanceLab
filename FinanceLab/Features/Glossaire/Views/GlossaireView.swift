@@ -17,10 +17,13 @@ struct GlossaireView: View {
             VStack (alignment: .leading, spacing: 16){
                 ForEach(glossaires) { glo in
                         StandardCard {
-                            Text(glo.title).font(.cardTitle)
-                                .foregroundStyle(Color.Text.secondary)
-                            Text(glo.description).font(.body)
-                                .foregroundStyle(Color.Text.primary)
+                            VStack(alignment: .leading, spacing: 16) {
+                                Text(glo.title).font(.cardTitle)
+                                    .foregroundStyle(Color.Text.secondary)
+                                Text(glo.description).font(.body)
+                                    .foregroundStyle(Color.Text.primary)
+                            }
+                            .padding()
                         }
                     }
                 }
