@@ -9,7 +9,7 @@ import SwiftUI
 
 struct StandardCard<Content: View>: View {
     let content: Content
-
+    
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
@@ -24,7 +24,6 @@ struct StandardCard<Content: View>: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 24)
         .multilineTextAlignment(.leading)
-//        .lineSpacing(1.6)
         .background(Color.Card.background)
         .clipShape(RoundedRectangle(cornerRadius: 30))
         .frame(maxWidth: .infinity)

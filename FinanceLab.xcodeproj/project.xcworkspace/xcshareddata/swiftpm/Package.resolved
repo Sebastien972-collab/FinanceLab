@@ -7,7 +7,11 @@
       "location" : "https://github.com/Sebastien972-collab/FinanceCore.git",
       "state" : {
         "branch" : "main",
+<<<<<<< HEAD
+        "revision" : "8c04678658879407675c80e756d856bed01245d2"
+=======
         "revision" : "9b72204c9ab10ec439a3e6ed7af4e9f82827ebfd"
+>>>>>>> main
       }
     }
   ],
