@@ -6,13 +6,59 @@
 //
 
 import SwiftUI
+import FinanceCore
 
 struct ProjectsView: View {
+    @Environment(ProjectViewModel.self) private var projectVM
+    @State private var selectedProject: Project? = nil
+    @State private var projectCreatorVM: ProjectCreatorManager = .init()
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .center) {
+                    ForEach(projectVM.projects) { project in
+                        SwipeableCard {
+                            ProjectCard(project: project)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal)
+                                .onTapGesture {
+                                    projectCreatorVM.manager = projectVM
+                                    selectedProject = project
+                                }
+                        } onDelete: {
+                            projectVM.remove(project)
+                        }
+                    }
+                    .padding(.bottom)
+                    
+                    ContinueButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
+                        projectCreatorVM.manager = projectVM
+                        projectCreatorVM.isEditing.toggle()
+                    }
+                }
+                .navigationTitle(Text("Mes Projets"))
+                .onAppear {
+                   
+                }
+            }
+            .background {
+                FinancialBackground()
+                    .ignoresSafeArea(.all)
+            }
+            .sheet(isPresented: $projectCreatorVM.isEditing) {
+                ProjectCreatorView(projectManager: projectCreatorVM)
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            }
+            .navigationDestination(item: $selectedProject) { project in
+                ProjectDetailsView(project: project)
+            }
+        }
     }
 }
 
+
 #Preview {
     ProjectsView()
+        .environment(ProjectViewModel())
 }

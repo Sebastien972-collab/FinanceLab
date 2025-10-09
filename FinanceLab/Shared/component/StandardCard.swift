@@ -15,18 +15,15 @@ struct StandardCard<Content: View>: View {
     }
     
     var body: some View {
-        HStack{
-            VStack(alignment: .leading, spacing: 16) {
+            VStack() {
                 self.content
             }
-            Spacer()
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 24)
-        .multilineTextAlignment(.leading)
-        .background(Color.Card.background)
-        .clipShape(RoundedRectangle(cornerRadius: 30))
-        .frame(maxWidth: .infinity)
+            .multilineTextAlignment(.leading)
+            .lineSpacing(1.6)
+            .background(Color.Card.background.opacity(0.5))
+            .clipShape(RoundedRectangle(cornerRadius: 30))
+            .frame(maxWidth: .infinity)
+            .shadow(radius: 3)
     }
 }
 
@@ -40,5 +37,9 @@ struct StandardCard<Content: View>: View {
     }
     .background {
         FinancialBackground().ignoresSafeArea()
+    }
+    .background {
+        FinancialBackground()
+            .ignoresSafeArea(.all)
     }
 }
