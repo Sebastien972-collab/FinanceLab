@@ -9,16 +9,16 @@ import SwiftUI
 
 struct StandardCard<Content: View>: View {
     let content: Content
-    
+
     init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
     
     var body: some View {
-            VStack() {
+        HStack{
+            VStack(alignment: .leading, spacing: 16) {
                 self.content
             }
-<<<<<<< HEAD:FinanceLab/Shared/component/Cards/StandardCard.swift
             Spacer()
         }
         .padding(.horizontal, 16)
@@ -28,14 +28,6 @@ struct StandardCard<Content: View>: View {
         .multilineTextAlignment(.leading)
         .background(Color.Card.background)
         .clipShape(RoundedRectangle(cornerRadius: 30))
-=======
-            .multilineTextAlignment(.leading)
-            .lineSpacing(1.6)
-            .background(Color.Card.background.opacity(0.5))
-            .clipShape(RoundedRectangle(cornerRadius: 30))
-            .frame(maxWidth: .infinity)
-            .shadow(radius: 3)
->>>>>>> 7cb17cc7bbc8975d41ad84cce323d86cd2435d4a:FinanceLab/Shared/component/StandardCard.swift
     }
 }
 
@@ -50,9 +42,5 @@ struct StandardCard<Content: View>: View {
     .padding()
     .background {
         FinancialBackground().ignoresSafeArea()
-    }
-    .background {
-        FinancialBackground()
-            .ignoresSafeArea(.all)
     }
 }
