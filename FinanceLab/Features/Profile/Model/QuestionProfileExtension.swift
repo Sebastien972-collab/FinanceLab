@@ -11,7 +11,7 @@ import Foundation
 extension Question {
     static var questionDatabase: [Question] {
         
-        // 1️⃣ Définir les groupes
+       
         let personalGroup = QuestionGroup(title: "Situation personnelle et familiale", icon: "👤")
         let professionalGroup = QuestionGroup(title: "Situation professionnelle", icon: "💼")
         let financialGroup = QuestionGroup(title: "Situation financière", icon: "🏦")
@@ -20,9 +20,9 @@ extension Question {
         let riskGroup = QuestionGroup(title: "Gestion du risque & profil investisseur", icon: "⚖️")
         let protectionGroup = QuestionGroup(title: "Protection & prévoyance", icon: "🛡️")
         
-        // 2️⃣ Définir les questions
+      
         let questions: [Question] = [
-            // 1. Situation personnelle et familiale
+           
             Question(content: "Es-tu marié(e), pacsé(e) ou célibataire ?",
                      multipleChoice: true,
                      questionGroupId: personalGroup.id),
@@ -35,7 +35,7 @@ extension Question {
                      multipleChoice: false,
                      questionGroupId: personalGroup.id),
             
-            // 2. Situation professionnelle
+           
             Question(content: "Quelle est ta situation professionnelle ?",
                      multipleChoice: true,
                      questionGroupId: professionalGroup.id),
@@ -48,7 +48,7 @@ extension Question {
                      multipleChoice: false,
                      questionGroupId: professionalGroup.id),
             
-            // 3. Situation financière
+            
             Question(content: "As-tu des crédits en cours (immobilier, auto, consommation…) ?",
                      multipleChoice: false,
                      questionGroupId: financialGroup.id),
@@ -61,7 +61,7 @@ extension Question {
                      multipleChoice: false,
                      questionGroupId: financialGroup.id),
             
-            // 4. Patrimoine existant
+    
             Question(content: "Es-tu propriétaire de ton logement principal ?",
                      multipleChoice: false,
                      questionGroupId: patrimonyGroup.id),
@@ -78,7 +78,7 @@ extension Question {
                      multipleChoice: false,
                      questionGroupId: patrimonyGroup.id),
             
-            // 5. Objectifs financiers
+           
             Question(content: "As-tu un projet à court terme (1 à 3 ans) ?",
                      multipleChoice: false,
                      questionGroupId: objectivesGroup.id),
@@ -91,7 +91,7 @@ extension Question {
                      multipleChoice: false,
                      questionGroupId: objectivesGroup.id),
             
-            // 6. Gestion du risque & profil investisseur
+         
             Question(content: "Comment réagis-tu face aux risques financiers ?",
                      multipleChoice: true,
                      questionGroupId: riskGroup.id),
@@ -104,7 +104,7 @@ extension Question {
                      multipleChoice: true,
                      questionGroupId: riskGroup.id),
             
-            // 7. Protection & prévoyance
+           
             Question(content: "As-tu une assurance vie, invalidité ou décès ?",
                      multipleChoice: false,
                      questionGroupId: protectionGroup.id),
