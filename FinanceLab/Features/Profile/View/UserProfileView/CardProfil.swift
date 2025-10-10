@@ -47,7 +47,7 @@ struct CardProfil: View {
 
     var body: some View {
     StandardCard{
-        HStack{
+        HStack(spacing: 12){
          
             
             Image(iconName)
@@ -55,19 +55,18 @@ struct CardProfil: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 60, height: 60)
                 .foregroundStyle(LinearGradient.redGradient)
-            Spacer()
-               
                 VStack(alignment: .leading) {
                     Text(title)
-                        .font(Font.cardTitle)
+                        .font(.cardTitle)
                         .foregroundColor(.white)
                     ForEach(subtitle, id:\.self) { sub in
                         Text(sub)
-                            .font(.subheadline)
+                            .font(.body)
                     }
                 }
                 .foregroundStyle(Color.Text.primary)
             }
+        .padding()
             
 
            
