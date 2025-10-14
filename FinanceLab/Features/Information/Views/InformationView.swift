@@ -37,13 +37,20 @@ struct InformationView: View {
                         }
                     }
                     .padding(.horizontal)
-                    LazyHStack {
-                        ForEach(infoVM.getCarouselArticles()) { article in
-                            NavigationLink(destination: ArticleView(article: article)) {
-                                InfoCarouselCard(article: article)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 10) {
+                            Spacer()
+                                .frame(width: 6)
+                            ForEach(infoVM.getCarouselArticles()) { article in
+                                NavigationLink(destination: ArticleView(article: article)) {
+                                    InfoCarouselCard(article: article)
+                                }
                             }
+                            Spacer()
+                                .frame(width: 16)
                         }
                     }
+                    .frame(height: 225)
                     if let randomGlossaire = glossaires.randomElement() {
                         NavigationLink(destination: GlossaireView()) {
                             DemboCard() {
