@@ -1,5 +1,5 @@
 //
-//  ArticleView.swift
+//  SingleArticleView.swift
 //  FinanceLab
 //
 //  Created by Anne Ferret on 14/10/2025.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ArticleView: View {
+struct SingleArticleView: View {
     @Environment(\.dismiss) private var dismiss
     let article: Article
     
@@ -80,7 +80,7 @@ struct ArticleView: View {
 }
 
 #Preview {
-    ArticleView(article:
+    SingleArticleView(article:
         Article(
             title: "L’éducation financière : une clé pour mieux gérer son argent à tout moment",
             category: .article,

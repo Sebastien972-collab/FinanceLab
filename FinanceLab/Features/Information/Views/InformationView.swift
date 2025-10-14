@@ -42,7 +42,7 @@ struct InformationView: View {
                             Spacer()
                                 .frame(width: 6)
                             ForEach(infoVM.getCarouselArticles()) { article in
-                                NavigationLink(destination: ArticleView(article: article)) {
+                                NavigationLink(destination: SingleArticleView(article: article)) {
                                     InfoCarouselCard(article: article)
                                 }
                             }

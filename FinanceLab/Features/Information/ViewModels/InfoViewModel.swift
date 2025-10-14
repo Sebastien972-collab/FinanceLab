@@ -15,6 +15,11 @@ class InfoViewModel {
         return Array(art.prefix(4))
     }
     
+    func getLatestArticles() -> [Article] {
+        let art = articles
+        return Array(art).reversed()
+    }
+    
     private let articles: [Article] = [
         Article(
             title: "L’éducation financière : une clé pour mieux gérer son argent",
@@ -27,7 +32,7 @@ class InfoViewModel {
                 .paragraph("L’éducation financière permet de reprendre le contrôle sur sa vie économique. Elle aide à comprendre les conséquences de ses choix, à anticiper les imprévus et à bâtir une stabilité à long terme. En comprenant mieux les produits bancaires, les impôts ou le fonctionnement du crédit, on devient plus autonome face aux institutions et aux aléas de la vie."),
 
                 .image(
-                    url: "https://example.com/education-financiere.jpg",
+                    url: "https://optimiser-son-budget.com/wp-content/uploads/2023/09/reme-visage-51.png",
                     caption: "Apprendre à gérer son argent, un investissement durable."
                 ),
 
@@ -52,7 +57,7 @@ class InfoViewModel {
         Article(
             title: "Gérer son budget au quotidien : les bons réflexes",
             category: .article,
-            image: "https://cdn.wccftech.com/wp-content/uploads/2017/07/Budgeting-app-2060x1373.jpg",
+            image: "https://onbudgetmoms.com/wp-content/uploads/2018/09/Budgeting.jpg",
             content: [
                 .paragraph("Un budget n’est pas une contrainte, mais un outil de liberté. Savoir où va son argent, c’est se donner la possibilité de choisir, de planifier et de réaliser ses projets sans stress financier. Pourtant, beaucoup associent encore le mot 'budget' à la privation."),
 
@@ -60,7 +65,7 @@ class InfoViewModel {
                 .paragraph("Faire un budget, c’est reprendre la main sur ses finances. Cela permet d’éviter les dépenses impulsives, de prévenir les découverts et de repérer les marges de manœuvre. C’est aussi la première étape pour épargner et investir sereinement."),
 
                 .image(
-                    url: "https://example.com/budget-maison.jpg",
+                    url: "https://www.abcfortune.com/wp-content/uploads/2018/09/gestion-budget.jpg",
                     caption: "Un budget équilibré permet de vivre sereinement."
                 ),
 
@@ -93,7 +98,7 @@ class InfoViewModel {
                 .paragraph("L’épargne protège des imprévus et offre des opportunités. Une panne de voiture, une dépense médicale, ou même un changement de travail peuvent survenir à tout moment. Disposer d’une réserve permet de réagir sans stress ni recours au crédit."),
 
                 .image(
-                    url: "https://example.com/epargne-monnaie.jpg",
+                    url: "https://www.plusdefric.com/wp-content/uploads/2018/08/comment-faire-pour-mieux-epargner.jpg",
                     caption: "Épargner, c’est se donner les moyens d’agir librement."
                 ),
 
@@ -132,7 +137,7 @@ class InfoViewModel {
                 ]),
 
                 .image(
-                    url: "https://example.com/investissement-bourse.jpg",
+                    url: "https://www.amf-france.org/sites/institutionnel/files/dam/6fb4839e-18a6-4842-8161-cab7c85d6bca/Rendement_risque.jpg",
                     caption: "Investir, c’est accepter un risque pour viser un rendement."
                 ),
 
