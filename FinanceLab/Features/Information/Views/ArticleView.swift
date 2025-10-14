@@ -18,7 +18,6 @@ struct ArticleView: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 240)
                         .clipped()
                 } placeholder: {
                     ProgressView()
@@ -59,8 +58,8 @@ struct ArticleView: View {
                         }
                     }
                 }
-                .padding(.horizontal)
                 .font(.body)
+                .padding(.horizontal)
             }
             .foregroundStyle(Color.Text.contrasted)
             .toolbar {

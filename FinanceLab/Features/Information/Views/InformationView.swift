@@ -45,11 +45,13 @@ struct InformationView: View {
                         }
                     }
                     if let randomGlossaire = glossaires.randomElement() {
-                        DemboCard() {
-                            Text("Le mot du jour : \(randomGlossaire.title)")
-                            Text(randomGlossaire.description).lineLimit(3)
+                        NavigationLink(destination: GlossaireView()) {
+                            DemboCard() {
+                                Text("Le mot du jour : \(randomGlossaire.title)")
+                                Text(randomGlossaire.description).lineLimit(3)
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
                     }
                 }
             }
