@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TransactionListView: View {
+    @State var accountVM = AccountViewModel()
     @State var pickerSelected = 0
 
     var body: some View {
@@ -33,8 +34,9 @@ struct TransactionListView: View {
                             // TODO: Budget par catégories
                     }
                     VStack {
-                        TransactionListRow(name: "Assurance", icon: .circlesThreePlusFill, amount: -42.24)
-                        TransactionListRow(name: "Salaire", icon: .circlesThreePlusFill, amount: 1298.64)
+                        ForEach(accountVM.getLatestTransactions()) { transaction in
+                            TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                        }
                     }
                 }
                 .foregroundStyle(Color.Text.contrasted)

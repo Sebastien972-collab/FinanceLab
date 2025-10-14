@@ -69,6 +69,6 @@ struct SingleTransactionView: View {
 
 #Preview {
     SingleTransactionView(transaction:
-                        Transaction(name: "Assurance", amount: 1000.20, date: Date(), contractor: "AXA Assurance")
+                            Transaction(name: "Assurance", icon:.lifebuoyFill, amount: 1000.20, date: Date(), contractor: "AXA Assurance")
     )
 }
