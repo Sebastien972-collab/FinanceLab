@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct SingleTransactionView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AccountViewModel.self) var accountVM
+
     @State var pickerSelected = 0
     @State var transaction : Transaction
     
@@ -34,7 +37,7 @@ struct SingleTransactionView: View {
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
-                        // dismiss
+                        dismiss()
                     }
                     .buttonStyle(FinanceButton(size: .round))
                 }
@@ -47,6 +50,7 @@ struct SingleTransactionView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
+            .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
@@ -70,5 +74,5 @@ struct SingleTransactionView: View {
 #Preview {
     SingleTransactionView(transaction:
                             Transaction(name: "Assurance", icon:.lifebuoyFill, amount: 1000.20, date: Date(), contractor: "AXA Assurance")
-    )
+    ).environment(AccountViewModel())
 }

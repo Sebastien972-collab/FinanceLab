@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct TransactionListView: View {
+    @Environment(\.dismiss) private var dismiss
     @State var accountVM = AccountViewModel()
+    
     @State var pickerSelected = 0
 
     var body: some View {
@@ -45,7 +47,7 @@ struct TransactionListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
-                        // dismiss
+                        dismiss()
                     }
                     .buttonStyle(FinanceButton(size: .round))
                 }
@@ -59,6 +61,7 @@ struct TransactionListView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
+            .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
