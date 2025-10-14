@@ -37,5 +37,9 @@ class AccountViewModel {
     
     private var transactions: [Transaction] = [
         Transaction(name: "Intérêts", icon: .bankFill, amount: 32.28, date: Date(), contractor: "Caisse d'Épargne"),
+        Transaction(name: "Switch 2", icon: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
+        Transaction(name: "Essence", icon: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
+        Transaction(name: "Salaire", icon: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
+
     ]
 }
