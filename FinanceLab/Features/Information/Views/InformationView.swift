@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct InformationView: View {
+    @State var infoVM = InfoViewModel()
         
     var body: some View {
         NavigationStack {
@@ -36,6 +37,11 @@ struct InformationView: View {
                         }
                     }
                     .padding(.horizontal)
+                    LazyHStack {
+                        ForEach(infoVM.getCarouselArticles()) { article in
+                            InfoCarouselCard(article: article)
+                        }
+                    }
                     if let randomGlossaire = glossaires.randomElement() {
                         DemboCard() {
                             Text("Le mot du jour : \(randomGlossaire.title)")
