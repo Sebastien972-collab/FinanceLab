@@ -32,6 +32,7 @@ struct InfoCarouselCard: View {
                     Text(article.title)
                         .font(.cardTitle)
                         .foregroundStyle(Color.Text.primary)
+                        .multilineTextAlignment(.leading)
                         .lineLimit(3)
                     Spacer()
                 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum ArticleContent {
+enum ArticleContent: Hashable {
     case paragraph(String)
     case subtitle(String)
     case image(url: String, caption: String?)

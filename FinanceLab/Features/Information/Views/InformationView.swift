@@ -39,7 +39,9 @@ struct InformationView: View {
                     .padding(.horizontal)
                     LazyHStack {
                         ForEach(infoVM.getCarouselArticles()) { article in
-                            InfoCarouselCard(article: article)
+                            NavigationLink(destination: ArticleView(article: article)) {
+                                InfoCarouselCard(article: article)
+                            }
                         }
                     }
                     if let randomGlossaire = glossaires.randomElement() {
