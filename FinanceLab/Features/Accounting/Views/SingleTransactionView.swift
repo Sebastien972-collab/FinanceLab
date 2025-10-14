@@ -17,21 +17,17 @@ struct SingleTransactionView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
+                VStack(spacing: 30) {
                     TextField("Nom", text: $transaction.name)
                     TextField("Montant", value: $transaction.amount, format: .number)
+                        .font(.inputFieldNumber)
                     TextField("Contractant", text: $transaction.contractor)
-                    DatePicker("Date", selection: $transaction.date)
-                    
-                    HStack {
-                        Button("Annuler") {
-                            accountVM.cancelEditing()
-                        }
-                        Button("Sauvegarder") {
-                            accountVM.saveTransaction(transaction)
-                        }
-                    }
+                    DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
                 }
+                .font(.inputFieldText)
+                .padding()
+                .foregroundStyle(Color.Text.contrasted)
+
 //                VStack(spacing: 24) {
 //                    VStack(alignment: .leading) {
 //                        Text("Nouvelle entrée")
@@ -47,11 +43,11 @@ struct SingleTransactionView: View {
 //                        FormRow(label: "Date", text: $transaction.name)
 //                    }
 //                }
-                .foregroundStyle(Color.Text.contrasted)
             }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
+                        accountVM.cancelEditing()
                         dismiss()
                     }
                     .buttonStyle(FinanceButton(size: .round))
