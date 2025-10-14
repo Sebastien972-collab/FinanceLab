@@ -11,7 +11,8 @@ struct TransactionListView: View {
     @Environment(\.dismiss) private var dismiss
     @State var accountVM = AccountViewModel()
     
-    @State var pickerSelected = 0
+    @State private var showTransactionSheet = false
+    @State private var pickerSelected = 0
 
     var body: some View {
         NavigationStack {
@@ -55,6 +56,7 @@ struct TransactionListView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
                         accountVM.setNewTransaction()
+                        showTransactionSheet = true
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(FinanceButton(size: .round))
@@ -62,6 +64,11 @@ struct TransactionListView: View {
                 .sharedBackgroundVisibility(.hidden)
             }
             .navigationBarBackButtonHidden()
+            .navigationDestination(isPresented: $showTransactionSheet) {
+                if let transaction = accountVM.editingTransaction {
+                    SingleTransactionView(transaction: transaction).environment(accountVM)
+                }
+            }
             .background {
                 FinancialBackground().ignoresSafeArea()
             }

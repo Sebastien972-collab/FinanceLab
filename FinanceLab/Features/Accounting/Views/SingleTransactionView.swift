@@ -56,6 +56,7 @@ struct SingleTransactionView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Enregistrer") {
                         accountVM.saveTransaction(transaction)
+                        dismiss()
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
                 }
