@@ -10,12 +10,29 @@ import SwiftUI
 struct UserCardProfile: View {
     let user: User
     var body: some View {
-        StandardCard {
-            Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationLink {
+            UserProfileView()
+        } label: {
+            StandardCard {
+                HStack(alignment: .center) {
+                    CircleImageProfil(urlImage: user.profilePictureUrl)
+                        .padding(.vertical, 5)
+                    VStack(alignment: .leading) {
+                        Text(user.displayName)
+                            .font(Font.cardTitle)
+                            .foregroundStyle(Color.Text.primary)
+                        Text("Profil financier")
+                            .font(Font.cardSubtitle)
+                            .foregroundStyle(Color.Text.primary)
+                    }
+                }
+            }
         }
+
     }
 }
 
 #Preview {
-    UserCardProfile(user: .init(firstName: "Sébastien", lastName: "DAGUIN", email: "hello@world.com", dateOfRegistration: .init(), balance: 0))
+    UserCardProfile(user: .preview)
+        .padding()
 }
