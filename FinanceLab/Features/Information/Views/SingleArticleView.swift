@@ -20,7 +20,7 @@ struct SingleArticleView: View {
                         .aspectRatio(contentMode: .fill)
                         .clipped()
                 } placeholder: {
-                    ProgressView()
+                    FinancialPlaceholder()
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     Text(article.title)
@@ -71,10 +71,10 @@ struct SingleArticleView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
+            .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
-            .navigationBarBackButtonHidden()
         }
     }
 }
@@ -83,7 +83,6 @@ struct SingleArticleView: View {
     SingleArticleView(article:
         Article(
             title: "L’éducation financière : une clé pour mieux gérer son argent à tout moment",
-            category: .article,
             image: "https://www.csusb.edu/sites/default/files/financial-literacy%20image_1.jpg",
             content: [
                 .paragraph("Dans un monde où les décisions économiques influencent chaque aspect de notre vie, comprendre les bases de la gestion financière n’est plus un luxe, mais une nécessité. Pourtant, beaucoup d’adultes avouent ne pas maîtriser des notions simples comme l’épargne, l’investissement ou le crédit."),

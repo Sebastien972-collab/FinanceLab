@@ -9,6 +9,7 @@ import SwiftUI
 
 struct GlossaireView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(InfoViewModel.self) var infoVM
 
     var body: some View {
         NavigationStack {
@@ -18,7 +19,7 @@ struct GlossaireView: View {
                         .font(.title)
                         .foregroundStyle(Color.Text.contrasted)
                     VStack (alignment: .leading, spacing: 16){
-                        ForEach(glossaires) { glo in
+                        ForEach(infoVM.getGlossaire()) { glo in
                             StandardCard {
                                 VStack(alignment: .leading, spacing: 16) {
                                     Text(glo.title).font(.cardTitle)

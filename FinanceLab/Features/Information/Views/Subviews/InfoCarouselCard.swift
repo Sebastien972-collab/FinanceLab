@@ -9,6 +9,7 @@ import SwiftUI
 
 struct InfoCarouselCard: View {
     let article: Article
+    var isInfiniteWidth: Bool = false
     
     var body: some View {
         ZStack {
@@ -19,7 +20,7 @@ struct InfoCarouselCard: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .opacity(0.7)
-                    .frame(width: 339, height: 225)
+                    .frame(width: isInfiniteWidth ? .infinity : 339, height: 225)
                     .clipped()
             } placeholder: {
                 EmptyView()
@@ -40,7 +41,7 @@ struct InfoCarouselCard: View {
             .padding(.horizontal, 26)
             .padding(.vertical, 18)
         }
-        .frame(width: 339, height: 225)
+        .frame(width: isInfiniteWidth ? .infinity : 339, height: 225)
         .cornerRadius(20)
         .clipped()
     }
@@ -50,7 +51,6 @@ struct InfoCarouselCard: View {
     InfoCarouselCard(article:
         Article(
             title: "L’éducation financière : une clé pour mieux gérer son argent à tout moment",
-            category: .article,
             image: "https://www.csusb.edu/sites/default/files/financial-literacy%20image_1.jpg",
             content: [
                 .paragraph("Dans un monde où les décisions économiques influencent chaque aspect de notre vie, comprendre les bases de la gestion financière n’est plus un luxe, mais une nécessité. Pourtant, beaucoup d’adultes avouent ne pas maîtriser des notions simples comme l’épargne, l’investissement ou le crédit."),
