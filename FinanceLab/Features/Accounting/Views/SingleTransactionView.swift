@@ -13,18 +13,48 @@ struct SingleTransactionView: View {
 
     @State var pickerSelected = 0
     @State var transaction : Transaction
+    var isNew : Bool = false
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 30) {
-                    TextField("Nom", text: $transaction.name)
-                    TextField("Montant", value: $transaction.amount, format: .number)
-                        .font(.inputFieldNumber)
-                    TextField("Contractant", text: $transaction.contractor)
-                    DatePicker("Date", selection: $transaction.date, displayedComponents: [.date])
+                VStack(spacing: 32) {
+                    HStack {
+                        Text(isNew ? "Nouvelle entrée" : "Éditer une entrée")
+                            .font(.title)
+                        Spacer()
+                    }
+                    HStack {
+                        Text("Nom")
+                        Spacer()
+                        TextField("Nom", text: $transaction.name)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Montant")
+                        Spacer()
+                        TextField("Montant", value: $transaction.amount, format: .currency(code: "EUR"))
+                            .textFieldStyle(CustomTextFieldStyle(fontSize: .big))
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Contractant")
+                        Spacer()
+                        TextField("Contractant", text: $transaction.contractor)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Date")
+                        Spacer()
+                        DatePicker("Date", selection: $transaction.date, in: ...Date(), displayedComponents: [.date])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: 260, maxHeight: 330)
+                    }
                 }
-                .font(.inputFieldText)
+                .font(.inputFieldLabel)
                 .padding()
                 .foregroundStyle(Color.Text.contrasted)
 

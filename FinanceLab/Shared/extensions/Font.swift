@@ -83,6 +83,10 @@ extension Font {
         .custom(customFont, size: 17)
     }
     
+    static var inputFieldLabel: Font {
+        .custom(customFontBold, size: 14)
+    }
+    
     static var tabBarLabel: Font {
         .custom(customFontSemiBold, size: 11)
     }

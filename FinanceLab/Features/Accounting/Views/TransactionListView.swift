@@ -66,7 +66,7 @@ struct TransactionListView: View {
             .navigationBarBackButtonHidden()
             .navigationDestination(isPresented: $showTransactionSheet) {
                 if let transaction = accountVM.editingTransaction {
-                    SingleTransactionView(transaction: transaction).environment(accountVM)
+                    SingleTransactionView(transaction: transaction, isNew: true).environment(accountVM)
                 }
             }
             .background {
