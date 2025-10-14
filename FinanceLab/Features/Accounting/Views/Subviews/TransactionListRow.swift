@@ -9,13 +9,13 @@ import SwiftUI
 
 struct TransactionListRow: View {
     var name: String
-    var icon: ImageResource
+    var icon: CategoryIcon
     var amount: Double
 
     var body: some View {
         HStack {
             HStack {
-                Image(icon)
+                Image(icon.resource)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 24)
@@ -47,8 +47,8 @@ struct TransactionListRow: View {
 
 #Preview {
     VStack {
-        TransactionListRow(name: "Assurance", icon: .circlesThreePlusFill, amount: -42.24)
-        TransactionListRow(name: "Salaire", icon: .circlesThreePlusFill, amount: 2000.24)
+        TransactionListRow(name: "Assurance", icon: .lifebuoyFill, amount: -42.24)
+        TransactionListRow(name: "Salaire", icon: .currencyEurFill, amount: 2000.24)
     }
         .padding()
         .background {
