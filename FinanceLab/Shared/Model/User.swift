@@ -32,3 +32,8 @@ class User: Identifiable {
     }
 }
 
+extension User {
+    static var guest: User {
+        .init(firstName: "Visiteur", lastName: "Anonyme", email: "visiteur@finance.com")
+    }
+}
