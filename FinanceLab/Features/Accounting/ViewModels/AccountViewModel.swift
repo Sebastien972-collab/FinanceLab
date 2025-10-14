@@ -23,6 +23,14 @@ class AccountViewModel {
         transactions.insert(newTransaction, at: 0)
         editingTransaction = newTransaction
     }
+    
+    func cancelEditing() {
+        if let editing = editingTransaction,
+           editing.name.isEmpty && editing.contractor.isEmpty {
+            transactions.removeAll { $0.id == editing.id }
+        }
+        editingTransaction = nil
+    }
         
     func saveTransaction(_ transaction: Transaction) {
         editingTransaction = nil

@@ -54,7 +54,7 @@ struct TransactionListView: View {
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
-                        // action
+                        accountVM.setNewTransaction()
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(FinanceButton(size: .round))

@@ -17,21 +17,36 @@ struct SingleTransactionView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    VStack(alignment: .leading) {
-                        Text("Nouvelle entrée")
-                            .font(.title)
-                        FinancialPicker(options: ["Dépense", "Recette"], selected: $pickerSelected)
-                    }
-                    .padding(.horizontal)
-                    VStack(spacing: 24) {
-                        FormRow(label: "Montant", text: $transaction.contractor)
-                        FormRow(label: "Nom", text: $transaction.name)
-                        FormRow(label: "Catégorie", text: $transaction.name)
-                        FormRow(label: "À", text: $transaction.name)
-                        FormRow(label: "Date", text: $transaction.name)
+                VStack {
+                    TextField("Nom", text: $transaction.name)
+                    TextField("Montant", value: $transaction.amount, format: .number)
+                    TextField("Contractant", text: $transaction.contractor)
+                    DatePicker("Date", selection: $transaction.date)
+                    
+                    HStack {
+                        Button("Annuler") {
+                            accountVM.cancelEditing()
+                        }
+                        Button("Sauvegarder") {
+                            accountVM.saveTransaction(transaction)
+                        }
                     }
                 }
+//                VStack(spacing: 24) {
+//                    VStack(alignment: .leading) {
+//                        Text("Nouvelle entrée")
+//                            .font(.title)
+//                        FinancialPicker(options: ["Dépense", "Recette"], selected: $pickerSelected)
+//                    }
+//                    .padding(.horizontal)
+//                    VStack(spacing: 24) {
+//                        FormRow(label: "Montant", text: $transaction.contractor)
+//                        FormRow(label: "Nom", text: $transaction.name)
+//                        FormRow(label: "Catégorie", text: $transaction.name)
+//                        FormRow(label: "À", text: $transaction.name)
+//                        FormRow(label: "Date", text: $transaction.name)
+//                    }
+//                }
                 .foregroundStyle(Color.Text.contrasted)
             }
             .toolbar {
@@ -44,7 +59,7 @@ struct SingleTransactionView: View {
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Enregistrer") {
-                        // action
+                        accountVM.saveTransaction(transaction)
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
                 }
