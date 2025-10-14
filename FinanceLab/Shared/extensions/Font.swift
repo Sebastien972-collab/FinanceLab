@@ -28,7 +28,11 @@ extension Font {
     }
     
     static var body: Font {
-        .custom(customFont, size: 12)
+        .custom(customFont, size: 13)
+    }
+    
+    static var caption: Font {
+        .custom(customFontSemiBold, size: 12)
     }
     
     static var buttonLabel: Font {
