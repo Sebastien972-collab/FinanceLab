@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct UserCardProfile: View {
-    let user: User
+        @State var user: User
     var body: some View {
         NavigationLink {
             UserProfileView()

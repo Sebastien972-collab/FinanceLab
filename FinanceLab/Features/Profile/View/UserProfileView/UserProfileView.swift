@@ -65,6 +65,11 @@ struct UserProfileView: View {
             }
             .navigationTitle(Text("Mon profil"))
             .padding(.horizontal)
+            .onAppear() {
+                Task {
+                    await profilVM.login()
+                }
+            }
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)

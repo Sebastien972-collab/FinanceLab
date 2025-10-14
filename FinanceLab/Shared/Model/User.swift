@@ -8,7 +8,7 @@
 import Foundation
 import FinanceCore
 
-class User: Identifiable {
+class User: Identifiable, Decodable {
     private(set) var id: UUID = UUID()
     private(set) var firstName: String
     private(set) var lastName: String
