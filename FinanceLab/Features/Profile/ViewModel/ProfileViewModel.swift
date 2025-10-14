@@ -10,7 +10,7 @@ import Foundation
 @Observable
 class ProfileViewModel {
     var currentUser: User = .init(firstName: "Sophie", lastName: "DAGUIN", email: "sohphie@gmail.com")
-    var authService: AuthManager = .init()
+    var authService: AuthService = .init()
     
     
     func login() async  {
