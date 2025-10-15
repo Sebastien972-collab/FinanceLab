@@ -92,9 +92,13 @@ struct ProjectDetailsView: View {
                             }
                             .buttonStyle(.plain)
                     }
+        
+                    
                     
                 }
             }
+            .toolbarBackground(.clear, for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar) // contrôle la visibilité, mais avec .clear comme matériau
         }
         .background {
             FinancialBackground()

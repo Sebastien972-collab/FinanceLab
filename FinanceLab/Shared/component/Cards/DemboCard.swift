@@ -27,7 +27,7 @@ struct DemboCard<Content: View>: View {
                 .fill(LinearGradient.greenGradient, style: FillStyle(eoFill: true))
                 .hideQuarter(.topTrailing)
                 HStack(spacing: 24) {
-                    VStack {
+                    VStack(spacing:2) {
                         self.content
                     }
                     .frame(height: 110)
@@ -43,14 +43,15 @@ struct DemboCard<Content: View>: View {
         .frame(height: 150)
         .font(.demboAdvice)
         .foregroundStyle(Color.Text.contrasted)
-        .multilineTextAlignment(.leading)
+        .multilineTextAlignment(.center)
         .clipShape(RoundedRectangle(cornerRadius: 30))
     }
 }
 
 #Preview {
-    DemboCard{
-        Text("Aperçu du contenu de la carte")
+    DemboCard {
+        Text("Tu t'en sors bien ce mois-ci !")
+        Text("Tu veux en apprendre plus sur la gestion de ton argent ?")
     }
     .padding()
     .background {

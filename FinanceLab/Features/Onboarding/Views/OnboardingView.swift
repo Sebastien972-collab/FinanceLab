@@ -11,28 +11,19 @@ struct OnboardingView: View {
     let onboarding = OnboardingFlow()
         
     private func cardContent(step: Int) -> some View {
-        VStack {
-            HStack {
-                Spacer()
-                Image(onboarding.steps[step].icon)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundStyle(LinearGradient.greenGradient)
-                Spacer()
-            }
-                .frame(height: 100)
+        VStack(spacing: 12) {
+            Image(onboarding.steps[step].icon)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .foregroundStyle(LinearGradient.greenGradient)
+                .frame(height: 60)
             Text(onboarding.steps[step].title)
                 .font(.title)
             Text(LocalizedStringKey(onboarding.steps[step].content))
                 .font(.header)
                 .multilineTextAlignment(.center)
-                .frame(height: 150)
+                .frame(height: 100)
         }
-        .frame(height: 500)
-        .padding()
-        .foregroundStyle(Color.Text.contrasted)
-        .background(Color.white.opacity(0.2))
-        .cornerRadius(100)
     }
     
     private func nextButton() -> some View {
@@ -50,28 +41,15 @@ struct OnboardingView: View {
     }
         
     var body: some View {
-        ZStack {
-            VStack {
-                Spacer()
+        VStack {
+            Spacer()
+            OnboardingCard {
                 cardContent(step: onboarding.currentStep)
-                    .animation(.easeInOut(duration: 0.5), value: onboarding.currentStep)
-                    .padding()
-                Spacer()
-                nextButton()
-                    .padding(.horizontal)
             }
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Image(.mascot)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 200)
-                }
+            .padding()
+            Spacer()
+            nextButton()
                 .padding(.horizontal)
-                .padding(.vertical, 60)
-            }
         }
         .background {
             FinancialBackground().ignoresSafeArea()

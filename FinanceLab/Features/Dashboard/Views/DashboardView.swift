@@ -17,35 +17,32 @@ struct DashboardView : View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack {
-//                    HStack {
-//                        StandardCard {
-//                            HStack {
-//                                Circle()
-//                                    .frame(width: 38, height: 38)
-//                                VStack(alignment: .leading, spacing: 0) {
-//                                    Text(userName)
-//                                        .font(.body)
-//                                    Text(userCategory)
-//                                        .font(.listHeader)
-//                                }
-//                            }
-//                        }
-//                        .frame(width: 200)
-//                        .foregroundStyle(Color.Text.primary)
-//                    }
+                VStack(spacing: 32) {
                     BudgetCard(
                         healthScore: healthScore,
                         monthlyRAS: monthlyRAS,
                         dailyRAS: dailyRAS
                     )
+                    DemboCard() {
+                        Text("Tu t'en sors bien ce mois-ci !")
+                        Text("Tu veux en apprendre plus sur la gestion de ton argent ?")
+                    }
+                    NavigationLink(destination: TransactionListView()) {
+                        Text("Je fais mes comptes !")
+                    }
+                        .buttonStyle(FinanceButton(state: .validate))
                 }
                 .padding()
             }
             .toolbar {
-                ToolbarItem {
-                    
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Nouvelle transaction", image: .circlesThreePlusFill) {
+                        // action
+                    }
+                    .labelStyle(.iconOnly)
+                    .buttonStyle(FinanceButton(size: .round))
                 }
+                .sharedBackgroundVisibility(.hidden)
             }
             .background {
                 FinancialBackground().ignoresSafeArea()

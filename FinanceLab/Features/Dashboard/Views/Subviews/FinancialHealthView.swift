@@ -21,26 +21,7 @@ struct FinancialHealthView : View {
                     .aspectRatio(contentMode: .fit)
                     .foregroundStyle(LinearGradient.primaryGradient)
                     .offset(y:-5)
-                GeometryReader { geo in
-                    VStack {
-                        HStack(spacing:0) {
-                            Rectangle()
-                                .fill(LinearGradient.greenGradient)
-                                .frame(width: geo.size.width * healthScore)
-                            Rectangle()
-                                .fill(LinearGradient.primaryGradient)
-                        }
-                        .frame(height: 10)
-                        .cornerRadius(50)
-                        HStack(spacing:0) {
-                            Spacer()
-                                .frame(width: geo.size.width * healthScore - 5)
-                            Image(.polygonFill)
-                                .foregroundStyle(LinearGradient.redGradient)
-                            Spacer()
-                        }
-                    }
-                }
+                PercentageSlider(percentage: healthScore, color: .greenToWhite)
                 Image(.smileyFill)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

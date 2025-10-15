@@ -28,7 +28,7 @@ struct MainTabView: View {
                 
             }
             Tab("Ressources", systemImage: "newspaper.fill") {
-                GlossaireView()
+                InformationView()
             }
         }
     }
