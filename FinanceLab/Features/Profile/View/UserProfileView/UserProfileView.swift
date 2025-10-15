@@ -10,6 +10,8 @@ import SwiftUI
 struct UserProfileView: View {
     @State var profilVM = ProfileViewModel()
     
+    
+    
     var body: some View {
         NavigationStack {
                 ScrollView {

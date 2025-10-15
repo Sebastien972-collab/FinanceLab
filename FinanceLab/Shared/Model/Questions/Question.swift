@@ -11,17 +11,18 @@ struct Question: Identifiable, Hashable, Codable {
     let id: UUID
     var content: String
     var multipleChoice: Bool
-    var questionGroupId: UUID   // correspond à id_question_group
+    var questionGroup: QuestionGroup = .patrimony
     
     init(
         id: UUID = UUID(),
         content: String,
         multipleChoice: Bool = false,
-        questionGroupId: UUID
+        questionGroup: QuestionGroup
+        
     ) {
         self.id = id
         self.content = content
         self.multipleChoice = multipleChoice
-        self.questionGroupId = questionGroupId
+        self.questionGroup = questionGroup
     }
 }
