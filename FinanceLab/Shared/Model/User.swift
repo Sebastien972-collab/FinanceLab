@@ -32,7 +32,12 @@ class User: Identifiable, Decodable {
     }
 }
 
-extension User {
+extension User: Equatable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        lhs.id == rhs.id && lhs.email == rhs.email
+    }
+    
+    
     static var guest: User {
         .init(firstName: "Visiteur", lastName: "Anonyme", email: "visiteur@finance.com")
     }

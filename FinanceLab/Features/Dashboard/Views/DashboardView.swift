@@ -13,12 +13,12 @@ struct DashboardView : View {
     var healthScore: Double
     var monthlyRAS: Double
     var dailyRAS: Double
-    
+    @Environment(UserViewModel.self) private var userVM
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading ,spacing: 32) {
-                    UserCardProfile(user: .preview)
+                    UserCardProfile()
                         .frame(maxWidth: 230, maxHeight: 54)
                     BudgetCard(
                         healthScore: healthScore,

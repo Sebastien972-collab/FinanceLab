@@ -42,6 +42,6 @@ struct ImagePersonFill: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
             .clipShape(Circle())
-            .frame(maxWidth: 67, maxHeight: 67)
+            .frame(maxWidth: 67, maxHeight: 67) // Displays the loaded image.
     }
 }

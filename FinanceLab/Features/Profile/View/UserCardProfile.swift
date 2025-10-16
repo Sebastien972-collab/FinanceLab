@@ -8,31 +8,37 @@
 import SwiftUI
 
 struct UserCardProfile: View {
-        @State var user: User
+    @Environment(UserViewModel.self) private var userVM
+    @State private var isPresented: Bool = false
+    let profileVm = ProfileViewModel()
     var body: some View {
-        NavigationLink {
-            UserProfileView()
-        } label: {
-            StandardCard {
-                HStack(alignment: .center) {
-                    CircleImageProfil(urlImage: user.profilePictureUrl)
-                        .padding(.vertical, 5)
-                    VStack(alignment: .leading) {
-                        Text(user.displayName)
-                            .font(Font.cardTitle)
-                            .foregroundStyle(Color.Text.primary)
-                        Text("Profil financier")
-                            .font(Font.cardSubtitle)
-                            .foregroundStyle(Color.Text.primary)
-                    }
+        StandardCard {
+            HStack(alignment: .center) {
+                CircleImageProfil(urlImage: userVM.currentUser.profilePictureUrl)
+                    .padding(.vertical, 5)
+                VStack(alignment: .leading) {
+                    Text(userVM.currentUser.displayName)
+                        .font(Font.cardTitle)
+                        .foregroundStyle(Color.Text.primary)
+                    Text("Profil financier")
+                        .font(Font.cardSubtitle)
+                        .foregroundStyle(Color.Text.primary)
                 }
             }
+        }
+        .onTapGesture {
+            profileVm.userVm = userVM
+            isPresented.toggle()
+        }
+        .navigationDestination(isPresented: $isPresented) {
+            UserProfileView(profilVM: profileVm, )
         }
 
     }
 }
 
 #Preview {
-    UserCardProfile(user: .preview)
+    UserCardProfile()
         .padding()
+        .environment(UserViewModel())
 }

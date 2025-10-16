@@ -21,14 +21,14 @@ struct UserProfileView: View {
                         StandardCard {
                             HStack{
                                 VStack(alignment: .leading) {
-                                    Text(profilVM.currentUser.firstName)
+                                    Text(profilVM.userVm.currentUser.firstName)
                                         .font(Font.body)
-                                    Text(verbatim: profilVM.currentUser.email)
+                                    Text(verbatim: profilVM.userVm.currentUser.email)
                                         .font(Font.body)
                                 }
                                 .foregroundStyle(Color.Text.primary)
                                 Spacer()
-                                CircleImageProfil(urlImage: profilVM.currentUser.profilePictureUrl)
+                                CircleImageProfil(urlImage: profilVM.userVm.currentUser.profilePictureUrl)
                                     .clipShape(Circle())
                             }
                             .padding()
@@ -65,11 +65,6 @@ struct UserProfileView: View {
             }
             .navigationTitle(Text("Mon profil"))
             .padding(.horizontal)
-            .onAppear() {
-                Task {
-                    await profilVM.login()
-                }
-            }
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)

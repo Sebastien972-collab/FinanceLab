@@ -12,11 +12,13 @@ struct MainTabView: View {
         case home, project, inform
     }
     @State private var selection: Selection = .home
+    @Environment(UserViewModel.self) private var userVM
+    
     var body: some View {
         TabView {
             Tab("Mon budget", systemImage: "wallet.bifold.fill") {
                 DashboardView(
-                       userName: "Jeanne Dupont",
+                    userName: userVM.currentUser.displayName,
                        userCategory: "Bâtisseuse",
                        healthScore: 0.5,
                        monthlyRAS: 120,
@@ -25,10 +27,18 @@ struct MainTabView: View {
             }
             Tab("Mes Projets", systemImage: "powermeter") {
                 ProjectsView()
-                
             }
             Tab("Ressources", systemImage: "newspaper.fill") {
                 InformationView()
+            }
+        }
+        .onAppear {
+            Task {
+                do {
+                    try await userVM.login(email: "sebastien.daguin@financelab.com", password: "Sebby972")
+                } catch {
+                    print("Failed to update user: \(error)")
+                }
             }
         }
     }
@@ -37,4 +47,6 @@ struct MainTabView: View {
 #Preview {
     MainTabView()
         .environment(ProjectViewModel())
+        .environment(UserViewModel())
+    
 }

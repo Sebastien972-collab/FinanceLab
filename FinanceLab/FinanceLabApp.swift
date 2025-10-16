@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct FinanceLabApp: App {
     @State private var projectVM: ProjectViewModel = .init()
+    @State private var userVM = UserViewModel()
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(projectVM)
+                .environment(userVM)
         }
     }
 }
