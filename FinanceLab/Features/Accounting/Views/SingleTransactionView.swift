@@ -64,11 +64,18 @@ struct SingleTransactionView: View {
                 .padding()
                 .foregroundStyle(Color.Text.contrasted)
             }
+            .alert("Attention !", isPresented: $showCancelAlert) {
+                Button("Abandonner les changements", role: .destructive) {
+                    dismiss()
+                }
+                Button("Continuer à éditer", role: .cancel) {}
+            } message: {
+                Text("Vous n'avez pas encore sauvegardé les changements en cours. Êtes-vous sûr·e de vouloir abandonner ?")
+            }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
                         showCancelAlert = true
-                        dismiss()
                     }
                     .buttonStyle(FinanceButton(size: .round))
                 }
