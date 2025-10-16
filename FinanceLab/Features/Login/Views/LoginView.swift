@@ -15,6 +15,7 @@ struct LoginView: View {
     
     @State var email: String = ""
     @State var password: String = ""
+    @State var passwordConfirmation: String = ""
     @State var firstName: String = ""
     @State var lastName: String = ""
 
@@ -36,35 +37,21 @@ struct LoginView: View {
                 ], selected: $pickerSelected)
                 Spacer()
                 VStack(spacing: 16) {
-                    HStack {
-                        Text("Email")
-                        Spacer()
-                        TextField("Email", text: $email)
-                            .textFieldStyle(CustomTextFieldStyle())
-                            .frame(maxWidth: 260)
-                    }
-                    HStack {
-                        Text("Mot de passe")
-                        Spacer()
-                        SecureField("Mot de passe", text: $password)
-                            .textFieldStyle(CustomTextFieldStyle())
-                            .frame(maxWidth: 260)
-                    }
                     if pickerSelected == 1 {
                         HStack {
-                            Text("Prénom")
-                            Spacer()
                             TextField("Prénom", text: $firstName)
-                                .textFieldStyle(CustomTextFieldStyle())
-                                .frame(maxWidth: 260)
-                        }
-                        HStack {
-                            Text("Nom")
-                            Spacer()
+                                .textFieldStyle(CustomTextFieldStyle(style: .login))
                             TextField("Nom", text: $lastName)
-                                .textFieldStyle(CustomTextFieldStyle())
-                                .frame(maxWidth: 260)
+                                .textFieldStyle(CustomTextFieldStyle(style: .login))
                         }
+                    }
+                    TextField("Adresse email", text: $email)
+                        .textFieldStyle(CustomTextFieldStyle(style: .login))
+                    SecureField("Mot de passe", text: $password)
+                        .textFieldStyle(CustomTextFieldStyle(style: .login))
+                    if pickerSelected == 1 {
+                        SecureField("Confirmation du mot de passe", text: $passwordConfirmation)
+                            .textFieldStyle(CustomTextFieldStyle(style: .login))
                     }
                 }
                 Spacer()
@@ -79,6 +66,7 @@ struct LoginView: View {
                                 loginVM.create(
                                     email: email,
                                     password: password,
+                                    passwordConfirmation: passwordConfirmation,
                                     firstName: firstName,
                                     lastName: lastName
                                 )

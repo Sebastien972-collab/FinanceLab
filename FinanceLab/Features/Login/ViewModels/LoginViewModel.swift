@@ -9,11 +9,20 @@ import Foundation
 
 @Observable
 class LoginViewModel {
-    func login(email: String, password: String) {
+    func login(
+        email: String,
+        password: String
+    ) {
         // Takes email, password, and logs to an existing account
     }
     
-    func create(email: String, password: String, firstName: String, lastName: String) {
+    func create(
+        email: String,
+        password: String,
+        passwordConfirmation: String,
+        firstName: String,
+        lastName: String
+    ) {
         // Takes email, password, first name and last name, and creates a new account with it
     }
 }
