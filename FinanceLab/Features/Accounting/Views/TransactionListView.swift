@@ -38,7 +38,9 @@ struct TransactionListView: View {
                     }
                     VStack {
                         ForEach(accountVM.getLatestTransactions()) { transaction in
-                            TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                            NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
+                                TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                            }
                         }
                     }
                 }
@@ -55,7 +57,6 @@ struct TransactionListView: View {
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
-                        accountVM.setNewTransaction()
                         showTransactionSheet = true
                     }
                     .labelStyle(.iconOnly)
@@ -65,9 +66,7 @@ struct TransactionListView: View {
             }
             .navigationBarBackButtonHidden()
             .navigationDestination(isPresented: $showTransactionSheet) {
-                if let transaction = accountVM.editingTransaction {
-                    SingleTransactionView(transaction: transaction, isNew: true).environment(accountVM)
-                }
+                    SingleTransactionView().environment(accountVM)
             }
             .background {
                 FinancialBackground().ignoresSafeArea()

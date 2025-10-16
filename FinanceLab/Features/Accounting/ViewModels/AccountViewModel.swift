@@ -10,30 +10,12 @@ import Foundation
 @Observable
 class AccountViewModel {
     
-    var editingTransaction: Transaction?
-        
-    func setNewTransaction() {
-        let newTransaction = Transaction(
-            name: "",
-            icon: .selectionFill,
-            amount: 0.0,
-            date: Date(),
-            contractor: ""
-        )
-        transactions.insert(newTransaction, at: 0)
-        editingTransaction = newTransaction
-    }
-    
-    func cancelEditing() {
-        if let editing = editingTransaction,
-           editing.name.isEmpty && editing.contractor.isEmpty {
-            transactions.removeAll { $0.id == editing.id }
-        }
-        editingTransaction = nil
-    }
-        
     func saveTransaction(_ transaction: Transaction) {
-        editingTransaction = nil
+        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
+            transactions[index] = transaction
+        } else {
+            transactions.append(transaction)
+        }
     }
     
     func getLatestTransactions() -> [Transaction] {
