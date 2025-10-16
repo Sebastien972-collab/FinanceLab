@@ -12,18 +12,8 @@ struct SpendingRepartition: View {
     var amountGained: Double
     
     var body: some View {
-        VStack {
-            GeometryReader { geo in
-                HStack(spacing: 0) {
-                    Rectangle()
-                        .fill(LinearGradient.redGradient)
-                    Rectangle()
-                        .fill(LinearGradient.greenGradient)
-                        .frame(width: geo.size.width * amountGained / (amountGained + amountSpent))
-                }
-            }
-            .frame(height: 24)
-            .cornerRadius(50)
+        VStack(spacing: 20) {
+            PercentageSlider(percentage: (amountSpent / (amountGained + amountSpent)), height: .big, color: .redToGreen)
             HStack {
                 VStack(alignment: .leading) {
                     HStack(spacing: 2) {
@@ -59,7 +49,7 @@ struct SpendingRepartition: View {
 }
 
 #Preview {
-    SpendingRepartition(amountSpent: 1367.12, amountGained: 1411.87)
+    SpendingRepartition(amountSpent: 1367.12, amountGained: 2000)
         .padding()
         .background {
             FinancialBackground().ignoresSafeArea()

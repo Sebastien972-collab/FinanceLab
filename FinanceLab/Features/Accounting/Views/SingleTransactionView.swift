@@ -8,45 +8,88 @@
 import SwiftUI
 
 struct SingleTransactionView: View {
-    @State var pickerSelected = 0
-    @State var transaction : Transaction
+    @Environment(\.dismiss) private var dismiss
+    @Environment(AccountViewModel.self) var accountVM
+    
+    @State private var editableTransaction: Transaction
+    let initialTransaction: Transaction?
+    
+    init(transaction: Transaction? = nil) {
+        self.initialTransaction = transaction
+        _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", icon: .selectionFill, amount: 0, date: Date(), contractor: ""))
+    }
+    
+    @State private var showCancelAlert = false
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 24) {
-                    VStack(alignment: .leading) {
-                        Text("Nouvelle entrée")
+                VStack(spacing: 32) {
+                    HStack {
+                        Text(initialTransaction != nil ? "Éditer une entrée" : "Nouvelle entrée")
                             .font(.title)
-                        FinancialPicker(options: ["Dépense", "Recette"], selected: $pickerSelected)
+                        Spacer()
                     }
-                    .padding(.horizontal)
-                    VStack(spacing: 24) {
-                        FormRow(label: "Montant", text: $transaction.contractor)
-                        FormRow(label: "Nom", text: $transaction.name)
-                        FormRow(label: "Catégorie", text: $transaction.name)
-                        FormRow(label: "À", text: $transaction.name)
-                        FormRow(label: "Date", text: $transaction.name)
+                    HStack {
+                        Text("Nom")
+                        Spacer()
+                        TextField("Nom", text: $editableTransaction.name)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Montant")
+                        Spacer()
+                        TextField("Montant", value: $editableTransaction.amount, format: .currency(code: "EUR"))
+                            .textFieldStyle(CustomTextFieldStyle(fontSize: .big))
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Contractant")
+                        Spacer()
+                        TextField("Contractant", text: $editableTransaction.contractor)
+                            .textFieldStyle(CustomTextFieldStyle())
+                            .frame(maxWidth: 260)
+                    }
+                    HStack {
+                        Text("Date")
+                        Spacer()
+                        DatePicker("Date", selection: $editableTransaction.date, in: ...Date(), displayedComponents: [.date])
+                            .datePickerStyle(.wheel)
+                            .labelsHidden()
+                            .frame(maxWidth: 260, maxHeight: 330)
                     }
                 }
+                .font(.inputFieldLabel)
+                .padding()
                 .foregroundStyle(Color.Text.contrasted)
+            }
+            .alert("Attention !", isPresented: $showCancelAlert) {
+                Button("Abandonner les changements", role: .destructive) {
+                    dismiss()
+                }
+                Button("Continuer à éditer", role: .cancel) {}
+            } message: {
+                Text("Vous n'avez pas encore sauvegardé les changements en cours. Êtes-vous sûr·e de vouloir abandonner ?")
             }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
-                        // dismiss
+                        showCancelAlert = true
                     }
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Enregistrer") {
-                        // action
+                        accountVM.saveTransaction(editableTransaction)
+                        dismiss()
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
+            .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
@@ -68,7 +111,6 @@ struct SingleTransactionView: View {
 }
 
 #Preview {
-    SingleTransactionView(transaction:
-                        Transaction(name: "Assurance", amount: 1000.20, date: Date(), contractor: "AXA Assurance")
-    )
+    SingleTransactionView()
+        .environment(AccountViewModel())
 }
