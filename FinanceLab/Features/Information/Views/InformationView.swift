@@ -10,6 +10,8 @@ import SwiftUI
 struct InformationView: View {
     @State var infoVM = InfoViewModel()
     @State var randomGlossaire = Glossaire(title: "", description: "")
+    
+    @State var isPresented: Bool = false
         
     var body: some View {
         NavigationStack {
@@ -56,20 +58,42 @@ struct InformationView: View {
                         }
                     }
                     .frame(height: 225)
-                    NavigationLink(destination: GlossaireView().environment(infoVM)) {
                         DemboCard() {
-                            Text("Le mot du jour : \(randomGlossaire.title)")
-                            Text(randomGlossaire.description).lineLimit(3)
+                            Text(LocalizedStringResource("Le mot du jour : **\(randomGlossaire.title)**"))
+                            Text(randomGlossaire.description).lineLimit(2)
                         }
                         .padding(.horizontal)
-                    }
-                    .onAppear {
-                        randomGlossaire = infoVM.getRandomGlossaire()
-                    }
+                        .onTapGesture {
+                            isPresented = true
+                        }
                 }
             }
             .foregroundStyle(Color.Text.contrasted)
             .padding(.vertical)
+            .onAppear {
+                randomGlossaire = infoVM.getRandomGlossaire()
+            }
+            .sheet(isPresented: $isPresented) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Le mot du jour")
+                            .font(.title)
+                        Text(randomGlossaire.title)
+                            .font(.title2)
+                        Text(randomGlossaire.description)
+                            .font(.body)
+                    }
+                    Spacer()
+                }
+                .padding(24)
+                .foregroundStyle(Color.Text.contrasted)
+                .presentationBackground {
+                    Rectangle()
+                        .foregroundStyle(Color.App.background)
+                }
+                .presentationDragIndicator(.hidden)
+                .presentationDetents([.fraction(0.24)])
+            }
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
