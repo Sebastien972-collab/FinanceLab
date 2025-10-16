@@ -10,13 +10,15 @@ import SwiftUI
 class Transaction: Identifiable {
     var id = UUID()
     var name : String
+    var icon : CategoryIcon
     var amount : Double
     var date : Date
     var contractor : String
     
-    init(id: UUID = UUID(), name: String, amount: Double, date: Date, contractor: String) {
+    init(id: UUID = UUID(), name: String, icon: CategoryIcon, amount: Double, date: Date, contractor: String) {
         self.id = id
         self.name = name
+        self.icon = icon
         self.amount = amount
         self.date = date
         self.contractor = contractor

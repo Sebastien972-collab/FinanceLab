@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct TransactionListView: View {
-    @State var pickerSelected = 0
+    @Environment(\.dismiss) private var dismiss
+    @State var accountVM = AccountViewModel()
+    
+    @State private var showTransactionSheet = false
+    @State private var pickerSelected = 0
 
     var body: some View {
         NavigationStack {
@@ -33,8 +37,9 @@ struct TransactionListView: View {
                             // TODO: Budget par catégories
                     }
                     VStack {
-                        TransactionListRow(name: "Assurance", icon: .circlesThreePlusFill, amount: -42.24)
-                        TransactionListRow(name: "Salaire", icon: .circlesThreePlusFill, amount: 1298.64)
+                        ForEach(accountVM.getLatestTransactions()) { transaction in
+                            TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                        }
                     }
                 }
                 .foregroundStyle(Color.Text.contrasted)
@@ -43,19 +48,26 @@ struct TransactionListView: View {
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
-                        // dismiss
+                        dismiss()
                     }
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
-                        // action
+                        accountVM.setNewTransaction()
+                        showTransactionSheet = true
                     }
                     .labelStyle(.iconOnly)
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
+            }
+            .navigationBarBackButtonHidden()
+            .navigationDestination(isPresented: $showTransactionSheet) {
+                if let transaction = accountVM.editingTransaction {
+                    SingleTransactionView(transaction: transaction, isNew: true).environment(accountVM)
+                }
             }
             .background {
                 FinancialBackground().ignoresSafeArea()
