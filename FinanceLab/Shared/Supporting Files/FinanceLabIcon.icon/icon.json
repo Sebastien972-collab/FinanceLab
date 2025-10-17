@@ -1,20 +1,68 @@
 {
-  "fill" : {
-    "linear-gradient" : [
-      "display-p3:0.96863,0.65882,0.58824,1.00000",
-      "srgb:0.95686,0.36471,0.26275,1.00000"
-    ]
-  },
+  "fill-specializations" : [
+    {
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.98039,0.98039,0.98039,1.00000",
+          "srgb:0.72157,0.74118,0.76863,1.00000"
+        ]
+      }
+    },
+    {
+      "appearance" : "dark",
+      "value" : {
+        "linear-gradient" : [
+          "display-p3:0.28235,0.30980,0.34902,1.00000",
+          "display-p3:0.10196,0.10980,0.13725,1.00000"
+        ]
+      }
+    }
+  ],
   "groups" : [
     {
-      "blend-mode" : "normal",
+      "blend-mode-specializations" : [
+        {
+          "value" : "normal"
+        },
+        {
+          "appearance" : "dark",
+          "value" : "lighten"
+        },
+        {
+          "appearance" : "tinted",
+          "value" : "plus-lighter"
+        }
+      ],
       "blur-material" : 0.5,
       "layers" : [
         {
-          "blend-mode" : "normal",
+          "blend-mode-specializations" : [
+            {
+              "value" : "normal"
+            },
+            {
+              "appearance" : "dark",
+              "value" : "normal"
+            },
+            {
+              "appearance" : "tinted",
+              "value" : "normal"
+            }
+          ],
           "fill" : "automatic",
-          "glass" : false,
+          "glass-specializations" : [
+            {
+              "value" : false
+            },
+            {
+              "appearance" : "tinted",
+              "value" : false
+            }
+          ],
           "hidden-specializations" : [
+            {
+              "value" : false
+            },
             {
               "appearance" : "light",
               "value" : false
@@ -25,6 +73,19 @@
         }
       ],
       "lighting" : "individual",
+      "opacity-specializations" : [
+        {
+          "value" : 1
+        },
+        {
+          "appearance" : "dark",
+          "value" : 0.85
+        },
+        {
+          "appearance" : "tinted",
+          "value" : 1
+        }
+      ],
       "position" : {
         "scale" : 0.93,
         "translation-in-points" : [
@@ -34,7 +95,7 @@
       },
       "shadow" : {
         "kind" : "layer-color",
-        "opacity" : 0.5
+        "opacity" : 1
       },
       "translucency" : {
         "enabled" : true,
