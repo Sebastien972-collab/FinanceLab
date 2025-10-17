@@ -13,13 +13,8 @@ struct Question: Identifiable, Hashable, Codable {
     var multipleChoice: Bool
     var questionGroup: QuestionGroup = .patrimony
     
-    init(
-        id: UUID = UUID(),
-        content: String,
-        multipleChoice: Bool = false,
-        questionGroup: QuestionGroup
-        
-    ) {
+    init(id: UUID = UUID(), content: String, multipleChoice: Bool = false,
+         questionGroup: QuestionGroup ) {
         self.id = id
         self.content = content
         self.multipleChoice = multipleChoice
