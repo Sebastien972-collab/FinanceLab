@@ -19,7 +19,9 @@ struct SingleTransactionView: View {
         _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", icon: .selectionFill, amount: 0, date: Date(), contractor: ""))
     }
     
+    @State private var isDatePickerPresented = false
     @State private var showCancelAlert = false
+    @State private var showDeleteAlert = false
     
     var body: some View {
         NavigationStack {
@@ -54,10 +56,19 @@ struct SingleTransactionView: View {
                     HStack {
                         Text("Date")
                         Spacer()
-                        DatePicker("Date", selection: $editableTransaction.date, in: ...Date(), displayedComponents: [.date])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: 260, maxHeight: 330)
+                        HStack {
+                            Spacer()
+                            Text(editableTransaction.date.formatted(date: .numeric, time: .omitted))
+                        }
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 20)
+                            .frame(height: 42)
+                            .frame(maxWidth: 260)
+                            .background(Color.Segmented.background)
+                            .clipShape(RoundedRectangle(cornerRadius: 50))
+                            .onTapGesture {
+                                isDatePickerPresented = true
+                            }
                     }
                 }
                 .font(.inputFieldLabel)
@@ -72,6 +83,27 @@ struct SingleTransactionView: View {
             } message: {
                 Text("Vous n'avez pas encore sauvegardé les changements en cours. Êtes-vous sûr·e de vouloir abandonner ?")
             }
+            .alert("Attention !", isPresented: $showDeleteAlert) {
+                Button("Supprimer l'entrée", role: .destructive) {
+                    accountVM.deleteTransaction(initialTransaction!)
+                    dismiss()
+                }
+                Button("Continuer à éditer", role: .cancel) {}
+            } message: {
+                Text("Voulez-vous vraiment supprimer cette entrée ? Cette opération est irréversible.")
+            }
+            .sheet(isPresented: $isDatePickerPresented) {
+                DatePicker("Date", selection: $editableTransaction.date, in: ...Date(), displayedComponents: [.date])
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                .foregroundStyle(Color.Text.contrasted)
+                .presentationBackground {
+                    Rectangle()
+                        .foregroundStyle(Color.App.background)
+                }
+                .presentationDragIndicator(.hidden)
+                .presentationDetents([.fraction(0.3)])
+            }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
@@ -80,7 +112,16 @@ struct SingleTransactionView: View {
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
-                ToolbarItem(placement: .primaryAction) {
+                if initialTransaction != nil {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Supprimer", image: .trashFill) {
+                            showDeleteAlert = true
+                        }
+                        .buttonStyle(FinanceButton(state: .cancel, size: .round))
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                }
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") {
                         accountVM.saveTransaction(editableTransaction)
                         dismiss()
@@ -114,3 +155,4 @@ struct SingleTransactionView: View {
     SingleTransactionView()
         .environment(AccountViewModel())
 }
+

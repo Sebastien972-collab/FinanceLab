@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@Observable
 class Transaction: Identifiable {
     var id = UUID()
     var name : String
