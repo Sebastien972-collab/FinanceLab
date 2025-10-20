@@ -19,6 +19,7 @@ struct SingleTransactionView: View {
         _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", icon: .selectionFill, amount: 0, date: Date(), contractor: ""))
     }
     
+    @State private var isDatePickerPresented = false
     @State private var showCancelAlert = false
     @State private var showDeleteAlert = false
     
@@ -55,10 +56,19 @@ struct SingleTransactionView: View {
                     HStack {
                         Text("Date")
                         Spacer()
-                        DatePicker("Date", selection: $editableTransaction.date, in: ...Date(), displayedComponents: [.date])
-                            .datePickerStyle(.wheel)
-                            .labelsHidden()
-                            .frame(maxWidth: 260, maxHeight: 330)
+                        HStack {
+                            Spacer()
+                            Text(editableTransaction.date.formatted(date: .numeric, time: .omitted))
+                        }
+                            .padding(.vertical, 14)
+                            .padding(.horizontal, 20)
+                            .frame(height: 42)
+                            .frame(maxWidth: 260)
+                            .background(Color.Segmented.background)
+                            .clipShape(RoundedRectangle(cornerRadius: 50))
+                            .onTapGesture {
+                                isDatePickerPresented = true
+                            }
                     }
                 }
                 .font(.inputFieldLabel)
@@ -82,7 +92,18 @@ struct SingleTransactionView: View {
             } message: {
                 Text("Voulez-vous vraiment supprimer cette entrée ? Cette opération est irréversible.")
             }
-
+            .sheet(isPresented: $isDatePickerPresented) {
+                DatePicker("Date", selection: $editableTransaction.date, in: ...Date(), displayedComponents: [.date])
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                .foregroundStyle(Color.Text.contrasted)
+                .presentationBackground {
+                    Rectangle()
+                        .foregroundStyle(Color.App.background)
+                }
+                .presentationDragIndicator(.hidden)
+                .presentationDetents([.fraction(0.3)])
+            }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
@@ -134,3 +155,4 @@ struct SingleTransactionView: View {
     SingleTransactionView()
         .environment(AccountViewModel())
 }
+
