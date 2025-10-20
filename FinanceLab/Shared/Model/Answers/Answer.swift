@@ -7,21 +7,19 @@
 
 import Foundation
 
-struct Answer: Identifiable, Hashable {
-    let id: UUID
+struct Answer: Identifiable/*, Hashable*/ {
+    let id = UUID()
     var content: String
-    var userId: UUID
+    var user: User
     let question: Question
     
     init(
-        id: UUID = UUID(),
         content: String,
-        userId: UUID,
+        user: User,
         question: Question,
     ) {
-        self.id = id
         self.content = content
-        self.userId = userId
+        self.user = user
         self.question = question
     }
 }
