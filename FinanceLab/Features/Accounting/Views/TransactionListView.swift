@@ -36,10 +36,22 @@ struct TransactionListView: View {
                         default: Text("TODO")
                             // TODO: Budget par catégories
                     }
-                    VStack {
-                        ForEach(accountVM.getLatestTransactions()) { transaction in
-                            NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
-                                TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                    VStack(alignment: .leading) {
+                        let groupedTransactions = Dictionary(grouping: accountVM.getLatestTransactions()) { transaction in
+                            Calendar.current.startOfDay(for: transaction.date)
+                        }
+                        ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (date, transactions) in
+                                Text(date.formatted(.dateTime
+                                    .day()
+                                    .month(.wide)
+                                    .year()
+                                    .locale(Locale(identifier: "fr_FR"))))
+                                    .font(.listHeader)
+                                    .padding(.top, 6)
+                            ForEach(transactions) { transaction in
+                                NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
+                                    TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                                }
                             }
                         }
                     }
