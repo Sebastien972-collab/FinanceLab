@@ -38,16 +38,16 @@ struct TransactionListView: View {
                     }
                     VStack(alignment: .leading) {
                         let groupedTransactions = Dictionary(grouping: accountVM.getLatestTransactions()) { transaction in
-                            transaction.date.formatted(.dateTime
-                                .day()
-                                .month(.wide)
-                                .year()
-                                .locale(Locale(identifier: "fr_FR")))
+                            Calendar.current.startOfDay(for: transaction.date)
                         }
-                        ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (dateString, transactions) in
-                            Text(dateString)
-                                .font(.listHeader)
-                                .padding(.top, 6)
+                        ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (date, transactions) in
+                                Text(date.formatted(.dateTime
+                                    .day()
+                                    .month(.wide)
+                                    .year()
+                                    .locale(Locale(identifier: "fr_FR"))))
+                                    .font(.listHeader)
+                                    .padding(.top, 6)
                             ForEach(transactions) { transaction in
                                 NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
                                     TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
