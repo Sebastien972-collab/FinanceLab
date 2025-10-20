@@ -40,30 +40,19 @@ struct FinancialProfile: View {
                         .font(.body)
                         .foregroundStyle(Color.Text.contrasted)
                     
-                    // Liste dynamique des choix (ton code ici)
-                    if !viewModel.currentChoices.isEmpty {
-                        ForEach(viewModel.currentChoices) { choice in
-                            Button(choice.content) {
-                                viewModel.saveAnswer(choice.content, for: question)
-                                viewModel.nextQuestion()
-                            }
-                            .buttonStyle(FinanceButton(size: .mini))
-                        }
-                    } else {
-                        // Si pas de choix prédéfinis → champ texte libre
-                        CustomFieldView(
-                            label: "Réponse",
-                            text: $viewModel.textAnswer,
-                            state: .project
-                        )
-                        .frame(width: 200)
+                    // Si pas de choix prédéfinis → champ texte libre
+                    CustomFieldView(
+                        label: "Réponse",
+                        text: $viewModel.textAnswer,
+                        state: .project
+                    )
+                    .frame(width: 200)
                         
                         Button("Valider") {
                             viewModel.saveAnswer(viewModel.textAnswer, for: question)
                             viewModel.nextQuestion()
                         }
                         .buttonStyle(FinanceButton(size: .mini))
-                    }
                 }
             }
             
