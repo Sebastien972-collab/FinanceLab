@@ -20,6 +20,7 @@ struct SingleTransactionView: View {
     }
     
     @State private var showCancelAlert = false
+    @State private var showDeleteAlert = false
     
     var body: some View {
         NavigationStack {
@@ -72,6 +73,16 @@ struct SingleTransactionView: View {
             } message: {
                 Text("Vous n'avez pas encore sauvegardé les changements en cours. Êtes-vous sûr·e de vouloir abandonner ?")
             }
+            .alert("Attention !", isPresented: $showDeleteAlert) {
+                Button("Supprimer l'entrée", role: .destructive) {
+                    accountVM.deleteTransaction(initialTransaction!)
+                    dismiss()
+                }
+                Button("Continuer à éditer", role: .cancel) {}
+            } message: {
+                Text("Voulez-vous vraiment supprimer cette entrée ? Cette opération est irréversible.")
+            }
+
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
@@ -80,7 +91,16 @@ struct SingleTransactionView: View {
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
-                ToolbarItem(placement: .primaryAction) {
+                if initialTransaction != nil {
+                    ToolbarItem(placement: .destructiveAction) {
+                        Button("Supprimer", image: .trashFill) {
+                            showDeleteAlert = true
+                        }
+                        .buttonStyle(FinanceButton(state: .cancel, size: .round))
+                    }
+                    .sharedBackgroundVisibility(.hidden)
+                }
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") {
                         accountVM.saveTransaction(editableTransaction)
                         dismiss()

@@ -18,6 +18,13 @@ class AccountViewModel {
         }
     }
     
+    func deleteTransaction(_ transaction: Transaction) {
+        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
+            transactions.remove(at:index)
+        }
+    }
+
+    
     func getLatestTransactions() -> [Transaction] {
         return transactions
             .sorted(by: { $0.date > $1.date })
