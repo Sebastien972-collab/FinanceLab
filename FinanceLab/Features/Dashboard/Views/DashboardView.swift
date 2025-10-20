@@ -17,7 +17,9 @@ struct DashboardView : View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(alignment: .leading ,spacing: 32) {
+                    UserCardProfile(user: .preview)
+                        .frame(maxWidth: 230, maxHeight: 54)
                     BudgetCard(
                         healthScore: healthScore,
                         monthlyRAS: monthlyRAS,
@@ -35,6 +37,7 @@ struct DashboardView : View {
                 .padding()
             }
             .toolbar {
+
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
                         // action

@@ -36,6 +36,11 @@ enum CategoryIcon: String, CaseIterable, Identifiable {
     case gameControllerFill
     case cakeFill
     case selectionFill
+    case userFill
+    case houseLineFill
+    case targetFill
+    case shieldSlashFill
+    case handCoinsFill
 
     var id: String { rawValue }
 
@@ -69,6 +74,11 @@ enum CategoryIcon: String, CaseIterable, Identifiable {
         case .gameControllerFill: return .gameControllerFill
         case .cakeFill: return .cakeFill
         case .selectionFill: return .selectionFill
+        case .userFill: return .userFill
+        case .houseLineFill: return .houseLineFill
+        case .targetFill: return .targetFill
+        case .shieldSlashFill: return .shieldSlashFill
+        case .handCoinsFill : return .handCoinsFill
         }
     }
     
