@@ -14,7 +14,15 @@ final class ProjectViewModel {
     var error: Error = ProjectCreatorError.emptyFiels
     var showError: Bool = false
     var creatorMode: Bool = false
-    func fetchProjects() {
+    var service: ProjectService = .shared
+    var manager: UserManager = .shared
+    func fetchProjects() async {
+        do {
+            self.projects = try await service.fetProjects(userId: manager.currentUser.id.uuidString)
+        } catch  {
+            self.error = error
+            self.showError =  true
+        }
     }
     
     func addProject(_ project: Project) {

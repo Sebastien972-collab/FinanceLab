@@ -38,7 +38,9 @@ struct ProjectsView: View {
                 }
                 .navigationTitle(Text("Mes Projets"))
                 .onAppear {
-                   
+                    Task {
+                        await projectVM.fetchProjects()
+                    }
                 }
             }
             .background {

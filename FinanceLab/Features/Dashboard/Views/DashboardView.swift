@@ -30,12 +30,11 @@ struct DashboardView : View {
                     NavigationLink(destination: TransactionListView()) {
                         Text("Je fais mes comptes !")
                     }
-                        .buttonStyle(FinanceButton(state: .validate))
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
                 .padding()
             }
             .toolbar {
-
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
                         // action
