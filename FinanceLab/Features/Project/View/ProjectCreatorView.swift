@@ -90,17 +90,12 @@ struct ProjectCreatorView: View {
                 }
             }
             .alert("Error", isPresented: $projectManager.showError) {
-                Button {
-                    
-                } label: {
+                Button {} label: {
                     Text("Ok")
                 }
-                
             } message: {
                 Text(projectManager.error.localizedDescription)
             }
-            
-            
         }
     }
 }

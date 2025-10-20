@@ -8,26 +8,31 @@
 import Foundation
 
 class UserManager {
+    static let shared: UserManager = .init()
+    private init () {}
     private let service: UserService = .shared
     private(set) var currentUser: User = .guest
     var isLoggedIn: Bool {
         currentUser != .guest
     }
-    func create(email: String, password: String) async throws -> User {
+    func create(email: String, password: String) async throws {
         do {
             self.currentUser = try await service.create(email: email, password: password)
-            return currentUser
         } catch  {
             throw error
         }
     }
     ///Login user
-    func login(email: String, password: String) async throws -> User {
+    func login(email: String, password: String) async throws {
         do {
-            return try await service.login(email: email, password: password)
+            self.currentUser = try await service.login(email: email, password: password)
         } catch  {
             throw error
         }
+    }
+    
+    func fetchProfile() async throws {
+        self.currentUser =  try await service.fetchProfile()
     }
     
     func upadateUser(_ newUser: User) {

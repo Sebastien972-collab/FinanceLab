@@ -21,14 +21,14 @@ struct UserProfileView: View {
                         StandardCard {
                             HStack{
                                 VStack(alignment: .leading) {
-                                    Text(profilVM.userVm.currentUser.firstName)
+                                    Text(profilVM.userManager.currentUser.firstName)
                                         .font(Font.body)
-                                    Text(verbatim: profilVM.userVm.currentUser.email)
+                                    Text(verbatim: profilVM.userManager.currentUser.email)
                                         .font(Font.body)
                                 }
                                 .foregroundStyle(Color.Text.primary)
                                 Spacer()
-                                CircleImageProfil(urlImage: profilVM.userVm.currentUser.profilePictureUrl)
+                                CircleImageProfil(urlImage: profilVM.userManager.currentUser.profilePictureUrl)
                                     .clipShape(Circle())
                             }
                             .padding()

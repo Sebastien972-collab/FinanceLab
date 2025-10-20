@@ -10,15 +10,7 @@ import SwiftUI
 
 struct LoginView: View {
     @State var loginVM = LoginViewModel()
-    
-    @State var pickerSelected: Int = 0
-    
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var passwordConfirmation: String = ""
-    @State var firstName: String = ""
-    @State var lastName: String = ""
-
+    @Binding var authState: AuthState
     var body: some View {
         NavigationStack {
             VStack(spacing: 32) {
@@ -34,42 +26,44 @@ struct LoginView: View {
                 FinancialPicker(options: [
                     "Se connecter",
                     "Créer un compte"
-                ], selected: $pickerSelected)
+                ], selected: $loginVM.pickerSelected)
                 Spacer()
                 VStack(spacing: 16) {
-                    if pickerSelected == 1 {
+                    if loginVM.pickerSelected == 1 {
                         HStack {
-                            TextField("Prénom", text: $firstName)
+                            TextField("Prénom", text: $loginVM.firstName)
                                 .textFieldStyle(CustomTextFieldStyle(style: .login))
-                            TextField("Nom", text: $lastName)
+                            TextField("Nom", text: $loginVM.lastName)
                                 .textFieldStyle(CustomTextFieldStyle(style: .login))
                         }
                     }
-                    TextField("Adresse email", text: $email)
+                    TextField("Adresse email", text: $loginVM.email)
                         .textFieldStyle(CustomTextFieldStyle(style: .login))
-                    SecureField("Mot de passe", text: $password)
+                    SecureField("Mot de passe", text: $loginVM.password)
                         .textFieldStyle(CustomTextFieldStyle(style: .login))
-                    if pickerSelected == 1 {
-                        SecureField("Confirmation du mot de passe", text: $passwordConfirmation)
+                    if loginVM.pickerSelected == 1 {
+                        SecureField("Confirmation du mot de passe", text: $loginVM.passwordConfirmation)
                             .textFieldStyle(CustomTextFieldStyle(style: .login))
                     }
                 }
                 Spacer()
-                    switch pickerSelected {
+                switch loginVM.pickerSelected {
                         case 0:
                             Button("Se connecter") {
-                                loginVM.login(email: email, password: password)
+                                Task {
+                                    await loginVM.login {
+                                        self.authState = .authenticated
+                                    }
+                                }
                             }
                             .buttonStyle(FinanceButton(state: .validate))
                         case 1:
                             Button("Créer un compte") {
-                                loginVM.create(
-                                    email: email,
-                                    password: password,
-                                    passwordConfirmation: passwordConfirmation,
-                                    firstName: firstName,
-                                    lastName: lastName
-                                )
+                                Task {
+                                    await loginVM.create {
+                                        self.authState = .authenticated
+                                    }
+                                }
                             }
                             .buttonStyle(FinanceButton(state: .validate))
                         default: EmptyView()
@@ -82,10 +76,17 @@ struct LoginView: View {
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
+            .alert("Error", isPresented: $loginVM.showError) {
+                Button {} label: {
+                    Text("Ok")
+                }
+            } message: {
+                Text(loginVM.error.localizedDescription)
+            }
         }
     }
 }
 
 #Preview {
-    LoginView()
+    LoginView(authState: .constant(.loading))
 }

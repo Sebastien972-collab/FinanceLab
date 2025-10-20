@@ -8,45 +8,54 @@
 import SwiftUI
 
 struct MainTabView: View {
-    private enum Selection {
-        case home, project, inform
-    }
-    @State private var selection: Selection = .home
-    @Environment(UserViewModel.self) private var userVM
-    
+    @Environment(TabViewModel.self) private var tabVm: TabViewModel
     var body: some View {
-        TabView {
-            Tab("Mon budget", systemImage: "wallet.bifold.fill") {
-                DashboardView(
-                    userName: userVM.currentUser.displayName,
-                       userCategory: "Bâtisseuse",
-                       healthScore: 0.5,
-                       monthlyRAS: 120,
-                       dailyRAS: 5.55
-                   )
-            }
-            Tab("Mes Projets", systemImage: "powermeter") {
-                ProjectsView()
-            }
-            Tab("Ressources", systemImage: "newspaper.fill") {
-                InformationView()
-            }
-        }
-        .onAppear {
-            Task {
-                do {
-                    try await userVM.login(email: "sebastien.daguin@financelab.com", password: "Sebby972")
-                } catch {
-                    print("Failed to update user: \(error)")
+        @Bindable var tabVm = tabVm
+        Group(content: {
+            switch tabVm.authState {
+            case .loading:
+                ProgressView("Chargement...")
+                    .task {
+                        await tabVm.checkSession()
+                    }
+            case .authenticated:
+                TabView {
+                    Tab("Mon budget", systemImage: "wallet.bifold.fill") {
+                        DashboardView(
+                            userName: tabVm.currentUser.displayName,
+                            userCategory: "Bâtisseuse",
+                            healthScore: 0.5,
+                            monthlyRAS: 120,
+                            dailyRAS: 5.55
+                        )
+                        .tag(TabViewModel.Selection.home)
+                    }
+                    Tab("Mes Projets", systemImage: "powermeter") {
+                        ProjectsView()
+                            .tag(TabViewModel.Selection.project)
+                    }
+                    Tab("Ressources", systemImage: "newspaper.fill") {
+                        InformationView()
+                            .tag(TabViewModel.Selection.inform)
+                    }
+                    
                 }
+            case .notAuthenticated:
+                LoginView(loginVM: LoginViewModel(), authState: $tabVm.authState)
             }
+        })
+        .alert("Erreur", isPresented: $tabVm.showError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(tabVm.error?.localizedDescription ?? "Une erreur est survenue.")
         }
+        .animation(.easeInOut, value: tabVm.authState)
+        
     }
 }
 
 #Preview {
     MainTabView()
         .environment(ProjectViewModel())
-        .environment(UserViewModel())
-    
+        .environment(TabViewModel())
 }

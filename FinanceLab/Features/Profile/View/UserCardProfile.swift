@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct UserCardProfile: View {
-    @Environment(UserViewModel.self) private var userVM
     @State private var isPresented: Bool = false
     let profileVm = ProfileViewModel()
     var body: some View {
         StandardCard {
             HStack(alignment: .center) {
-                CircleImageProfil(urlImage: userVM.currentUser.profilePictureUrl)
+                CircleImageProfil(urlImage: profileVm.userManager.currentUser.profilePictureUrl)
                     .padding(.vertical, 5)
                 VStack(alignment: .leading) {
-                    Text(userVM.currentUser.displayName)
+                    Text(profileVm.userManager.currentUser.displayName)
                         .font(Font.cardTitle)
                         .foregroundStyle(Color.Text.primary)
                     Text("Profil financier")
@@ -26,19 +25,21 @@ struct UserCardProfile: View {
                 }
             }
         }
-        .onTapGesture {
-            profileVm.userVm = userVM
+        .onTapGesture {apGesture in
             isPresented.toggle()
         }
         .navigationDestination(isPresented: $isPresented) {
-            UserProfileView(profilVM: profileVm, )
+            UserProfileView(profilVM: profileVm)
         }
-
+        
     }
 }
 
 #Preview {
-    UserCardProfile()
-        .padding()
-        .environment(UserViewModel())
+    VStack {
+        UserCardProfile()
+            .padding()
+        UserCardProfile()
+            .padding()
+    }
 }

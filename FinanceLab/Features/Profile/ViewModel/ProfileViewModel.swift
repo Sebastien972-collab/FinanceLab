@@ -9,5 +9,5 @@ import Foundation
 
 @Observable
 class ProfileViewModel {
-    var userVm: UserViewModel = .init()
+    let userManager: UserManager = .shared
 }
