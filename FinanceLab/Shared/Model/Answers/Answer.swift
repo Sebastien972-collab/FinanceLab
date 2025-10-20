@@ -6,24 +6,22 @@
 //
 
 import Foundation
-struct Answer: Identifiable, Hashable, Codable {
+
+struct Answer: Identifiable, Hashable {
     let id: UUID
     var content: String
     var userId: UUID
-    var questionId: UUID
-    var answerCategory: AnswerCategory
+    let question: Question
     
     init(
         id: UUID = UUID(),
         content: String,
         userId: UUID,
-        questionId: UUID,
-        answerCategory: AnswerCategory
+        question: Question,
     ) {
         self.id = id
         self.content = content
         self.userId = userId
-        self.questionId = questionId
-        self.answerCategory = answerCategory
+        self.question = question
     }
 }

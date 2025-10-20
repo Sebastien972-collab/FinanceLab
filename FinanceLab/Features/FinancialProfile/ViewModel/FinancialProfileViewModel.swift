@@ -4,81 +4,70 @@
 //
 //  Created by Dembo on 15/10/2025.
 //
-
-//import Foundation
-//
-//@Observable
-//class FinancialProfileViewModel {
-//    private(set) var questions: [Question] = Question.questionDatabase
-//    var currentIndex: Int = 0
-//    var userAnswers: [UUID: String] = [:]
-//    
-//    var currentQuestion: Question {
-//        questions[currentIndex]
-//    }
-//    
-//    func nextQuestion() {
-//        if currentIndex < questions.count - 1 {
-//            currentIndex += 1
-//        }
-//    }
-//    
-//    func previousQuestion() {
-//        if currentIndex > 0 {
-//            currentIndex -= 1
-//        }
-//    }
-//    
-//    func saveAnswer(_ answer: String) {
-//        userAnswers[currentQuestion.id] = answer
-//    }
-//}
-
-
-import SwiftUI
 import Observation
 
 @Observable
-final class FinancialProfileViewModel {
-    var allQuestions: [Question] = []
-    var groupedQuestions: [QuestionGroup: [Question]] = [:]
-    var selectedGroup: QuestionGroup?
+class FinancialProfileViewModel {
+    var questions: [Question] = Question.questionDatabase
+    var answerChoices: [AnswerChoice] = Answer.answerChoiceDatabase
+    var userAnswers: [Answer] = []
+    
     var currentQuestionIndex: Int = 0
-    var answers: [UUID: String] = [:] // id question → réponse
+    var textAnswer: String = ""
     
-    init() {
-        loadQuestions()
+    var currentQuestion: Question {
+        questions[currentQuestionIndex]
     }
-    
-    func loadQuestions() {
-        allQuestions = Question.questionDatabase
-        groupedQuestions = Dictionary(grouping: allQuestions, by: { $0.questionGroup })
-        selectedGroup = QuestionGroup.allCases.first
+
+    // Récupère les choix possibles pour la question courante
+    var currentChoices: [AnswerChoice] {
+        answerChoices.filter { $0.questionId == currentQuestion.id }
     }
-    
-    var currentQuestions: [Question] {
-        guard let selectedGroup else { return [] }
-        return groupedQuestions[selectedGroup] ?? []
+
+    //Sauvegarde la réponse de l’utilisateur
+    func saveAnswer(_ content: String, for question: Question) {
+        let answer = Answer(
+            content: content,
+            userId: UUID(),
+            questionId: question.id,
+            answerCategory: question.questionGroup.toAnswerCategory()
+        )
+        userAnswers.append(answer)
     }
-    
-    var currentQuestion: Question? {
-        guard currentQuestions.indices.contains(currentQuestionIndex) else { return nil }
-        return currentQuestions[currentQuestionIndex]
-    }
-    
-    var isLastQuestion: Bool {
-        currentQuestionIndex == (currentQuestions.count - 1)
-    }
-    
+
+    // Passe à la question suivante
     func nextQuestion() {
-        if !isLastQuestion { currentQuestionIndex += 1 }
+        if currentQuestionIndex < questions.count - 1 {
+            currentQuestionIndex += 1
+            textAnswer = ""
+        }
     }
-    
-    func previousQuestion() {
-        if currentQuestionIndex > 0 { currentQuestionIndex -= 1 }
+
+    // Permet de lier QuestionGroup → AnswerCategory
+    // (utile pour ton modèle Answer)
+    func questionGroupToCategory(_ group: QuestionGroup) -> AnswerCategory {
+        switch group {
+        case .personal: return .personal
+        case .professional: return .professional
+        case .patrimony: return .patrimony
+        case .financial: return .financial
+        case .objectives: return .objectives
+        case .risk: return .risk
+        case .protection: return .protection
+        }
     }
-    
-    func saveAnswer(_ text: String, for question: Question) {
-        answers[question.id] = text
+}
+
+extension QuestionGroup {
+    func toAnswerCategory() -> AnswerCategory {
+        switch self {
+        case .personal: return .personal
+        case .professional: return .professional
+        case .patrimony: return .patrimony
+        case .financial: return .financial
+        case .objectives: return .objectives
+        case .risk: return .risk
+        case .protection: return .protection
+        }
     }
 }

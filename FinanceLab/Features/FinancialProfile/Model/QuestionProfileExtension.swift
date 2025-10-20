@@ -7,107 +7,132 @@
 
 import Foundation
 
+// Base de données de questions
 extension Question {
     static var questionDatabase: [Question] {
-        
-        let questions: [Question] = [
+        return [
+            // Questions essentielles (l'application ne peut pas fonctionner sans)
+            Question(
+                label: "Revenus stables",
+                content: "Quel est ton revenu net moyen (salaires, chômage etc.) ?",
+                followUpLabel: "Montant moyen par mois",
+                questionGroup: .essential
+            ),
+            Question(
+                label: "Revenus complémentaires",
+                content: "Quel est le montant de tes revenus complémentaires (rentes, aides diverses etc.) ?",
+                followUpLabel: "Montant moyen par mois",
+                questionGroup: .essential
+            ),
+            Question(
+                label: "Crédits",
+                content: "As-tu des crédits en cours (immobilier, auto, consommation etc.) ?",
+                followUpLabel: "Montant moyen par mois",
+                questionGroup: .essential
+            ),
+            Question(
+                label: "Charges",
+                content: "Quel est le montant de tes charges fixes (loyer, factures, abonnements etc.) ?",
+                followUpLabel: "Montant moyen par mois",
+                questionGroup: .essential
+            ),
+            Question(
+                label: "Épargne",
+                content: "Combien épargnes-tu (y compris précaution, projets etc.) ?",
+                followUpLabel: "Montant moyen par mois",
+                questionGroup: .essential
+            ),
             
-            // MARK: - Situation personnelle et familiale
-            Question(content: "Es-tu marié(e), pacsé(e) ou célibataire ?",
-                     multipleChoice: true,
-                     questionGroup: .personal),
+            // Situation personnelle et familiale
+            Question(
+                label: "Enfants",
+                content: "Combien as-tu d'enfants à charge ?",
+                followUpLabel: "Laisse zéro si tu n'en as pas",
+                questionGroup: .personal
+            ),
+            Question(
+                label: "Personnes à charge",
+                content: "As-tu d’autres personnes à charge (parents, proches, etc.) ?",
+                followUpLabel: "Combien ?",
+                questionGroup: .personal
+            ),
+            Question(
+                label: "Contributeurs",
+                content: "À part toi, combien de personnes participent aux dépenses du foyer ?",
+                followUpLabel: "Laisse zéro si tu es seul·e",
+                questionGroup: .personal
+            ),
             
-            Question(content: "As-tu des enfants à charge ?",
-                     multipleChoice: false,
-                     questionGroup: .personal),
+            // Épargne de précaution
+            Question(
+                label: "Épargne de précaution",
+                content: "Quel est le montant total de ton épargne de précaution disponible ?",
+                followUpLabel: "Laisse zéro si tu n'as aucune épargne disponible",
+                questionGroup: .savings
+            ),
             
-            Question(content: "As-tu d’autres personnes à charge (parents, proches, etc.) ?",
-                     multipleChoice: false,
-                     questionGroup: .personal),
-            
-            // MARK: - Situation professionnelle
-            Question(content: "Quelle est ta situation professionnelle ?",
-                     multipleChoice: true,
-                     questionGroup: .professional),
-            
-            Question(content: "Quel est ton revenu mensuel net moyen ?",
-                     multipleChoice: false,
-                     questionGroup: .professional),
-            
-            Question(content: "As-tu des revenus complémentaires ?",
-                     multipleChoice: false,
-                     questionGroup: .professional),
-            
-            // MARK: - Situation financière
-            Question(content: "As-tu des crédits en cours (immobilier, auto, consommation…) ?",
-                     multipleChoice: false,
-                     questionGroup: .financial),
-            
-            Question(content: "Quel est le montant total de tes charges mensuelles fixes ?",
-                     multipleChoice: false,
-                     questionGroup: .financial),
-            
-            Question(content: "Mets-tu de l’argent de côté chaque mois ?",
-                     multipleChoice: false,
-                     questionGroup: .financial),
-            
-            // MARK: - Patrimoine
-            Question(content: "Es-tu propriétaire de ton logement principal ?",
-                     multipleChoice: false,
-                     questionGroup: .patrimony),
-            
-            Question(content: "Possèdes-tu d’autres biens immobiliers ?",
-                     multipleChoice: false,
-                     questionGroup: .patrimony),
-            
-            Question(content: "As-tu des placements financiers (PEL, assurance vie, bourse, crypto…) ?",
-                     multipleChoice: false,
-                     questionGroup: .patrimony),
-            
-            Question(content: "As-tu une épargne de précaution disponible ?",
-                     multipleChoice: false,
-                     questionGroup: .patrimony),
-            
-            // MARK: - Objectifs financiers
-            Question(content: "As-tu un projet à court terme (1 à 3 ans) ?",
-                     multipleChoice: false,
-                     questionGroup: .objectives),
-            
-            Question(content: "As-tu un projet à moyen terme (3 à 7 ans) ?",
-                     multipleChoice: false,
-                     questionGroup: .objectives),
-            
-            Question(content: "As-tu un objectif à long terme (plus de 10 ans) ?",
-                     multipleChoice: false,
-                     questionGroup: .objectives),
-            
-            // MARK: - Gestion du risque & profil investisseur
-            Question(content: "Comment réagis-tu face aux risques financiers ?",
-                     multipleChoice: true,
-                     questionGroup: .risk),
-            
-            Question(content: "Accepterais-tu de voir tes placements baisser temporairement pour espérer plus de gains ?",
-                     multipleChoice: false,
-                     questionGroup: .risk),
-            
-            Question(content: "Quel est ton horizon de placement ?",
-                     multipleChoice: true,
-                     questionGroup: .risk),
-            
-            // MARK: - Protection & prévoyance
-            Question(content: "As-tu une assurance vie, invalidité ou décès ?",
-                     multipleChoice: false,
-                     questionGroup: .protection),
-            
-            Question(content: "As-tu une mutuelle ou complémentaire santé ?",
-                     multipleChoice: false,
-                     questionGroup: .protection),
-            
-            Question(content: "As-tu déjà prévu ta retraite (pension, PER, épargne retraite…) ?",
-                     multipleChoice: false,
-                     questionGroup: .protection)
+            // Protection & prévoyance
+            Question(
+                label: "Assurance vie",
+                content: "À combien s'élève le montant de ton capital décès ?",
+                followUpLabel: "Laisse zéro si tu n'as pas d'assurance vie",
+                questionGroup: .protection
+            ),
+            Question(
+                label: "Retraite",
+                content: "Combien mets-tu de côté chaque mois en vue de ta retraite ?",
+                followUpLabel: "Laisse zéro si tu ne mets rien de côté",
+                questionGroup: .protection
+            ),
+
+            // Patrimoine existant NON ESSENTIEL
+            Question(
+                label: "Logement",
+                content: "Si tu es propriétaire, quelle est la valeur de ton habitation principale ?",
+                followUpLabel: "Si tu n'es pas propriétaire, laisse zéro",
+                questionGroup: .patrimony
+            ),
+            Question(
+                label: "Biens immobiliers",
+                content: "Si tu possèdes d'autres biens immobiliers, quelle est leur valeur totale estimée ?",
+                followUpLabel: "Laisse zéro si tu n'en possèdes pas",
+                questionGroup: .patrimony
+            ),
+            Question(
+                label: "Placements",
+                content: "Quelle est la valeur de tes placements financiers (PEL, assurance vie, bourse, crypto…) ?",
+                followUpLabel: "Laisse zéro si tu n'en possèdes pas",
+                questionGroup: .patrimony
+            ),
+
+            // Gestion du risque & profil investisseur
+            Question(
+                label: "Tolérance",
+                content: "Jusqu'à combien accepterais-tu de voir tes placements baisser temporairement pour espérer plus de gains ?",
+                followUpLabel: "En pourcentage du placement initial",
+                questionGroup: .risk
+            ),
+            Question(
+                label: "Horizon",
+                content: "À combien estimes-tu ton horizon de placement ?",
+                followUpLabel: "En nombre d'années",
+                questionGroup: .risk
+            ),
         ]
-        
-        return questions
     }
+    
+//    static var unusedQuestions: [Question] = [
+//        Question(label: "Statut", content: "Es-tu marié(e), pacsé(e) ou célibataire ?", questionGroup: .personal),
+//        Question(label: "Emploi", content: "Quelle est ta situation professionnelle ?", questionGroup: .professional),
+//    Question(
+//        label: "Risque",
+//        content: "Comment réagis-tu face aux risques financiers ?",
+//        questionGroup: .risk
+//    ),
+//    Question(
+//        label: "Santé",
+//        content: "As-tu une mutuelle ou complémentaire santé ?",
+//        questionGroup: .protection
+//    ),
+//    ]
 }

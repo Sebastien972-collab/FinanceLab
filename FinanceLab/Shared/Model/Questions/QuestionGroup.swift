@@ -3,79 +3,40 @@
 //  FinanceLab
 //
 //  Created by Dembo on 10/10/2025.
-//
-//
-//import Foundation
-//
-//import SwiftUI
-//
-//enum QuestionGroup: String, CaseIterable, Codable, Identifiable {
-//    case personal = "Situation personnelle et familiale"
-//    case professional = "Situation professionnelle"
-//    case patrimony = "Patrimoine existant"
-//    case financial = "Situation financière"
-//    case objectives = "Objectifs financiers"
-//    case risk = "Gestion du risque & profil investisseur"
-//    case protection = "Protection & prévoyance"
-//    
-//    var id: String { rawValue }
-//
-//    var icon: CategoryIconsProfil {
-//        switch self {
-//        case .personal:
-//            return .userFill
-//        case .professional:
-//            return .bagSimpleFill
-//        case .patrimony:
-//            return .currencyDollardFill
-//        case .financial:
-//            return .houseLineFill
-//        case .objectives:
-//            return .targetFill
-//        case .risk:
-//            return .warningFill
-//        case .protection:
-//            return .shieldSlashFill
-//        }
-//    }
-//}
+
 
 
 import Foundation
-import SwiftUI
 
 enum QuestionGroup: String, CaseIterable, Codable, Identifiable {
+    case essential = "Questions essentielles"
     case personal = "Situation personnelle et familiale"
-    case professional = "Situation professionnelle"
-    case patrimony = "Patrimoine existant"
-    case financial = "Situation financière"
-    case objectives = "Objectifs financiers"
-    case risk = "Gestion du risque & profil investisseur"
+    case savings = "Épargne de précaution"
     case protection = "Protection & prévoyance"
+    case patrimony = "Patrimoine existant"
+    case risk = "Gestion du risque & profil investisseur"
     
     var id: String { rawValue }
 
-    var icon: CategoryIconsProfil {
+    var icon: CategoryIcon {
         switch self {
+        case .essential:    return .selectionFill
         case .personal:     return .userFill
-        case .professional: return .bagSimpleFill
-        case .patrimony:    return .currencyDollardFill
-        case .financial:    return .houseLineFill
-        case .objectives:   return .targetFill
-        case .risk:         return .warningFill
+        case .savings:      return .handCoinsFill
         case .protection:   return .shieldSlashFill
+        case .patrimony:    return .currencyEurFill
+        case .risk:         return .lifebuoyFill
         }
     }
 
     var titlePrefix: String {
         switch self {
+        case .essential:    return "Essentiel"
         case .personal:     return "Enfant"
-        case .professional: return "Travail"
-        case .patrimony:    return "Patrimoine"
-        case .financial:    return "Finance"
-        case .objectives:   return "Objectif"
-        case .risk:         return "Risque"
+        case .savings:      return "Épargne"
         case .protection:   return "Protection"
+        case .patrimony:    return "Patrimoine"
+        case .risk:         return "Risque"
         }
     }
 }
