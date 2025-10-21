@@ -26,21 +26,20 @@ struct ProjectsView: View {
                                     selectedProject = project
                                 }
                         } onDelete: {
-                            projectVM.remove(project)
+                            Task {
+                                await projectVM.remove(project)
+                            }
                         }
                     }
                     .padding(.bottom)
-                    
                     ContinueButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
                         projectCreatorVM.manager = projectVM
                         projectCreatorVM.isEditing.toggle()
                     }
                 }
                 .navigationTitle(Text("Mes Projets"))
-                .onAppear {
-                    Task {
-                        await projectVM.fetchProjects()
-                    }
+                .task {
+                    await projectVM.fetchProjects()
                 }
             }
             .background {

@@ -28,7 +28,18 @@ class NetworkingService {
         if let body = apiRequest.body {
             request.httpBody = body
         }
-        let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw URLError(.badServerResponse)
+        }
+        if httpResponse.statusCode == 204 || data.isEmpty {
+            if let empty = EmptyResponse() as? T {
+                return empty
+            } else {
+                throw URLError(.cannotParseResponse)
+            }
+        }
+        
         print(data)
         print("🧾 Réponse brute :", String(data: data, encoding: .utf8) ?? "Non décodable")
         let decoder = JSONDecoder()

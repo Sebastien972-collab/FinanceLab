@@ -28,8 +28,8 @@ struct ProjectData: Codable, Identifiable, Sendable {
         case currentImage
     }
     
-    func toPrject() -> Project {
-        var project = Project(name: name, currentImage: currentImage, finalDate: finalDate, amount: Decimal(goalAmount))
+    func toProject() -> Project {
+        let project = Project(name: name, currentImage: currentImage, finalDate: finalDate, amount: Decimal(goalAmount))
         return project
     }
     

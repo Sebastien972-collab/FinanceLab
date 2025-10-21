@@ -56,7 +56,11 @@ struct ProjectCreatorView: View {
                     ContinueButtonView(title: "Calculer", state: .normal) {
                         projectManager.recalculator(1000)
                     }
-                    ContinueButtonView(title: "Valider", state: .validate, action: projectManager.validate)
+                    ContinuButtonView(title: "Valider", state: .validate) {
+                        Task {
+                            await projectManager.validate()
+                        }
+                    }
                 }
             }
             .background(content: {

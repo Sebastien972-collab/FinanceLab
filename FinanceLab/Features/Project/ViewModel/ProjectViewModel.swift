@@ -18,26 +18,33 @@ final class ProjectViewModel {
     var manager: UserManager = .shared
     func fetchProjects() async {
         do {
-            self.projects = try await service.fetProjects(userId: manager.currentUser.id.uuidString)
+            self.projects = try await service.fetProjects()
         } catch  {
             self.error = error
             self.showError =  true
         }
     }
     
-    func addProject(_ project: Project) {
-        if projects.contains(project) {
-            guard let index = projects.firstIndex(of: project) else { return }
-            projects.remove(at: index)
-            projects.append(project)
-        } else {
-            projects.append(project)
+    func addProject(_ project: Project) async {
+        guard projects.contains(project) == false else { return}
+        do {
+            let newProject = try await service.addProject(project: project.toProjectData())
+            self.projects.append(newProject.toProject())
+        } catch  {
+            print(error.localizedDescription)
         }
         
     }
-    func remove(_ project: Project) {
-        guard projects.contains(project), let index = projects.firstIndex(of: project) else { return }
-        projects.remove(at: index)
+    func remove(_ project: Project) async {
+        guard projects.contains(project), let index = projects.firstIndex(of: project) else { return}
+        do {
+            try await service.removeProject(projectID: project.id.uuidString)
+            projects.remove(at: index)
+        } catch  {
+            self.error = error
+            self.showError =  true
+        }
+       
     }
     
     

@@ -36,6 +36,7 @@ struct ProjectCard: View {
                 }
             }
             .padding(.horizontal)
+            .clipped()
             
         }
     }

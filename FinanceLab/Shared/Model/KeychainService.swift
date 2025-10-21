@@ -59,5 +59,10 @@ class KeychainService {
         }
     }
     
+     func getToken() throws -> String {
+        guard let data = KeychainService.shared.read(service: "com.financelab.auth", account: "jwtToken"), let token = String(data: data, encoding: .utf8) else { throw LoginError.unknown  }
+        return token
+    }
+    
     
 }

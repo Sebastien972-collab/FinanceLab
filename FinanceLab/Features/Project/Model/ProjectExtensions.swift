@@ -60,4 +60,16 @@ extension Project {
             Project.preview
         ]
     }
+    
+    func toProjectData() -> ProjectData {
+        ProjectData(
+            id: self.id,
+            userID: UserManager.shared.currentUser.id,
+            name: self.name,
+            goalAmount: (NSDecimalNumber(decimal: self.goalAmount)).doubleValue,
+            amountSaved: (NSDecimalNumber(decimal: self.amountSaved)).doubleValue,
+            finalDate: self.deadline,
+            currentImage: self.currentImage ?? CategoryIcon.selectionFill.rawValue
+        )
+    }
 }

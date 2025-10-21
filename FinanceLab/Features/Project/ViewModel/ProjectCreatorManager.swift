@@ -15,7 +15,7 @@ class ProjectCreatorManager {
     var finalDate: Date =  .now
     var imageName: String = ""
     var stringGoalAmount: String = ""
-    var error: LocalizedError = ProjectCreatorError.emptyFiels
+    var error: Error = ProjectCreatorError.emptyFiels
     var showError: Bool = false
     var goalAmount: Decimal {
         convertStringToDecimal()
@@ -31,6 +31,7 @@ class ProjectCreatorManager {
     var manager: ProjectViewModel = .init()
     var selectedIcon: CategoryIcon = .carFill
     
+    let service: ProjectService = .shared
     func recalculator(_ asc : Decimal) {
         check()
         let createProject = self.createProject()
@@ -40,12 +41,19 @@ class ProjectCreatorManager {
             self.error = ProjectCreatorError.insufficientFunds
         }
     }
-     func validate() {
+     func validate() async {
         check()
-        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-        manager.addProject(newProject)
+         do {
+             let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+              newProject.updateIcon(selectedIcon.rawValue)
+             _ = try await service.addProject(project: newProject.toProjectData())
+             self.isEditing = false
+         } catch  {
+             self.error = error
+             self.showError = true
+         }
          
-        self.isEditing = false
+       
         
     }
     private func convertStringToDecimal() -> Decimal {
