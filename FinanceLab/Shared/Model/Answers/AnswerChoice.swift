@@ -5,24 +5,22 @@
 //  Created by Dembo on 10/10/2025.
 //
 
+
+
 import Foundation
 
-struct UserAnswer: Identifiable, Hashable, Codable {
+struct AnswerChoice: Identifiable {
     let id: UUID
     var content: String
-    var userId: UUID
-    var questionId: UUID    
-
+    var questionId: UUID
+    
     init(
         id: UUID = UUID(),
         content: String,
-        userId: UUID,
-        questionId: UUID
+        questionId: UUID,
     ) {
         self.id = id
         self.content = content
-        self.userId = userId
         self.questionId = questionId
     }
 }
-
