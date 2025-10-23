@@ -4,9 +4,6 @@
 //
 //  Created by Dembo on 15/10/2025.
 
-
-
-
 import SwiftUI
 
 struct FinancialQuestionView: View {
@@ -14,24 +11,23 @@ struct FinancialQuestionView: View {
     var body: some View {
         VStack {
             Spacer()
-            let question = viewModel.currentQuestion
             QuestionCard {
                 VStack(alignment: .center, spacing: 24) {
                     // Titre et icône
-                    Text(question.questionGroup.rawValue)
+                    Text(viewModel.currentQuestion.questionGroup.rawValue)
                         .font(.title)
                         .foregroundStyle(Color.Text.contrasted)
                     HStack {
-                        Text(question.questionGroup.titlePrefix)
+                        Text(viewModel.currentQuestion.questionGroup.titlePrefix)
                             .font(.title2)
-                        question.questionGroup.icon.image
+                        viewModel.currentQuestion.questionGroup.icon.image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 30, height: 30)
                             .foregroundStyle(LinearGradient.redGradient)
                     }
                     // Texte de la question
-                    Text(question.content)
+                    Text(viewModel.currentQuestion.content)
                         .font(.body)
                         .foregroundStyle(Color.Text.contrasted)
                     
@@ -44,8 +40,7 @@ struct FinancialQuestionView: View {
                     .frame(width: 200)
                         
                         Button("Valider") {
-                            viewModel.saveAnswer(viewModel.textAnswer, for: question)
-                            viewModel.nextQuestion()
+                            viewModel.saveAnswer()
                         }
                         .buttonStyle(FinanceButton(size: .mini))
                 }

@@ -9,9 +9,6 @@ import SwiftUI
 
 struct UserProfileView: View {
     @State var profilVM = ProfileViewModel()
-    
-    
-    
     var body: some View {
         NavigationStack {
                 ScrollView {
@@ -48,8 +45,15 @@ struct UserProfileView: View {
                             state: .validate,
                             action: {}
                         )
-                        CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
-                        CardProfil(iconName: .houseLineFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+//                        CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+//                        CardProfil(iconName: .houseLineFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
+                            ForEach(profilVM.userAnswers) { answer in
+                                                        CardProfil(
+                                                            iconName: answer.question.questionGroup.icon.resource,
+                                                            title: answer.question.label,
+                                                            subtitle: [answer.content]
+                                                        )
+                                                    }
                     }
                     
                     DemboCard {
@@ -81,3 +85,4 @@ struct UserProfileView: View {
 #Preview {
     UserProfileView()
 }
+
