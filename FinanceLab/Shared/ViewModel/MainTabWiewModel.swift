@@ -12,9 +12,6 @@ class TabViewModel {
     enum Selection {
         case home, project, inform
     }
-
-    
-
     var selection: Selection = .home
     var manager: UserManager = .shared
     var currentUser: User { manager.currentUser }
@@ -32,6 +29,7 @@ class TabViewModel {
             try await manager.fetchProfile()
             authState = .authenticated
         } catch {
+            print(error.localizedDescription)
             authState = .notAuthenticated
         }
     }

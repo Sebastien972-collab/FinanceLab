@@ -12,8 +12,10 @@ struct UserData: Decodable {
     let id: UUID
     let firstName: String
     let lastName: String
+    let userCategory: String
+    let profilePictureURL: String
     let email: String
-    let dateOfRegistration: Date
+    let balance: Double
     
     /// Convertit le DTO en objet `User` utilisable dans l’app
     func toUser() -> User {
@@ -23,7 +25,6 @@ struct UserData: Decodable {
             email: email
         )
         user.profilePictureUrl = nil
-        user.dateOfRegistration = dateOfRegistration
         return user
     }
 }

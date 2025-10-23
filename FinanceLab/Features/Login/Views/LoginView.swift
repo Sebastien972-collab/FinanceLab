@@ -39,6 +39,9 @@ struct LoginView: View {
                     }
                     TextField("Adresse email", text: $loginVM.email)
                         .textFieldStyle(CustomTextFieldStyle(style: .login))
+                        .keyboardType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
                     SecureField("Mot de passe", text: $loginVM.password)
                         .textFieldStyle(CustomTextFieldStyle(style: .login))
                     if loginVM.pickerSelected == 1 {

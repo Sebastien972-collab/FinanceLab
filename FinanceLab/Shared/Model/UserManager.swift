@@ -15,9 +15,9 @@ class UserManager {
     var isLoggedIn: Bool {
         currentUser != .guest
     }
-    func create(email: String, password: String) async throws {
+    func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
-            self.currentUser = try await service.create(email: email, password: password)
+            self.currentUser = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
         } catch  {
             throw error
         }

@@ -34,17 +34,17 @@ class ProjectCreatorManager {
     let service: ProjectService = .shared
     func recalculator(_ asc : Decimal) {
         check()
-        let createProject = self.createProject()
-        let itsOk = createProject.feasibilityCalculation(asc)
-        if itsOk {
-        } else {
-            self.error = ProjectCreatorError.insufficientFunds
-        }
+        //let createProject = self.createProject()
+//        let itsOk = createProject.feasibilityCalculation(asc)
+//        if itsOk {
+//        } else {
+//            self.error = ProjectCreatorError.insufficientFunds
+//        }
     }
      func validate() async {
         check()
          do {
-             let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
+             let newProject = Project(name: name, iconName: imageName, finalDate: finalDate, amount: goalAmount)
               newProject.updateIcon(selectedIcon.rawValue)
              _ = try await service.addProject(project: newProject.toProjectData())
              self.isEditing = false
@@ -77,9 +77,9 @@ class ProjectCreatorManager {
         
     }
     
-    private func createProject() -> Project {
-        Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-    }
+//    private func createProject() -> Project {
+//        Project(
+//    }
     
     private func check()  {
         guard !name.isEmpty, !stringGoalAmount.isEmpty else {
@@ -92,7 +92,7 @@ class ProjectCreatorManager {
         self.name = project.name
         self.startedDate = project.startedDate
         self.finalDate = project.deadline
-        self.imageName = project.currentImage ?? ""
+        self.imageName = project.iconName ?? ""
         self.stringGoalAmount = project.goalAmount.formatted()
         self.isEditing = true
     }

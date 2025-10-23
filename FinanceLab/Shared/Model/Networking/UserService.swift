@@ -12,8 +12,21 @@ final class UserService {
     private init() {}
     private let service = NetworkingService.shared
     
-    func create(email: String, password: String) async throws -> User {
-        try await authenticate(endpoint: "users", email: email, password: password)
+    func create(firstName: String, lastName: String, email: String, password: String) async throws -> User {
+        let credentials = ["id": UUID().uuidString,
+                           "firstName": firstName,
+                           "lastName": lastName,
+                           "email": email,
+                           "password": password]
+        
+        let jsonData = try JSONSerialization.data(withJSONObject: credentials)
+        print(jsonData)
+        let apiRequest = APIRequest(endpoint: "users" , httpMethod: .POST, body: jsonData)
+        let loginResponse = try await service.request(apiRequest, responseType: LoginResponse.self)
+        if let data = loginResponse.token.data(using: .utf8) {
+            KeychainService.shared.save(data: data, service: "com.financelab.auth", account: "jwtToken")
+        }
+        return try await fetchProfile()
     }
     
     func login(email: String, password: String) async throws -> User {
@@ -73,10 +86,13 @@ final class UserService {
         return expirationDate < Date()
     }
     
-    private func authenticate(endpoint: String, email: String, password: String) async throws -> User {
-        let credentials = ["email": email, "password": password]
-        let jsonData = try JSONSerialization.data(withJSONObject: credentials)
-        let apiRequest = APIRequest(endpoint: endpoint, httpMethod: .POST, body: jsonData)
-        return try await service.request(apiRequest, responseType: UserData.self).toUser()
-    }
+//    private func authenticate(endpoint: String, email: String, password: String) async throws -> LoginResponse {
+//        let credentials = [id: UUID().uuidString,
+//                           "firstName": "Sébastien",
+//                           "lastName": "Daguin", "email": email, "password": password]
+//        let jsonData = try JSONSerialization.data(withJSONObject: credentials)
+//        print(jsonData)
+//        let apiRequest = APIRequest(endpoint: endpoint, httpMethod: .POST, body: jsonData)
+//        return try await service.request(apiRequest, responseType: LoginResponse.self)
+//    }
 }

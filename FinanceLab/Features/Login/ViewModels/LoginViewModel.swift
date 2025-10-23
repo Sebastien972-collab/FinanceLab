@@ -45,9 +45,11 @@ class LoginViewModel {
     func create(callback: (() -> Void)? = nil) async {
         // Takes email, password, first name and last name, and creates a new account with it
         isWorking = true
+        defer { isWorking = false }
         checkField()
         do {
-            try await manager.create(email: email, password: password)
+            
+            try await manager.create(firstName: firstName, lastName: lastName, email: email, password: password)
             if let callback = callback {
                 DispatchQueue.main.async {
                     callback()
