@@ -21,22 +21,22 @@ class ProfileViewModel {
             // Exemples de réponses à afficher dans le profil
             userAnswers = [
                 Answer(
-                    content: "Je suis en CDI et je gagne 1300 € / mois",
+                    content: "1300",
                     user: currentUser,
                     question: Question.questionDatabase[0] // "Revenus stables"
                 ),
                 Answer(
-                    content: "700 € de charges fixes",
+                    content: "700",
                     user: currentUser,
                     question: Question.questionDatabase[3] // "Charges"
                 ),
                 Answer(
-                    content: "J’épargne 150 € par mois",
+                    content: "150",
                     user: currentUser,
                     question: Question.questionDatabase[4] // "Épargne"
                 ),
                 Answer(
-                    content: "2 enfants à charge",
+                    content: "2",
                     user: currentUser,
                     question: Question.questionDatabase[5] // "Enfants"
                 )

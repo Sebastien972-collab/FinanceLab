@@ -48,12 +48,13 @@ struct UserProfileView: View {
 //                        CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
 //                        CardProfil(iconName: .houseLineFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
                             ForEach(profilVM.userAnswers) { answer in
-                                                        CardProfil(
-                                                            iconName: answer.question.questionGroup.icon.resource,
-                                                            title: answer.question.label,
-                                                            subtitle: [answer.content]
-                                                        )
-                                                    }
+                                CardProfil(
+                                    iconName: answer.question.questionGroup.icon.resource,
+                                    title: answer.question.questionGroup.titlePrefix,
+                                    subtitle: answer.question.label,
+                                    content:  (answer.question.followUpLabel ?? "") + " : " + answer.content
+                                )
+                            }
                     }
                     
                     DemboCard {
