@@ -7,19 +7,17 @@
 
 import Foundation
 
-struct Question: Identifiable, Hashable/*, Codable*/ {
+struct Question: Identifiable, Hashable{
     let id: UUID
-//    var icon: CategoryIcon
     var label: String
     var content: String
     var followUpLabel: String?
     var questionGroup: QuestionGroup
     
-    init(/*icon: CategoryIcon ,*/label: String,content: String,followUpLabel: String? = nil,
+    init(label: String,content: String,followUpLabel: String? = nil,
         questionGroup: QuestionGroup
     ) {
         self.id = UUID()
-//        self.icon = icon
         self.label = label
         self.content = content
         self.followUpLabel = followUpLabel

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Answer: Identifiable/*, Hashable*/ {
+struct Answer: Identifiable {
     let id = UUID()
     var content: String
     var user: User
