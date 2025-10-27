@@ -9,32 +9,31 @@ struct CardProfil: View {
     var body: some View {
     StandardCard{
         HStack(spacing: 12){
-         
-            
             Image(iconName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 60, height: 60)
                 .foregroundStyle(LinearGradient.redGradient)
-                VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 0) {
                     Text(title)
                         .font(.cardTitle)
                         .foregroundColor(.white)
-                    ForEach(subtitle, id:\.self) { sub in
-                        Text(sub)
-                            .font(.body)
-                    }
+                    Text(subtitle)
+                        .font(.cardTitle)
+                }
+                    Text(content)
                 }
                 .foregroundStyle(Color.Text.primary)
             }
         .padding()
-            
 
-           
+
+
         }
-       
-        
-       
+
+
+
     }
 }
 #Preview {
