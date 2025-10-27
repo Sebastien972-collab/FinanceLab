@@ -35,6 +35,7 @@ struct DashboardView : View {
                 .padding()
             }
             .toolbar {
+
                 ToolbarItem(placement: .primaryAction) {
                     Button("Nouvelle transaction", image: .circlesThreePlusFill) {
                         // action

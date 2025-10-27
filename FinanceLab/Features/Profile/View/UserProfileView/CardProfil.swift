@@ -1,49 +1,10 @@
-//
-//  CardProfil.swift
-//  FinanceLab
-//
-//  Created by Dembo on 07/10/2025.
-//
-
-//import SwiftUI
-//
-//struct CardProfil: View {
-//
-//    var body: some View {
-//        StandardCard {
-//            HStack{
-//                Image(systemName: "eurosign.ring")
-//                Spacer()
-//                VStack(alignment: .leading) {
-//                  
-//                    Text("Emploi")
-//                        .font(Font.cardTitle)
-//                    Text( "Je suis en CDI")
-//                        .font(Font.body)
-//                    Text( "Je gagne 1300 € / mois ")
-//                        .font(Font.body)
-//                }
-//
-//                
-//                
-//            }
-//           
-//        }
-//    }
-//}
-//
-//#Preview {
-//    CardProfil()
-//}
-
 import SwiftUI
 
 struct CardProfil: View {
     var iconName: ImageResource
     var title: String
-    var subtitle: [String]
-    
-    
+    var subtitle: String
+    var content: String
 
     var body: some View {
     StandardCard{
@@ -76,8 +37,6 @@ struct CardProfil: View {
        
     }
 }
-
 #Preview {
-    CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
-    
+    CardProfil(iconName: .currencyEurFill, title: "Essentiel", subtitle: "Revenus stables", content: "Moyenne par mois (en euros) : 1200 €")
 }

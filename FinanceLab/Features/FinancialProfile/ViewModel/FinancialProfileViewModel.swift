@@ -19,51 +19,23 @@ class FinancialProfileViewModel {
     }
     
     // Sauvegarde la réponse de l’utilisateur
-    func saveAnswer(_ content: String, for question: Question) {
+    func saveAnswer() {
+        guard !textAnswer.isEmpty else { return }
         let answer = Answer(
-            content: content,
-            user: User(firstName: "Jean", lastName: "Machin", email: "jeanmachin@gmail.com", profilePictureUrl: ""),   // TODO: replace with current user
-            question: Question(label: "Question ?", content: "Ma question ?", questionGroup: .personal),
+            content: textAnswer,
+            user: .guest,   // TODO: replace with current user
+            question: currentQuestion,
         )
         userAnswers.append(answer)
+        guard currentQuestionIndex < questions.count - 1 else { return }
+        nextQuestion()
     }
     
     // Passe à la question suivante
     func nextQuestion() {
         if currentQuestionIndex < questions.count - 1 {
             currentQuestionIndex += 1
-            textAnswer = ""
+            textAnswer.removeAll()
         }
     }
-    
-    //    // Permet de lier QuestionGroup → AnswerCategory
-    //    // (utile pour ton modèle Answer)
-    //    func questionGroupToCategory(_ group: QuestionGroup) -> AnswerCategory {
-    //        switch group {
-    //        case .personal: return .personal
-    //        case .professional: return .professional
-    //        case .patrimony: return .patrimony
-    //        case .financial: return .financial
-    //        case .objectives: return .objectives
-    //        case .risk: return .risk
-    //        case .protection: return .protection
-    //        }
-    //    }
-    //}
-    
-    //
-    //extension QuestionGroup {
-    //    func toAnswerCategory() -> AnswerCategory {
-    //        switch self {
-    //        case .personal: return .personal
-    //        case .professional: return .professional
-    //        case .patrimony: return .patrimony
-    //        case .financial: return .financial
-    //        case .objectives: return .objectives
-    //        case .risk: return .risk
-    //        case .protection: return .protection
-    //        }
-    //    }
-    //}
-    
 }
