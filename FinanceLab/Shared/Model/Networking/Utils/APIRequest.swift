@@ -10,5 +10,5 @@ import Foundation
 struct APIRequest {
     let endpoint: String
     let httpMethod: HTTPMethod
-    let body: Data?
+    var body: Data? = nil
 }

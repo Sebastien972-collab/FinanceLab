@@ -17,7 +17,7 @@ class User: Identifiable {
     var dateOfRegistration: Date = Date()
     var balance: Decimal = 0.00
     var profilePictureUrl: String?
-    
+    var transactions: [Transaction] = []
     init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
         self.firstName = firstName
         self.lastName = lastName
@@ -25,14 +25,36 @@ class User: Identifiable {
         self.profilePictureUrl = profilePictureUrl
     }
     
-    convenience init(firstName: String, lastName: String, email: String, dateOfRegistration: Date, balance: Decimal, profilePictureUrl: String? = nil ) {
+    convenience init(firstName: String, lastName: String, email: String, dateOfRegistration: Date, balance: Decimal, profilePictureUrl: String? = nil, transaction: [Transaction] = []) {
         self.init(firstName: firstName, lastName: lastName, email: email, profilePictureUrl: profilePictureUrl)
         self.dateOfRegistration = dateOfRegistration
         self.balance = balance
+        self.transactions =  transaction
+    }
+    
+    func addTransaction(_ transaction: Transaction) {
+        guard transactions.contains(transaction) else { return }
+        transactions.append(transaction)
+    }
+    
+    func updateTransaction(_ transaction: Transaction) {
+        if let index = transactions.firstIndex(of: transaction) {
+            transactions[index] = transaction
+        }
+    }
+    
+    func removeTransaction(_ transaction: Transaction) {
+        guard transactions.contains(transaction) else { return }
+        transactions.removeAll { $0 == transaction }
     }
 }
 
-extension User {
+extension User: Equatable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        lhs.id == rhs.id && lhs.email == rhs.email
+    }
+    
+    
     static var guest: User {
         .init(firstName: "Visiteur", lastName: "Anonyme", email: "visiteur@finance.com")
     }

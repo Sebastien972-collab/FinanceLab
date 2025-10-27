@@ -12,7 +12,7 @@ struct ProjectCard: View {
     var body: some View {
         StandardCard {
             HStack {
-                if let imageName = project.currentImage {
+                if let imageName = project.iconName {
                     ImageCard(imageName: imageName)
                 } else {
                     ImageCard(imageName: "target")
@@ -36,6 +36,7 @@ struct ProjectCard: View {
                 }
             }
             .padding(.horizontal)
+            .clipped()
             
         }
     }

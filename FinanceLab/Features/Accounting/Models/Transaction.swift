@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-class Transaction: Identifiable {
+class Transaction: Identifiable, Equatable {
     var id = UUID()
     var name : String
     var icon : CategoryIcon
@@ -23,5 +23,8 @@ class Transaction: Identifiable {
         self.amount = amount
         self.date = date
         self.contractor = contractor
+    }
+    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+        lhs.id == rhs.id && lhs.date == rhs.date && lhs.name == rhs.name && lhs.contractor == rhs.contractor && lhs.amount == rhs.amount
     }
 }

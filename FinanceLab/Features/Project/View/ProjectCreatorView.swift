@@ -56,7 +56,11 @@ struct ProjectCreatorView: View {
                     ContinueButtonView(title: "Calculer", state: .normal) {
                         projectManager.recalculator(1000)
                     }
-                    ContinueButtonView(title: "Valider", state: .validate, action: projectManager.validate)
+                    ContinuButtonView(title: "Valider", state: .validate) {
+                        Task {
+                            await projectManager.validate()
+                        }
+                    }
                 }
             }
             .background(content: {
@@ -90,17 +94,12 @@ struct ProjectCreatorView: View {
                 }
             }
             .alert("Error", isPresented: $projectManager.showError) {
-                Button {
-                    
-                } label: {
+                Button {} label: {
                     Text("Ok")
                 }
-                
             } message: {
                 Text(projectManager.error.localizedDescription)
             }
-            
-            
         }
     }
 }

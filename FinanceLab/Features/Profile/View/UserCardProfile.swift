@@ -8,31 +8,38 @@
 import SwiftUI
 
 struct UserCardProfile: View {
-    let user: User
+    @State private var isPresented: Bool = false
+    let profileVm = ProfileViewModel()
     var body: some View {
-        NavigationLink {
-            UserProfileView()
-        } label: {
-            StandardCard {
-                HStack(alignment: .center) {
-                    CircleImageProfil(urlImage: user.profilePictureUrl)
-                        .padding(.vertical, 5)
-                    VStack(alignment: .leading) {
-                        Text(user.displayName)
-                            .font(Font.cardTitle)
-                            .foregroundStyle(Color.Text.primary)
-                        Text("Profil financier")
-                            .font(Font.cardSubtitle)
-                            .foregroundStyle(Color.Text.primary)
-                    }
+        StandardCard {
+            HStack(alignment: .center) {
+                CircleImageProfil(urlImage: profileVm.userManager.currentUser.profilePictureUrl)
+                    .padding(.vertical, 5)
+                VStack(alignment: .leading) {
+                    Text(profileVm.userManager.currentUser.displayName)
+                        .font(Font.cardTitle)
+                        .foregroundStyle(Color.Text.primary)
+                    Text("Profil financier")
+                        .font(Font.cardSubtitle)
+                        .foregroundStyle(Color.Text.primary)
                 }
             }
         }
-
+        .onTapGesture {apGesture in
+            isPresented.toggle()
+        }
+        .navigationDestination(isPresented: $isPresented) {
+            UserProfileView(profilVM: profileVm)
+        }
+        
     }
 }
 
 #Preview {
-    UserCardProfile(user: .preview)
-        .padding()
+    VStack {
+        UserCardProfile()
+            .padding()
+        UserCardProfile()
+            .padding()
+    }
 }

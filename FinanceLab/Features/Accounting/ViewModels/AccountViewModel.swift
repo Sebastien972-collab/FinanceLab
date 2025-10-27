@@ -9,11 +9,13 @@ import Foundation
 
 @Observable
 class AccountViewModel {
-    
+    var manager: UserManager = .shared
     func saveTransaction(_ transaction: Transaction) {
         if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
             transactions[index] = transaction
+            manager.currentUser.updateTransaction(transaction)
         } else {
+            manager.currentUser.addTransaction(transaction)
             transactions.append(transaction)
         }
     }
@@ -26,7 +28,7 @@ class AccountViewModel {
 
     
     func getLatestTransactions() -> [Transaction] {
-        return transactions
+        return manager.currentUser.transactions
             .sorted(by: { $0.date > $1.date })
             .prefix(50)
             .map { $0 }
@@ -37,6 +39,5 @@ class AccountViewModel {
         Transaction(name: "Switch 2", icon: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
         Transaction(name: "Essence", icon: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
         Transaction(name: "Salaire", icon: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
-
     ]
 }

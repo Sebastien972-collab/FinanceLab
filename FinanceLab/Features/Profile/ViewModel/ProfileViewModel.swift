@@ -10,7 +10,10 @@ import Foundation
 
 @Observable
 class ProfileViewModel {
-    var currentUser: User = .init(firstName: "Sophie", lastName: "DAGUIN", email: "sohphie@gmail.com")
+    let userManager: UserManager = .shared
+    var currentUser: User {
+        userManager.currentUser
+    }
     
     /// Base locale de réponses
 //    var userAnswers: [Answer] = Answer.userAnswerDatabase

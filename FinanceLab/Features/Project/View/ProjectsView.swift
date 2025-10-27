@@ -14,6 +14,7 @@ struct ProjectsView: View {
     @State private var projectCreatorVM: ProjectCreatorManager = .init()
     var body: some View {
         NavigationStack {
+            @Bindable var projectVM = projectVM
             ScrollView {
                 VStack(alignment: .center) {
                     ForEach(projectVM.projects) { project in
@@ -26,20 +27,28 @@ struct ProjectsView: View {
                                     selectedProject = project
                                 }
                         } onDelete: {
-                            projectVM.remove(project)
+                            Task {
+                                await projectVM.remove(project)
+                            }
                         }
                     }
                     .padding(.bottom)
-                    
                     ContinueButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
                         projectCreatorVM.manager = projectVM
                         projectCreatorVM.isEditing.toggle()
                     }
                 }
                 .navigationTitle(Text("Mes Projets"))
-                .onAppear {
-                   
+                .task {
+                    await projectVM.fetchProjects()
                 }
+            }
+            .alert("Error", isPresented: $projectVM.showError) {
+                Button {} label: {
+                    Text("Ok")
+                }
+            } message: {
+                Text(projectVM.error.localizedDescription)
             }
             .background {
                 FinancialBackground()

@@ -23,7 +23,11 @@ extension Project {
     var deadlineFormatted: String {
         Project.formattedDate(deadline)
     }
-    
+    var monthlyAmount: Decimal {
+        let months = DateCalculator.monthsBetween(startedDate, deadline)
+            guard months > 0 else { return goalAmount } // Si moins d’un mois, le total = montant à payer
+            return goalAmount / Decimal(months)
+    }
     static func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
@@ -35,29 +39,30 @@ extension Project {
     static var preview: Project {
         let project = Project(
             name: "Voyage Japon 🇯🇵",
-            currentImage: "airplane.departure",
             finalDate: Calendar.current.date(byAdding: .month, value: 12, to: .now)!,
             amount: 2400
         )
         try? project.addTransaction(200)
         try? project.addTransaction(150)
+        project.updateIcon("airplane.departure")
         return project
     }
     static var previews: [Project] {
         [
-            Project(
-                name: "Maison 🏡",
-                currentImage: "house.fill",
-                finalDate: Calendar.current.date(byAdding: .year, value: 20, to: .now)!,
-                amount: 200_000
-            ),
-            Project(
-                name: "Nouvelle voiture 🚗",
-                currentImage: "car.fill",
-                finalDate: Calendar.current.date(byAdding: .year, value: 5, to: .now)!,
-                amount: 20_000
-            ),
+            Project(name: "Maison 🏡", iconName: "house.fill", finalDate: Calendar.current.date(byAdding: .year, value: 20, to: .now)!, amount: 200_000),
+            Project(name: "Nouvelle voiture 🚗", iconName:  "car.fill", finalDate: Calendar.current.date(byAdding: .year, value: 5, to: .now)!, amount: 20_000),
             Project.preview
         ]
+    }
+    
+    func toProjectData() -> ProjectData {
+        ProjectData(id: self.id, name: self.name, goalAmount: self.goalAmount.toDoucble(), amountSaved: self.amountSaved.toDoucble(), finalDate: self.deadline, currentImage: self.iconName ?? "house.fill")
+    }
+}
+
+
+extension Decimal {
+    func toDoucble() -> Double {
+        NSDecimalNumber(decimal: self).doubleValue
     }
 }

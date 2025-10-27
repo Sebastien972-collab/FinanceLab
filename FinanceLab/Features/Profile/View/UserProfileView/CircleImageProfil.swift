@@ -31,8 +31,9 @@ struct CircleImageProfil: View {
 }
 
 #Preview {
-    VStack {
+    HStack {
         CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
+        CircleImageProfil(urlImage: nil)
     }
 }
 
@@ -42,6 +43,7 @@ struct ImagePersonFill: View {
             .resizable()
             .aspectRatio(contentMode: .fill)
             .clipShape(Circle())
-            .frame(maxWidth: 67, maxHeight: 67)
+            .frame(maxWidth: 60, maxHeight: 60) // Displays the loaded image.
+            .padding(5)
     }
 }

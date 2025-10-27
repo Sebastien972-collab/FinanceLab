@@ -14,7 +14,7 @@ struct ProjectDetailsView: View {
     @State var manager: ProjectCreatorManager = .init()
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            if let imageName = project.currentImage {
+            if let imageName = project.iconName {
                 Image(systemName: imageName)
                     .resizable()
                     .scaledToFit()
@@ -63,7 +63,7 @@ struct ProjectDetailsView: View {
                             .font(Font.custom("Host Grotesk", size: 18))
                             .fontWeight(.bold)
                             .foregroundStyle(Color.Text.contrasted)
-                        ProjectDetailsCardView(title: "Épargne mensuelle", subtitle: "Je mets de côté chaque mois", info: "\(project.scheduler.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €")
+                        ProjectDetailsCardView(title: "Épargne mensuelle", subtitle: "Je mets de côté chaque mois", info: "\(project.monthlyAmount.formatted()) €")
                         ProjectDetailsCardView(title: "Durée", subtitle: "Ce projet dure depuis", info: "\(project.numberOfMonthsToReachGoal) mois ")
                         ProjectDetailsCardView(title: "Fin", subtitle: "À ce rythme, ce projet sera fini en", info: project.deadlineFormatted)
                     }

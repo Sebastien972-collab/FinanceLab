@@ -83,6 +83,9 @@ enum CategoryIcon: String, CaseIterable, Identifiable {
     }
     
     var image: Image { Image(resource) }
+    func getIconWith(_ string: String) -> CategoryIcon {
+        CategoryIcon(rawValue: string) ?? .selectionFill
+    }
 
     
 }

@@ -15,7 +15,7 @@ class ProjectCreatorManager {
     var finalDate: Date =  .now
     var imageName: String = ""
     var stringGoalAmount: String = ""
-    var error: LocalizedError = ProjectCreatorError.emptyFiels
+    var error: Error = ProjectCreatorError.emptyFiels
     var showError: Bool = false
     var goalAmount: Decimal {
         convertStringToDecimal()
@@ -31,21 +31,29 @@ class ProjectCreatorManager {
     var manager: ProjectViewModel = .init()
     var selectedIcon: CategoryIcon = .carFill
     
+    let service: ProjectService = .shared
     func recalculator(_ asc : Decimal) {
         check()
-        let createProject = self.createProject()
-        let itsOk = createProject.feasibilityCalculation(asc)
-        if itsOk {
-        } else {
-            self.error = ProjectCreatorError.insufficientFunds
-        }
+        //let createProject = self.createProject()
+//        let itsOk = createProject.feasibilityCalculation(asc)
+//        if itsOk {
+//        } else {
+//            self.error = ProjectCreatorError.insufficientFunds
+//        }
     }
-     func validate() {
+     func validate() async {
         check()
-        let newProject = Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-        manager.addProject(newProject)
+         do {
+             let newProject = Project(name: name, iconName: imageName, finalDate: finalDate, amount: goalAmount)
+              newProject.updateIcon(selectedIcon.rawValue)
+             _ = try await service.addProject(project: newProject.toProjectData())
+             self.isEditing = false
+         } catch  {
+             self.error = error
+             self.showError = true
+         }
          
-        self.isEditing = false
+       
         
     }
     private func convertStringToDecimal() -> Decimal {
@@ -69,9 +77,9 @@ class ProjectCreatorManager {
         
     }
     
-    private func createProject() -> Project {
-        Project(name: name, currentImage: imageName, finalDate: finalDate, amount: goalAmount)
-    }
+//    private func createProject() -> Project {
+//        Project(
+//    }
     
     private func check()  {
         guard !name.isEmpty, !stringGoalAmount.isEmpty else {
@@ -84,7 +92,7 @@ class ProjectCreatorManager {
         self.name = project.name
         self.startedDate = project.startedDate
         self.finalDate = project.deadline
-        self.imageName = project.currentImage ?? ""
+        self.imageName = project.iconName ?? ""
         self.stringGoalAmount = project.goalAmount.formatted()
         self.isEditing = true
     }

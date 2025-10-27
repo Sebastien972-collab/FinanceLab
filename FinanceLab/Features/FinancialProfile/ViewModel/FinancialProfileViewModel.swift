@@ -10,6 +10,7 @@ import Observation
 class FinancialProfileViewModel {
     var questions: [Question] = Question.questionDatabase
     var userAnswers: [Answer] = []
+    
     var currentQuestionIndex: Int = 0
     var textAnswer: String = ""
     

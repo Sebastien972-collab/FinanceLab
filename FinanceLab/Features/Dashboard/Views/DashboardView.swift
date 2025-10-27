@@ -13,13 +13,11 @@ struct DashboardView : View {
     var healthScore: Double
     var monthlyRAS: Double
     var dailyRAS: Double
-    
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading ,spacing: 32) {
-                    UserCardProfile(user: .preview)
-                        .frame(maxWidth: 230, maxHeight: 54)
+                    UserCardProfile()
                     BudgetCard(
                         healthScore: healthScore,
                         monthlyRAS: monthlyRAS,
@@ -32,7 +30,7 @@ struct DashboardView : View {
                     NavigationLink(destination: TransactionListView()) {
                         Text("Je fais mes comptes !")
                     }
-                        .buttonStyle(FinanceButton(state: .validate))
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
                 .padding()
             }
