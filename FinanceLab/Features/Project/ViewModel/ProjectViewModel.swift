@@ -16,6 +16,7 @@ final class ProjectViewModel {
     var creatorMode: Bool = false
     var service: ProjectService = .shared
     var manager: UserManager = .shared
+    
     func fetchProjects() async {
         do {
             self.projects = try await service.fetProjects()

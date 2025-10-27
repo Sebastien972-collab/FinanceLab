@@ -53,7 +53,7 @@ final class UserService {
     }
     
     func fetchProfile() async throws -> User  {
-        guard  let data = KeychainService.shared.read(service: "com.financelab.auth", account: "jwtToken"),  let token = String(data: data, encoding: .utf8) else {
+        guard let data = KeychainService.shared.read(service: "com.financelab.auth", account: "jwtToken"),  let token = String(data: data, encoding: .utf8) else {
             throw LoginError.unknown
         }
         

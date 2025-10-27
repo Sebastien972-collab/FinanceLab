@@ -56,7 +56,7 @@ extension Project {
     }
     
     func toProjectData() -> ProjectData {
-        ProjectData(id: self.id, userID: UUID(), name: self.name, goalAmount: self.goalAmount.toDoucble(), amountSaved: self.amountSaved.toDoucble(), finalDate: self.deadline, currentImage: self.iconName ?? "house.fill")
+        ProjectData(id: self.id, name: self.name, goalAmount: self.goalAmount.toDoucble(), amountSaved: self.amountSaved.toDoucble(), finalDate: self.deadline, currentImage: self.iconName ?? "house.fill")
     }
 }
 

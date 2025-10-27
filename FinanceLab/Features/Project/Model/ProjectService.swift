@@ -17,7 +17,12 @@ class ProjectService {
         let token = try keychain.getToken()
         print(token)
         let apiResquest = APIRequest(endpoint: "projects", httpMethod: .GET)
+        print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<Projects>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><")
         let response = try await service.request(apiResquest, responseType: [ProjectData].self, token: token)
+        print("Nombre de projet trouvé \(response.count)")
+        for project in response {
+            print("Project \(project.name) bien récupéré")
+        }
         return response.map {$0.toProject()}
     }
     

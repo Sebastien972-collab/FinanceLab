@@ -10,7 +10,6 @@ import FinanceCore
 /// Modèle représentant un projet côté client (correspond à ton API Vapor)
 struct ProjectData: Codable, Identifiable, Sendable {
     let id: UUID
-    let userID: UUID
     let name: String
     let goalAmount: Double
     let amountSaved: Double
@@ -20,7 +19,6 @@ struct ProjectData: Codable, Identifiable, Sendable {
     // Clés explicites pour correspondre à l’API
     enum CodingKeys: String, CodingKey {
         case id
-        case userID
         case name
         case goalAmount
         case amountSaved
