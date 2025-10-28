@@ -37,7 +37,7 @@ struct TransactionListView: View {
                             // TODO: Budget par catégories
                     }
                     VStack(alignment: .leading) {
-                        let groupedTransactions = Dictionary(grouping: accountVM.getLatestTransactions()) { transaction in
+                        let groupedTransactions = Dictionary(grouping: accountVM.transactionsList) { transaction in
                             Calendar.current.startOfDay(for: transaction.date)
                         }
                         ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (date, transactions) in
@@ -50,7 +50,7 @@ struct TransactionListView: View {
                                     .padding(.top, 6)
                             ForEach(transactions) { transaction in
                                 NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
-                                    TransactionListRow(name: transaction.name, icon: transaction.icon, amount: transaction.amount)
+                                    TransactionListRow(name: transaction.name, icon: transaction.iconName, amount: transaction.amount)
                                 }
                             }
                         }
@@ -58,6 +58,16 @@ struct TransactionListView: View {
                 }
                 .foregroundStyle(Color.Text.contrasted)
                 .padding(.horizontal)
+            }
+            .task {
+                await accountVM.fetchTransactions()
+            }
+            .alert("Error", isPresented: $accountVM.showError) {
+                Button {} label: {
+                    Text("Ok")
+                }
+            } message: {
+                Text(accountVM.error.localizedDescription)
             }
             .toolbar {
                 ToolbarItem(placement: .navigation) {

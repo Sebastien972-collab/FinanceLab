@@ -9,15 +9,32 @@ import Foundation
 
 @Observable
 class AccountViewModel {
+    // Services
     var manager: UserManager = .shared
-    func saveTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
-            transactions[index] = transaction
-            manager.currentUser.updateTransaction(transaction)
-        } else {
-            manager.currentUser.addTransaction(transaction)
-            transactions.append(transaction)
+    var service = TransactionService()
+    
+    // Affichage d'un message d'erreur explicite
+    var error: Error = LoginError.unknown
+    var showError: Bool = false
+    
+    // Variables affichées dans les vues
+    var transactionsList: [Transaction] = []
+    
+    func postTransaction(_ transaction: Transaction) async {
+        do {
+            try await service.postTransaction(transaction: transaction.toTransactionData())
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error posting a new transaction: \(error)")
         }
+//        if let index = transactionsList.firstIndex(where: { $0.id == transaction.id }) {
+//            transactions[index] = transaction
+//            manager.currentUser.updateTransaction(transaction)
+//        } else {
+//            manager.currentUser.addTransaction(transaction)
+//            transactions.append(transaction)
+//        }
     }
     
     func deleteTransaction(_ transaction: Transaction) {
@@ -26,18 +43,21 @@ class AccountViewModel {
         }
     }
 
-    
-    func getLatestTransactions() -> [Transaction] {
-        return manager.currentUser.transactions
-            .sorted(by: { $0.date > $1.date })
-            .prefix(50)
-            .map { $0 }
+    func fetchTransactions() async {
+        do {
+            transactionsList = try await service.fetchTransactions()
+                .sorted(by: { $0.date > $1.date })
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error fetching transactions: \(error)")
+        }
     }
     
     private var transactions: [Transaction] = [
-        Transaction(name: "Intérêts", icon: .currencyEurFill, amount: 32.28, date: Date(), contractor: "Caisse d'Épargne"),
-        Transaction(name: "Switch 2", icon: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
-        Transaction(name: "Essence", icon: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
-        Transaction(name: "Salaire", icon: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
+        Transaction(name: "Intérêts", iconName: .currencyEurFill, amount: 32.28, date: Date(), contractor: "Caisse d'Épargne"),
+        Transaction(name: "Switch 2", iconName: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
+        Transaction(name: "Essence", iconName: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
+        Transaction(name: "Salaire", iconName: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
     ]
 }

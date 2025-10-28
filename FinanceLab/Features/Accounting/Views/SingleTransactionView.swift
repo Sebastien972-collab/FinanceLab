@@ -16,7 +16,7 @@ struct SingleTransactionView: View {
     
     init(transaction: Transaction? = nil) {
         self.initialTransaction = transaction
-        _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", icon: .selectionFill, amount: 0, date: Date(), contractor: ""))
+        _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", iconName: .selectionFill, amount: 0, date: Date(), contractor: ""))
     }
     
     @State private var isDatePickerPresented = false
@@ -123,7 +123,15 @@ struct SingleTransactionView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") {
-                        accountVM.saveTransaction(editableTransaction)
+//                        if initialTransaction != nil {
+//                            Task {
+//                                await accountVM.putTransaction(editableTransaction)
+//                            }
+//                        } else {
+                            Task {
+                                await accountVM.postTransaction(editableTransaction)
+                            }
+//                        }
                         dismiss()
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
