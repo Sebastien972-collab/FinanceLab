@@ -38,7 +38,7 @@ struct SingleTransactionView: View {
                 VStack(alignment: .leading, spacing: 24) {
                         Text(initialTransaction != nil ? "Éditer une entrée" : "Nouvelle entrée")
                             .font(.title)
-                        FinancialPicker(options: ["Dépense", "Recette"], selected: $pickerSelected)
+                    FinancialPicker(options: ["Dépense", "Recette"], isTransaction: true, selected: $pickerSelected)
                     HStack(spacing: 42) {
                         VStack(alignment: .leading) {
                             Text("Icône")
