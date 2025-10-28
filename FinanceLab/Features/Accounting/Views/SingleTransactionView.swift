@@ -123,15 +123,13 @@ struct SingleTransactionView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") {
-//                        if initialTransaction != nil {
-//                            Task {
-//                                await accountVM.putTransaction(editableTransaction)
-//                            }
-//                        } else {
                             Task {
-                                await accountVM.postTransaction(editableTransaction)
+                                if initialTransaction != nil {
+                                    await accountVM.putTransaction(editableTransaction)
+                                } else {
+                                    await accountVM.postTransaction(editableTransaction)
+                                }
                             }
-//                        }
                         dismiss()
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))

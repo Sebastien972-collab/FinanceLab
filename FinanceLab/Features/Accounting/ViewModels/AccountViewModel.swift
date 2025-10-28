@@ -20,29 +20,8 @@ class AccountViewModel {
     // Variables affichées dans les vues
     var transactionsList: [Transaction] = []
     
-    func postTransaction(_ transaction: Transaction) async {
-        do {
-            try await service.postTransaction(transaction: transaction.toTransactionData())
-        } catch {
-            self.error = error
-            showError.toggle()
-            print("Error posting a new transaction: \(error)")
-        }
-//        if let index = transactionsList.firstIndex(where: { $0.id == transaction.id }) {
-//            transactions[index] = transaction
-//            manager.currentUser.updateTransaction(transaction)
-//        } else {
-//            manager.currentUser.addTransaction(transaction)
-//            transactions.append(transaction)
-//        }
-    }
+    // Fonctions CRUD
     
-    func deleteTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
-            transactions.remove(at:index)
-        }
-    }
-
     func fetchTransactions() async {
         do {
             transactionsList = try await service.fetchTransactions()
@@ -51,6 +30,32 @@ class AccountViewModel {
             self.error = error
             showError.toggle()
             print("Error fetching transactions: \(error)")
+        }
+    }
+    
+    func postTransaction(_ transaction: Transaction) async {
+        do {
+            try await service.postTransaction(transaction: transaction.toTransactionData())
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error posting a new transaction: \(error)")
+        }
+    }
+    
+    func putTransaction(_ transaction: Transaction) async {
+        do {
+            try await service.putTransaction(transaction: transaction.toTransactionData())
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error updating a transaction: \(error)")
+        }
+    }
+    
+    func deleteTransaction(_ transaction: Transaction) {
+        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
+            transactions.remove(at:index)
         }
     }
     

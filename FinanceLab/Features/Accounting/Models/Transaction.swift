@@ -9,7 +9,7 @@ import SwiftUI
 
 @Observable
 class Transaction: Identifiable, Equatable {
-    var id = UUID()
+    var id: UUID
     var name : String
     var iconName : CategoryIcon
     var amount : Double
