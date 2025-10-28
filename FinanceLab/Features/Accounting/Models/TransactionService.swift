@@ -36,7 +36,7 @@ class TransactionService {
         let _ = try await service.request(apiRequest, responseType: TransactionData.self, token: token)
     }
     
-    func deleteTransaction(id: UUID) async throws {     // TODO: works but usually returns an error on app
+    func deleteTransaction(id: UUID) async throws {
         let token = try keychain.getToken()
         let apiRequest = APIRequest(endpoint: "/transactions/\(id)", httpMethod: .DELETE)
         let _ = try await service.request(apiRequest, responseType: EmptyResponse.self, token: token)

@@ -11,67 +11,75 @@ struct TransactionListView: View {
     @Environment(\.dismiss) private var dismiss
     @State var accountVM = AccountViewModel()
     
-//    @State private var showTransactionSheet = false
     @State private var pickerSelected = 0
+    @State private var isLoading = false
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text(Date()
-                            .formatted(.dateTime
-                                .month(.wide)
-                                .year()
-                                .locale(Locale(identifier: "fr_FR")))
-                                .capitalized)
-                        .font(.title)
-                        FinancialPicker(options: [
-                            "Dépenses et recettes",
-                            "Par catégories"
-                        ], selected: $pickerSelected)
+    NavigationStack {
+    ScrollView {
+        if isLoading {
+            ProgressView()
+        } else {
+            VStack(spacing: 24) {
+                VStack(alignment: .leading, spacing: 16) {
+                    Text(Date()
+                        .formatted(.dateTime
+                            .month(.wide)
+                            .year()
+                            .locale(Locale(identifier: "fr_FR")))
+                            .capitalized)
+                    .font(.title)
+                    FinancialPicker(options: [
+                        "Dépenses et recettes",
+                        "Par catégories"
+                    ], selected: $pickerSelected)
+                }
+                switch pickerSelected {
+                    case 0: if accountVM.spent != 0 || accountVM.gained != 0 {
+                        SpendingRepartition(
+                            spent: $accountVM.spent,
+                            gained: $accountVM.gained
+                        )
                     }
-                    switch pickerSelected {
-                        case 0: if accountVM.spent != 0 || accountVM.gained != 0 {
-                            SpendingRepartition(
-                                spent: $accountVM.spent,
-                                gained: $accountVM.gained
-                            )
-                        }
-                        default: Text("TODO")
-                            // TODO: Budget par catégories
+                    default: Text("TODO")
+                        // TODO: Budget par catégories
+                }
+                VStack(alignment: .leading) {
+                    let groupedTransactions = Dictionary(grouping: accountVM.transactionsList) { transaction in
+                        Calendar.current.startOfDay(for: transaction.date)
                     }
-                    VStack(alignment: .leading) {
-                        let groupedTransactions = Dictionary(grouping: accountVM.transactionsList) { transaction in
-                            Calendar.current.startOfDay(for: transaction.date)
-                        }
-                        ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (date, transactions) in
-                                Text(date.formatted(.dateTime
-                                    .day()
-                                    .month(.wide)
-                                    .year()
-                                    .locale(Locale(identifier: "fr_FR"))))
-                                    .font(.listHeader)
-                                    .padding(.top, 6)
-                            ForEach(transactions) { transaction in
-                                NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
-                                    TransactionListRow(name: transaction.name, icon: transaction.iconName, amount: transaction.amount)
-                                }
+                    ForEach(groupedTransactions.sorted(by: { $0.key > $1.key }), id: \.key) { (date, transactions) in
+                        Text(date.formatted(.dateTime
+                            .day()
+                            .month(.wide)
+                            .year()
+                            .locale(Locale(identifier: "fr_FR"))))
+                        .font(.listHeader)
+                        .padding(.top, 6)
+                        ForEach(transactions) { transaction in
+                            NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
+                                TransactionListRow(name: transaction.name, icon: transaction.iconName, amount: transaction.amount)
                             }
                         }
                     }
                 }
-                .foregroundStyle(Color.Text.contrasted)
-                .padding(.horizontal)
             }
+            .foregroundStyle(Color.Text.contrasted)
+            .padding(.horizontal)
+        }
+    }
             .task {
+                isLoading = true
                 try! await Task.sleep(for: .milliseconds(10))
                 await accountVM.fetchTransactions()
                 accountVM.calcSpendingRepartition()
+                isLoading = false
             }
             .refreshable {
+                isLoading = true
                 await accountVM.fetchTransactions()
                 accountVM.calcSpendingRepartition()
+                isLoading = false
             }
             .alert("Error", isPresented: $accountVM.showError) {
                 Button {} label: {
@@ -100,9 +108,6 @@ struct TransactionListView: View {
                 .sharedBackgroundVisibility(.hidden)
             }
             .navigationBarBackButtonHidden()
-//            .navigationDestination(isPresented: $showTransactionSheet) {
-//                    SingleTransactionView().environment(accountVM)
-//            }
             .background {
                 FinancialBackground().ignoresSafeArea()
             }

@@ -20,7 +20,6 @@ struct SpendingRepartition: View {
     var body: some View {
         VStack(spacing: 20) {
             PercentageSlider(percentage: percentage, height: .big, color: .redToGreen)
-                .id(percentage)
             HStack {
                 VStack(alignment: .leading) {
                     HStack(spacing: 2) {
