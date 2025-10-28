@@ -21,6 +21,7 @@ import SwiftUI
 
 struct FinancialPicker: View {
     var options : [String] = []
+//    var isTransaction: Bool = false
     @Binding var selected : Int
 
     var body: some View {
@@ -36,7 +37,7 @@ struct FinancialPicker: View {
                             Spacer()
                         }
                         .frame(height: 34)
-                        .background(selected == index ? LinearGradient.greenGradient : LinearGradient.linearGradient(colors: [.clear], startPoint: .top, endPoint: .bottom))
+                        .background(selected == index ? LinearGradient.greenGradient : LinearGradient.clearGradient)
                         .foregroundStyle(selected == index ? Color.Text.primary : Color.Text.contrasted)
                         .font(.system(size: 12))
                         .clipShape(RoundedRectangle(cornerRadius: 50))
