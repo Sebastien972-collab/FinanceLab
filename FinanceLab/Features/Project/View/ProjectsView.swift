@@ -11,7 +11,7 @@ import FinanceCore
 struct ProjectsView: View {
     @Environment(ProjectViewModel.self) private var projectVM
     @State private var selectedProject: Project? = nil
-    @State private var projectCreatorVM: ProjectCreatorManager = .init()
+    @State private var projectCreatorVM: ProjectCreatorViewModel = .init()
     var body: some View {
         NavigationStack {
             @Bindable var projectVM = projectVM

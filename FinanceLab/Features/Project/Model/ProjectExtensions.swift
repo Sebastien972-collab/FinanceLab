@@ -34,6 +34,18 @@ extension Project {
         formatter.locale = Locale(identifier: "fr_FR")
         return formatter.string(from: date)
     }
+    var formattedGoalAmount: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        
+        let number = NSDecimalNumber(decimal: goalAmount)
+        let formatted = formatter.string(from: number) ?? "\(goalAmount)"
+        
+        return "\(formatted)\(currency.symbol)"
+    }
+
 }
 extension Project {
     static var preview: Project {
@@ -56,7 +68,7 @@ extension Project {
     }
     
     func toProjectData() -> ProjectData {
-        ProjectData(id: self.id, name: self.name, goalAmount: self.goalAmount.toDoucble(), amountSaved: self.amountSaved.toDoucble(), finalDate: self.deadline, currentImage: self.iconName ?? "house.fill")
+        ProjectData(id: self.id, name: self.name, endDate: self.deadline, iconName: self.iconName ?? "", creationDate: self.creationDate, amountTotal: self.goalAmount, amountSaved: self.amountSaved)
     }
 }
 

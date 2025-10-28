@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ProjectCreatorView: View {
-    @State var projectManager: ProjectCreatorManager = .init()
+    @State var projectManager: ProjectCreatorViewModel = .init()
     @Environment(\.dismiss) private var dismiss
     @State private var isPresented: Bool = false
     private enum InputField {

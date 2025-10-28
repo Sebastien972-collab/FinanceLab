@@ -9,9 +9,10 @@ import SwiftUI
 import FinanceCore
 
 struct ProjectDetailsView: View {
-    var project: Project
+    @State var project: Project
     @Environment(ProjectViewModel.self) private var projectVM
-    @State var manager: ProjectCreatorManager = .init()
+    @State var manager: ProjectCreatorViewModel = .init()
+    @State private var updateManager: ProjectUpdateCreator = .init(project: .preview)
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             if let imageName = project.iconName {
@@ -23,7 +24,7 @@ struct ProjectDetailsView: View {
                     .offset(x: 125, y: 20)
                     .foregroundStyle(LinearGradient.greenGradient)
                     .padding(.bottom)
-                
+
             }
             VStack(alignment: .leading) {
                 VStack(alignment: .leading) {
@@ -73,16 +74,18 @@ struct ProjectDetailsView: View {
                 Spacer()
             }
             .padding()
-            .navigationDestination(isPresented: $manager.isEditing, destination: {
-                ProjectCreatorView(projectManager: manager)
+            .sheet(isPresented: $manager.isEditing) {
+                ProjectCreatorView(projectManager: updateManager)
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
-            })
+            }
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
-                        manager.manager = projectVM
-                        manager.update(project: project)
+                        updateManager.manager = projectVM
+                        updateManager.setupProject(project)
+                        manager.isEditing = true
+                        
                     } label: {
                         Text("Modifier")
                             .frame(width: 120, height: 44)

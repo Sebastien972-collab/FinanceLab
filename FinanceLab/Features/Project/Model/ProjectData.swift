@@ -11,24 +11,17 @@ import FinanceCore
 struct ProjectData: Codable, Identifiable, Sendable {
     let id: UUID
     let name: String
-    let goalAmount: Double
-    let amountSaved: Double
-    let finalDate: Date
-    let currentImage: String
-    
-    // Clés explicites pour correspondre à l’API
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case goalAmount
-        case amountSaved
-        case finalDate
-        case currentImage
-    }
+    let endDate: Date
+    let iconName: String
+    let creationDate: Date
+    let amountTotal: Decimal
+    let amountSaved: Decimal
     
     func toProject() -> Project {
-        let project = Project(name: self.name, finalDate: self.finalDate, amount: Decimal(self.amountSaved), transactions: [], currency: .eur)
+        let project = Project(name: self.name, finalDate: self.endDate, amount: self.amountTotal, transactions: [], currency: .eur)
         project.id = self.id
+        project.amountSaved = self.amountSaved
+        project.iconName = self.iconName
         return project
     }
     

@@ -12,8 +12,13 @@ struct ProjectCard: View {
     var body: some View {
         StandardCard {
             HStack {
-                if let imageName = project.iconName {
-                    ImageCard(imageName: imageName)
+                if let image = CategoryIcon(rawValue: project.iconName ?? CategoryIcon.houseLineFill.rawValue) {
+                    image.image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .foregroundStyle(LinearGradient.primaryGradient)
+                        .frame(maxWidth: 56, maxHeight: 56)
+                        .padding()
                 } else {
                     ImageCard(imageName: "target")
                 }
@@ -21,9 +26,13 @@ struct ProjectCard: View {
                     Text(project.name)
                         .font(Font.cardTitle)
                         .foregroundStyle(Color.Text.primary)
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(1)
                     Text(project.formattedAmount)
                         .font(Font.cardNumber)
                         .foregroundStyle(Color.Text.primary)
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(1)
                 }
                 Spacer()
                 VStack {
