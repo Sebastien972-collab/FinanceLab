@@ -19,6 +19,8 @@ class AccountViewModel {
     
     // Variables affichées dans les vues
     var transactionsList: [Transaction] = []
+    var spent: Double = 0
+    var gained: Double = 0
     
     // Fonctions CRUD
     
@@ -53,16 +55,31 @@ class AccountViewModel {
         }
     }
     
-    func deleteTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
-            transactions.remove(at:index)
+    func deleteTransaction(_ id: UUID) async {
+        do {
+            try await service.deleteTransaction(id: id)
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error deleting a transaction: \(error)")
         }
     }
     
-    private var transactions: [Transaction] = [
-        Transaction(name: "Intérêts", iconName: .currencyEurFill, amount: 32.28, date: Date(), contractor: "Caisse d'Épargne"),
-        Transaction(name: "Switch 2", iconName: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
-        Transaction(name: "Essence", iconName: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
-        Transaction(name: "Salaire", iconName: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
-    ]
+    func calcSpendingRepartition() {
+        // Return the sum of all negative transactions in the array (as an absolute)
+        spent = 0
+        for transac in transactionsList {
+            if transac.amount < 0 {
+                spent += -transac.amount
+            }
+        }
+        
+        // Return the sum of all positive transactions in the array (as an absolute)
+        gained = 0
+        for transac in transactionsList {
+            if transac.amount > 0 {
+                gained += transac.amount
+            }
+        }
+    }
 }

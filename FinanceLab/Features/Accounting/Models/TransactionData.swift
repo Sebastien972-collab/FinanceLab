@@ -9,11 +9,11 @@ import SwiftUI
 
 struct TransactionData: Identifiable, Equatable, Codable {
     var id: UUID
-    var name : String
-    var iconName : String
-    var amount : Double
-    var date : Date?
-    var contractor : String
+    var name: String
+    var iconName: String
+    var amount: Double
+    var date: Date?
+    var contractor: String
     
     init(id: UUID = UUID(), name: String, iconName: String, amount: Double, date: Date, contractor: String) {
         self.id = id

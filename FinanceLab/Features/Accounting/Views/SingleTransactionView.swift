@@ -85,7 +85,9 @@ struct SingleTransactionView: View {
             }
             .alert("Attention !", isPresented: $showDeleteAlert) {
                 Button("Supprimer l'entrée", role: .destructive) {
-                    accountVM.deleteTransaction(initialTransaction!)
+                    Task {
+                        await accountVM.deleteTransaction(initialTransaction!.id)
+                    }
                     dismiss()
                 }
                 Button("Continuer à éditer", role: .cancel) {}
@@ -123,14 +125,14 @@ struct SingleTransactionView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") {
-                            Task {
-                                if initialTransaction != nil {
-                                    await accountVM.putTransaction(editableTransaction)
-                                } else {
-                                    await accountVM.postTransaction(editableTransaction)
-                                }
+                        Task {
+                            if initialTransaction != nil {
+                                await accountVM.putTransaction(editableTransaction)
+                            } else {
+                                await accountVM.postTransaction(editableTransaction)
                             }
-                        dismiss()
+                            dismiss()
+                        }
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
                 }

@@ -10,11 +10,11 @@ import SwiftUI
 @Observable
 class Transaction: Identifiable, Equatable {
     var id: UUID
-    var name : String
-    var iconName : CategoryIcon
-    var amount : Double
-    var date : Date
-    var contractor : String
+    var name: String
+    var iconName: CategoryIcon
+    var amount: Double
+    var date: Date
+    var contractor: String
     
     init(id: UUID = UUID(), name: String, iconName: CategoryIcon, amount: Double, date: Date, contractor: String) {
         self.id = id
@@ -27,6 +27,7 @@ class Transaction: Identifiable, Equatable {
     
     func toTransactionData() -> TransactionData {
         TransactionData(
+            id: id,
             name: name,
             iconName: iconName.rawValue,
             amount: amount,

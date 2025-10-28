@@ -11,7 +11,7 @@ struct TransactionListView: View {
     @Environment(\.dismiss) private var dismiss
     @State var accountVM = AccountViewModel()
     
-    @State private var showTransactionSheet = false
+//    @State private var showTransactionSheet = false
     @State private var pickerSelected = 0
 
     var body: some View {
@@ -32,7 +32,12 @@ struct TransactionListView: View {
                         ], selected: $pickerSelected)
                     }
                     switch pickerSelected {
-                        case 0: SpendingRepartition(amountSpent: 720.12, amountGained: 52.24)
+                        case 0: if accountVM.spent != 0 || accountVM.gained != 0 {
+                            SpendingRepartition(
+                                spent: $accountVM.spent,
+                                gained: $accountVM.gained
+                            )
+                        }
                         default: Text("TODO")
                             // TODO: Budget par catégories
                     }
@@ -60,7 +65,13 @@ struct TransactionListView: View {
                 .padding(.horizontal)
             }
             .task {
+                try! await Task.sleep(for: .milliseconds(10))
                 await accountVM.fetchTransactions()
+                accountVM.calcSpendingRepartition()
+            }
+            .refreshable {
+                await accountVM.fetchTransactions()
+                accountVM.calcSpendingRepartition()
             }
             .alert("Error", isPresented: $accountVM.showError) {
                 Button {} label: {
@@ -78,18 +89,20 @@ struct TransactionListView: View {
                 }
                 .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Nouvelle transaction", image: .circlesThreePlusFill) {
-                        showTransactionSheet = true
+                    NavigationLink {
+                        SingleTransactionView().environment(accountVM)
+                    } label: {
+                        Label("Nouvelle transaction", image: .circlesThreePlusFill)
+                            .labelStyle(.iconOnly)
                     }
-                    .labelStyle(.iconOnly)
                     .buttonStyle(FinanceButton(size: .round))
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
             .navigationBarBackButtonHidden()
-            .navigationDestination(isPresented: $showTransactionSheet) {
-                    SingleTransactionView().environment(accountVM)
-            }
+//            .navigationDestination(isPresented: $showTransactionSheet) {
+//                    SingleTransactionView().environment(accountVM)
+//            }
             .background {
                 FinancialBackground().ignoresSafeArea()
             }

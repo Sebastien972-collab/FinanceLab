@@ -32,8 +32,14 @@ class TransactionService {
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(transaction)
         let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/transactions/\(transaction.id.uuidString)", httpMethod: .PUT, body: data)
+        let apiRequest = APIRequest(endpoint: "/transactions/\(transaction.id)", httpMethod: .PUT, body: data)
         let _ = try await service.request(apiRequest, responseType: TransactionData.self, token: token)
+    }
+    
+    func deleteTransaction(id: UUID) async throws {     // TODO: works but usually returns an error on app
+        let token = try keychain.getToken()
+        let apiRequest = APIRequest(endpoint: "/transactions/\(id)", httpMethod: .DELETE)
+        let _ = try await service.request(apiRequest, responseType: EmptyResponse.self, token: token)
     }
 
 }
