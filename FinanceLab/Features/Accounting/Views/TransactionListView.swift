@@ -20,15 +20,21 @@ struct TransactionListView: View {
         if isLoading {
             ProgressView()
         } else {
-            VStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 16) {
-                    Text(Date()
-                        .formatted(.dateTime
-                            .month(.wide)
-                            .year()
-                            .locale(Locale(identifier: "fr_FR")))
-                            .capitalized)
+            VStack(alignment: .leading, spacing: 24) {
+                Text(Date()
+                    .formatted(.dateTime
+                        .month(.wide)
+                        .year()
+                        .locale(Locale(identifier: "fr_FR")))
+                        .capitalized)
                     .font(.title)
+                if accountVM.transactionsList.isEmpty {
+                    NavigationLink(destination: SingleTransactionView().environment(accountVM)) {
+                        DemboCard {
+                            Text("Tu n'as pas encore commencé à gérer tes transactions avec Serenly. Enregistre une première transaction dès maintenant !")
+                        }
+                    }
+                } else {
                     FinancialPicker(options: [
                         "Dépenses et recettes",
                         "Par catégories"
@@ -61,11 +67,11 @@ struct TransactionListView: View {
                                 TransactionListRow(name: transaction.name, icon: transaction.iconName, amount: transaction.amount)
                             }
                         }
-                    }
                 }
             }
+            }
             .foregroundStyle(Color.Text.contrasted)
-            .padding(.horizontal)
+            .padding()
         }
     }
             .task {
@@ -75,12 +81,12 @@ struct TransactionListView: View {
                 accountVM.calcSpendingRepartition()
                 isLoading = false
             }
-            .refreshable {
-                isLoading = true
-                await accountVM.fetchTransactions()
-                accountVM.calcSpendingRepartition()
-                isLoading = false
-            }
+//            .refreshable {
+//                isLoading = true
+//                await accountVM.fetchTransactions()
+//                accountVM.calcSpendingRepartition()
+//                isLoading = false
+//            }
             .alert("Error", isPresented: $accountVM.showError) {
                 Button {} label: {
                     Text("Ok")

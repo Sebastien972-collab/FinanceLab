@@ -19,6 +19,9 @@ struct SingleTransactionView: View {
         _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", iconName: .selectionFill, amount: 0, date: Date(), contractor: ""))
     }
     
+    var isFormValid: Bool {
+        !editableTransaction.name.isEmpty && !editableTransaction.amount.isZero && !editableTransaction.contractor.isEmpty
+    }
     @State private var isDatePickerPresented = false
     @State private var showCancelAlert = false
     @State private var showDeleteAlert = false
@@ -135,25 +138,14 @@ struct SingleTransactionView: View {
                         }
                     }
                     .buttonStyle(FinanceButton(state: .validate, size: .mini))
+                    .disabled(!isFormValid)
+                    .opacity(isFormValid ? 1 : 0.5)
                 }
                 .sharedBackgroundVisibility(.hidden)
             }
             .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground().ignoresSafeArea()
-            }
-        }
-    }
-    
-    struct FormRow: View {
-        let label: String
-        @Binding var text: String
-        var body: some View {
-            HStack(spacing: 18) {
-                Text(label)
-                    .frame(width: 100, alignment: .trailing)
-                    .font(.listHeader)
-                CustomTextFieldView(placeholder: "", text: $text)
             }
         }
     }
