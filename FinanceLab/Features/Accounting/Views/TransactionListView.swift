@@ -12,6 +12,7 @@ struct TransactionListView: View {
     @State var accountVM = AccountViewModel()
     
     @State private var pickerSelected = 0
+    @State private var chartSelected = 0
     @State private var isLoading = false
 
     var body: some View {
@@ -35,20 +36,43 @@ struct TransactionListView: View {
                         }
                     }
                 } else {
+                    if accountVM.spent != 0 || accountVM.gained != 0 {
                     FinancialPicker(options: [
-                        "Dépenses et recettes",
+                        "Budget mensuel",
                         "Par catégories"
                     ], selected: $pickerSelected)
                 }
-                switch pickerSelected {
-                    case 0: if accountVM.spent != 0 || accountVM.gained != 0 {
-                        SpendingRepartition(
-                            spent: $accountVM.spent,
-                            gained: $accountVM.gained
-                        )
+                    switch pickerSelected {
+                        case 0:
+                            SpendingRepartition(
+                                spent: $accountVM.spent,
+                                gained: $accountVM.gained
+                            )
+                        default:
+                            HStack(alignment: .top) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    Button("Dépenses"){
+                                        chartSelected = 0
+                                    }
+                                    Button("Recettes"){
+                                        chartSelected = 1
+                                    }
+                                }
+                                .font(.body)
+                                .foregroundStyle(Color.Text.contrasted)
+                                Spacer()
+                                if chartSelected == 0 {
+                                    CategoryChart(
+                                        transactionsChart: $accountVM.transactionsChartSpent, isSpendings: true
+                                    )
+                                        .frame(maxHeight: 320)
+                                } else {
+                                    CategoryChart(
+                                        transactionsChart: $accountVM.transactionsChartGained, isSpendings: false)
+                                        .frame(maxHeight: 320)
+                                }
+                            }
                     }
-                    default: Text("TODO")
-                        // TODO: Budget par catégories
                 }
                 VStack(alignment: .leading) {
                     let groupedTransactions = Dictionary(grouping: accountVM.transactionsList) { transaction in
@@ -65,6 +89,7 @@ struct TransactionListView: View {
                         ForEach(transactions) { transaction in
                             NavigationLink(destination: SingleTransactionView(transaction: transaction).environment(accountVM)) {
                                 TransactionListRow(name: transaction.name, icon: transaction.iconName, amount: transaction.amount)
+                                    
                             }
                         }
                 }
@@ -77,16 +102,9 @@ struct TransactionListView: View {
             .task {
                 isLoading = true
                 try! await Task.sleep(for: .milliseconds(10))
-                await accountVM.fetchTransactions()
-                accountVM.calcSpendingRepartition()
+                await accountVM.initializeView()
                 isLoading = false
             }
-//            .refreshable {
-//                isLoading = true
-//                await accountVM.fetchTransactions()
-//                accountVM.calcSpendingRepartition()
-//                isLoading = false
-//            }
             .alert("Error", isPresented: $accountVM.showError) {
                 Button {} label: {
                     Text("Ok")

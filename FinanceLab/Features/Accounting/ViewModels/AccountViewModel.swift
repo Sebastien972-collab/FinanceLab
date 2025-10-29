@@ -19,6 +19,8 @@ class AccountViewModel {
     
     // Variables affichées dans les vues
     var transactionsList: [Transaction] = []
+    var transactionsChartSpent: [(icon: CategoryIcon, amount: Double)] = []
+    var transactionsChartGained: [(icon: CategoryIcon, amount: Double)] = []
     var spent: Double = 0
     var gained: Double = 0
     
@@ -65,7 +67,16 @@ class AccountViewModel {
         }
     }
     
-    func calcSpendingRepartition() {
+    // Fonctions à lancer au chargement de la page TransactionListView()
+    func initializeView() async {
+        await fetchTransactions()
+        calcSpendingRepartition()
+        calcCategoryCharts()
+    }
+    
+    // Fonctions de calcul diverses
+    
+    func calcCurrentMonthTransactions() -> [Transaction] {
         // Gets only the transactions from current month
         let currentMonth = Calendar.current.component(.month, from: Date())
         let currentYear = Calendar.current.component(.year, from: Date())
@@ -74,6 +85,11 @@ class AccountViewModel {
             let transacYear = Calendar.current.component(.year, from: transac.date)
             return transacMonth == currentMonth && transacYear == currentYear
         }
+        return monthlyTransactions
+    }
+    
+    func calcSpendingRepartition() {
+        let monthlyTransactions = calcCurrentMonthTransactions()
 
         // Return the sum of all negative transactions in the array (as an absolute)
         spent = 0
@@ -91,4 +107,21 @@ class AccountViewModel {
             }
         }
     }
-}
+    
+    func calcCategoryCharts() {
+        let monthlyTransactions = calcCurrentMonthTransactions()
+
+        // Takes only negative amounts, and group by icons
+        transactionsChartSpent = Dictionary(grouping: monthlyTransactions.filter { $0.amount < 0 }, by: { $0.iconName })
+        // Makes a single entry for each icon, with sum of the amounts
+            .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
+        // Sort results from highest to lowest amount
+            .sorted { $0.amount > $1.amount }
+        
+        // Now the same with only positive amounts
+        transactionsChartGained = Dictionary(grouping: monthlyTransactions.filter { $0.amount > 0 }, by: { $0.iconName })
+        // Makes a single entry for each icon, with sum of the amounts
+            .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
+        // Sort results from highest to lowest amount
+            .sorted { $0.amount > $1.amount }
+    }}
