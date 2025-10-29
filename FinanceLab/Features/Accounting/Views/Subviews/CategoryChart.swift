@@ -20,11 +20,11 @@ struct CategoryChart: View {
         )
           .foregroundStyle(by: .value("Catégorie", item.icon.id))
           .annotation(position: .overlay) {
-              VStack {
+              VStack(spacing: 0) {
                   Image(item.icon.resource)
                       .resizable()
                       .aspectRatio(contentMode: .fit)
-                      .frame(height: 22)
+                      .frame(height: 20)
                   Text("\(item.amount, format: .currency(code: "EUR"))")
               }
               .font(.caption)

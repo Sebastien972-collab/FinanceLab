@@ -12,6 +12,7 @@ struct TransactionListView: View {
     @State var accountVM = AccountViewModel()
     
     @State private var pickerSelected = 0
+    @State private var chartPickerSelected = 0
     @State private var chartSelected = 0
     @State private var isLoading = false
 
@@ -49,28 +50,22 @@ struct TransactionListView: View {
                                 gained: $accountVM.gained
                             )
                         default:
-                            HStack(alignment: .top) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Button("Dépenses"){
-                                        chartSelected = 0
-                                    }
-                                    Button("Recettes"){
-                                        chartSelected = 1
-                                    }
-                                }
-                                .font(.body)
-                                .foregroundStyle(Color.Text.contrasted)
+                            switch chartPickerSelected {
+                            case 0:
+                                CategoryChart(
+                                    transactionsChart: $accountVM.transactionsChartSpent, isSpendings: true
+                                )
+                                    .frame(maxHeight: 280)
+                            default:
+                                CategoryChart(
+                                    transactionsChart: $accountVM.transactionsChartGained, isSpendings: false)
+                                    .frame(maxHeight: 280)
+                            }
+                            HStack {
                                 Spacer()
-                                if chartSelected == 0 {
-                                    CategoryChart(
-                                        transactionsChart: $accountVM.transactionsChartSpent, isSpendings: true
-                                    )
-                                        .frame(maxHeight: 320)
-                                } else {
-                                    CategoryChart(
-                                        transactionsChart: $accountVM.transactionsChartGained, isSpendings: false)
-                                        .frame(maxHeight: 320)
-                                }
+                                FinancialPicker(options: ["Dépenses", "Recettes"], isTransaction: true, selected: $chartPickerSelected)
+                                    .frame(maxWidth: 200)
+                                Spacer()
                             }
                     }
                 }

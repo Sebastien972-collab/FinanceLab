@@ -90,7 +90,7 @@ class AccountViewModel {
     
     func calcSpendingRepartition() {
         let monthlyTransactions = calcCurrentMonthTransactions()
-
+        
         // Return the sum of all negative transactions in the array (as an absolute)
         spent = 0
         for transac in monthlyTransactions {
@@ -110,18 +110,29 @@ class AccountViewModel {
     
     func calcCategoryCharts() {
         let monthlyTransactions = calcCurrentMonthTransactions()
-
+        
         // Takes only negative amounts, and group by icons
         transactionsChartSpent = Dictionary(grouping: monthlyTransactions.filter { $0.amount < 0 }, by: { $0.iconName })
-        // Makes a single entry for each icon, with sum of the amounts
             .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
-        // Sort results from highest to lowest amount
             .sorted { $0.amount > $1.amount }
+        
+        // Group items beyond top 5 into "Others" category
+        if transactionsChartSpent.count > 5 {
+            let top5 = Array(transactionsChartSpent.prefix(5))
+            let others = transactionsChartSpent.dropFirst(5)
+            let othersTotal = others.reduce(0.0) { $0 + $1.amount }
+            transactionsChartSpent = top5 + [(icon: .selectionFill, amount: othersTotal)]
+        }
         
         // Now the same with only positive amounts
         transactionsChartGained = Dictionary(grouping: monthlyTransactions.filter { $0.amount > 0 }, by: { $0.iconName })
-        // Makes a single entry for each icon, with sum of the amounts
             .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
-        // Sort results from highest to lowest amount
             .sorted { $0.amount > $1.amount }
-    }}
+        if transactionsChartGained.count > 5 {
+            let top5 = Array(transactionsChartGained.prefix(5))
+            let others = transactionsChartGained.dropFirst(5)
+            let othersTotal = others.reduce(0.0) { $0 + $1.amount }
+            transactionsChartGained = top5 + [(icon: .selectionFill, amount: othersTotal)]
+        }
+    }
+}
