@@ -21,8 +21,9 @@ import SwiftUI
 
 struct FinancialPicker: View {
     var options : [String] = []
+    var isTransaction: Bool = false
     @Binding var selected : Int
-
+        
     var body: some View {
         if #available(iOS 26.0, *) {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: options.count)) {
@@ -36,8 +37,16 @@ struct FinancialPicker: View {
                             Spacer()
                         }
                         .frame(height: 34)
-                        .background(selected == index ? LinearGradient.greenGradient : LinearGradient.linearGradient(colors: [.clear], startPoint: .top, endPoint: .bottom))
-                        .foregroundStyle(selected == index ? Color.Text.primary : Color.Text.contrasted)
+                        .background(
+                            selected == index
+                                ? (isTransaction && index == 0 ? LinearGradient.redGradient : LinearGradient.greenGradient)
+                                : LinearGradient.clearGradient
+                        )
+                        .foregroundStyle(
+                            selected == index
+                                ? Color.Text.primary
+                                : Color.Text.contrasted
+                        )
                         .font(.system(size: 12))
                         .clipShape(RoundedRectangle(cornerRadius: 50))
                     }

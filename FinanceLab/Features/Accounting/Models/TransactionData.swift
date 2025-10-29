@@ -1,22 +1,21 @@
 //
-//  Transaction.swift
+//  TransactionData.swift
 //  FinanceLab
 //
-//  Created by Anne Ferret on 01/10/2025.
+//  Created by Anne Ferret on 28/10/2025.
 //
 
 import SwiftUI
 
-@Observable
-class Transaction: Identifiable, Equatable {
+struct TransactionData: Identifiable, Equatable, Codable {
     var id: UUID
     var name: String
-    var iconName: CategoryIcon
+    var iconName: String
     var amount: Double
-    var date: Date
+    var date: Date?
     var contractor: String
     
-    init(id: UUID = UUID(), name: String, iconName: CategoryIcon, amount: Double, date: Date, contractor: String) {
+    init(id: UUID = UUID(), name: String, iconName: String, amount: Double, date: Date, contractor: String) {
         self.id = id
         self.name = name
         self.iconName = iconName
@@ -25,19 +24,19 @@ class Transaction: Identifiable, Equatable {
         self.contractor = contractor
     }
     
-    func toTransactionData() -> TransactionData {
-        TransactionData(
+    func toTransaction() -> Transaction {
+        Transaction(
             id: id,
             name: name,
-            iconName: iconName.rawValue,
+            iconName: CategoryIcon(rawValue: iconName) ?? CategoryIcon.selectionFill,
             amount: amount,
-            date: date,
+            date: date ?? Date(),
             contractor: contractor
         )
     }
-
+    
     // Ça permet de rendre la Classe Equatable
-    static func == (lhs: Transaction, rhs: Transaction) -> Bool {
+    static func == (lhs: TransactionData, rhs: TransactionData) -> Bool {
         lhs.id == rhs.id && lhs.date == rhs.date && lhs.name == rhs.name && lhs.contractor == rhs.contractor && lhs.amount == rhs.amount
     }
 }

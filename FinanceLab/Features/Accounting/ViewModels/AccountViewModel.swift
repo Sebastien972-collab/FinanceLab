@@ -9,35 +9,119 @@ import Foundation
 
 @Observable
 class AccountViewModel {
+    // Services
     var manager: UserManager = .shared
-    func saveTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
-            transactions[index] = transaction
-            manager.currentUser.updateTransaction(transaction)
-        } else {
-            manager.currentUser.addTransaction(transaction)
-            transactions.append(transaction)
+    var service = TransactionService()
+    
+    // Affichage d'un message d'erreur explicite
+    var error: Error = LoginError.unknown
+    var showError: Bool = false
+    
+    // Variables affichées dans les vues
+    var transactionsList: [Transaction] = []
+    var transactionsChartSpent: [(icon: CategoryIcon, amount: Double)] = []
+    var transactionsChartGained: [(icon: CategoryIcon, amount: Double)] = []
+    var spent: Double = 0
+    var gained: Double = 0
+    
+    // Fonctions CRUD
+    
+    func fetchTransactions() async {
+        do {
+            transactionsList = try await service.fetchTransactions()
+                .sorted(by: { $0.date > $1.date })
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error fetching transactions: \(error)")
         }
     }
     
-    func deleteTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
-            transactions.remove(at:index)
+    func postTransaction(_ transaction: Transaction) async {
+        do {
+            try await service.postTransaction(transaction: transaction.toTransactionData())
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error posting a new transaction: \(error)")
         }
     }
+    
+    func putTransaction(_ transaction: Transaction) async {
+        do {
+            try await service.putTransaction(transaction: transaction.toTransactionData())
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error updating a transaction: \(error)")
+        }
+    }
+    
+    func deleteTransaction(_ id: UUID) async {
+        do {
+            try await service.deleteTransaction(id: id)
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error deleting a transaction: \(error)")
+        }
+    }
+    
+    // Fonctions à lancer au chargement de la page TransactionListView()
+    func initializeView() async {
+        await fetchTransactions()
+        calcSpendingRepartition()
+        calcCategoryCharts()
+    }
+    
+    // Fonctions de calcul diverses
+    
+    func calcCurrentMonthTransactions() -> [Transaction] {
+        // Gets only the transactions from current month
+        let currentMonth = Calendar.current.component(.month, from: Date())
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let monthlyTransactions = transactionsList.filter { transac in
+            let transacMonth = Calendar.current.component(.month, from: transac.date)
+            let transacYear = Calendar.current.component(.year, from: transac.date)
+            return transacMonth == currentMonth && transacYear == currentYear
+        }
+        return monthlyTransactions
+    }
+    
+    func calcSpendingRepartition() {
+        let monthlyTransactions = calcCurrentMonthTransactions()
 
-    
-    func getLatestTransactions() -> [Transaction] {
-        return manager.currentUser.transactions
-            .sorted(by: { $0.date > $1.date })
-            .prefix(50)
-            .map { $0 }
+        // Return the sum of all negative transactions in the array (as an absolute)
+        spent = 0
+        for transac in monthlyTransactions {
+            if transac.amount < 0 {
+                spent += -transac.amount
+            }
+        }
+        
+        // Return the sum of all positive transactions in the array (as an absolute)
+        gained = 0
+        for transac in monthlyTransactions {
+            if transac.amount > 0 {
+                gained += transac.amount
+            }
+        }
     }
     
-    private var transactions: [Transaction] = [
-        Transaction(name: "Intérêts", icon: .currencyEurFill, amount: 32.28, date: Date(), contractor: "Caisse d'Épargne"),
-        Transaction(name: "Switch 2", icon: .gameControllerFill, amount: -499.99, date: Date(), contractor: "Micromania"),
-        Transaction(name: "Essence", icon: .gasPumpFill, amount: -79.82, date: Date(), contractor: "Esso"),
-        Transaction(name: "Salaire", icon: .currencyEurFill, amount: 1384.12, date: Date(), contractor: "Evil Corp Inc."),
-    ]
-}
+    func calcCategoryCharts() {
+        let monthlyTransactions = calcCurrentMonthTransactions()
+
+        // Takes only negative amounts, and group by icons
+        transactionsChartSpent = Dictionary(grouping: monthlyTransactions.filter { $0.amount < 0 }, by: { $0.iconName })
+        // Makes a single entry for each icon, with sum of the amounts
+            .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
+        // Sort results from highest to lowest amount
+            .sorted { $0.amount > $1.amount }
+        
+        // Now the same with only positive amounts
+        transactionsChartGained = Dictionary(grouping: monthlyTransactions.filter { $0.amount > 0 }, by: { $0.iconName })
+        // Makes a single entry for each icon, with sum of the amounts
+            .map { (icon: $0.key, amount: $0.value.reduce(0) { $0 + abs($1.amount) }) }
+        // Sort results from highest to lowest amount
+            .sorted { $0.amount > $1.amount }
+    }}

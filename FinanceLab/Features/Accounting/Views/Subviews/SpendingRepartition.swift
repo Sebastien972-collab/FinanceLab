@@ -8,20 +8,26 @@
 import SwiftUI
 
 struct SpendingRepartition: View {
-    var amountSpent: Double
-    var amountGained: Double
+    @Binding var spent: Double
+    @Binding var gained: Double
+    
+    var percentage: Double {
+        guard gained > 0 else { return 0 }
+        guard spent > 0 else { return 1 }
+        return spent / (gained + spent)
+    }
     
     var body: some View {
         VStack(spacing: 20) {
-            PercentageSlider(percentage: (amountSpent / (amountGained + amountSpent)), height: .big, color: .redToGreen)
+            PercentageSlider(percentage: percentage, height: .big, color: .redToGreen)
             HStack {
                 VStack(alignment: .leading) {
                     HStack(spacing: 2) {
                         Text("-")
-                        Text(amountSpent.description.split(separator: ".")[0])
+                        Text(spent.description.split(separator: ".")[0])
                             .font(.listLargeNumber)
                         Text(",")
-                        Text(amountSpent.description.split(separator: ".")[1])
+                        Text(String(spent.description.split(separator: ".")[1].prefix(2)))
                         Text("€")
                     }
                     .font(.listNumber)
@@ -32,10 +38,10 @@ struct SpendingRepartition: View {
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
                         Text("+")
-                        Text(amountGained.description.split(separator: ".")[0])
+                        Text(gained.description.split(separator: ".")[0])
                             .font(.listLargeNumber)
                         Text(",")
-                        Text(amountGained.description.split(separator: ".")[1])
+                        Text(String(gained.description.split(separator: ".")[1].prefix(2)))
                         Text("€")
                     }
                     .font(.listNumber)
@@ -49,7 +55,10 @@ struct SpendingRepartition: View {
 }
 
 #Preview {
-    SpendingRepartition(amountSpent: 1367.12, amountGained: 2000)
+    @Previewable @State var spent: Double = 800.24028
+    @Previewable @State var gained: Double = 2000
+    
+    SpendingRepartition(spent: $spent, gained: $gained)
         .padding()
         .background {
             FinancialBackground().ignoresSafeArea()
