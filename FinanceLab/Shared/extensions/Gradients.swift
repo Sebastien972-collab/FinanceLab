@@ -39,4 +39,9 @@ extension LinearGradient {
         startPoint: .top,
         endPoint: .bottom
     )
+    
+    static let clearGradient = LinearGradient(
+        colors: [.clear],
+        startPoint: .top, endPoint: .bottom
+    )
 }

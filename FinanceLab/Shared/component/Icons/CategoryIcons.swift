@@ -8,39 +8,72 @@
 import SwiftUI
 
 enum CategoryIcon: String, CaseIterable, Identifiable {
-    case firstAidKitFill
-    case ambulanceFill
-    case lifebuoyFill
-    case tipiFill
-    case airplaneTiltFill
-    case islandFill
-    case armchairFill
-    case babyCarriageFill
+    
+    // Symboles généralistes et bancaires
+    case selectionFill
+    case currencyEurFill
+    case bankFill
+    case handCoinsFill
+    case walletFill
+    
+    // Courses et achats du quotidien
     case shoppingCartSimpleFill
     case carrotFill
-    case catFill
+    case tShirtFill
+    case sneakerFill
+    case dressFill
+    case armchairFill
+    
+    // Immobilier
+    case buildingOfficeFill
+    case houseLineFill
+    
+    // Transports
     case carFill
     case gasPumpFill
-    case buildingOfficeFill
-    case currencyEurFill
-    case basketballFill
+    case trainFill
+    case bicycleFill
+    
+    // Travail
+    case bagFill
+    case laptopFill
+    
+    // Famille
+    case userFill
+    case usersFourFill
+    case studentFill
+    case babyCarriageFill
+    case catFill
+    
+    // Loisirs
+    case monitorPlayFill
+    case ticketFill
     case booksFill
     case discFill
-    case sneakerFill
-    case tShirtFill
-    case dressFill
-    case forkKnifeFill
-    case cheersFill
-    case cigaretteFill
     case guitarFill
     case gameControllerFill
+    case basketballFill
+    
+    // Fêtes et sorties
     case cakeFill
-    case selectionFill
-    case userFill
-    case houseLineFill
+    case forkKnifeFill
+    case cheersFill
+
+    // Vacances
+    case airplaneTiltFill
+    case tipiFill
+    case islandFill
+    
+    // Santé et imprévus
+    case firstAidKitFill
+    case ambulanceFill
+    case wheelchairFill
+    case lifebuoyFill
+    
+    // Autres, inclassables
+    case cigaretteFill
     case targetFill
     case shieldSlashFill
-    case handCoinsFill
 
     var id: String { rawValue }
 
@@ -79,6 +112,17 @@ enum CategoryIcon: String, CaseIterable, Identifiable {
         case .targetFill: return .targetFill
         case .shieldSlashFill: return .shieldSlashFill
         case .handCoinsFill : return .handCoinsFill
+        case .studentFill : return .studentFill
+        case .walletFill : return .walletFill
+        case .wheelchairFill : return .wheelchairFill
+        case .usersFourFill : return .usersFourFill
+        case .bankFill : return .bankFill
+        case .monitorPlayFill : return .monitorPlayFill
+        case .ticketFill : return .ticketFill
+        case .laptopFill : return .laptopFill
+        case .trainFill : return .trainFill
+        case .bicycleFill : return .bicycleFill
+        case .bagFill : return .bagFill
         }
     }
     
