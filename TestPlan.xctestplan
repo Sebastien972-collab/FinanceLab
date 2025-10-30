@@ -1,0 +1,31 @@
+{
+  "configurations" : [
+    {
+      "id" : "0404C580-BD5A-4039-91D0-8ED29782CD27",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : {
+        "suites" : [
+          {
+            "name" : "FinanceLabTests"
+          }
+        ]
+      },
+      "target" : {
+        "containerPath" : "container:FinanceLab.xcodeproj",
+        "identifier" : "CF7DC9652E85715A0084762E",
+        "name" : "FinanceLabTests"
+      }
+    }
+  ],
+  "version" : 2
+}
