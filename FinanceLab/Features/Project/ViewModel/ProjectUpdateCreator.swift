@@ -9,6 +9,7 @@ import Foundation
 import FinanceCore
 
 class ProjectUpdateCreator: ProjectCreatorViewModel {
+    var idProject: UUID = .init()
     init(project: Project) {
         super.init()
         setupProject(project)
@@ -18,6 +19,7 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
         check()
         do {
             let project = Project(name: name, iconName: imageName, finalDate: finalDate, amount: goalAmount)
+            project.id = idProject
             project.updateIcon(selectedIcon.rawValue)
             let projectData = try await service.updatePrject(project: project.toProjectData())
             setupProject(projectData)
@@ -29,6 +31,7 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
     
     
     func setupProject(_ project: Project) {
+        idProject = project.id
         name = project.name
         startedDate = project.startedDate
         finalDate = project.deadline
