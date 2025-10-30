@@ -37,6 +37,11 @@ struct TransactionData: Identifiable, Equatable, Codable {
     
     // Ça permet de rendre la Classe Equatable
     static func == (lhs: TransactionData, rhs: TransactionData) -> Bool {
-        lhs.id == rhs.id && lhs.date == rhs.date && lhs.name == rhs.name && lhs.contractor == rhs.contractor && lhs.amount == rhs.amount
+        lhs.id == rhs.id &&
+        lhs.date == rhs.date &&
+        lhs.name == rhs.name &&
+        lhs.contractor == rhs.contractor &&
+        lhs.amount == rhs.amount &&
+        lhs.iconName == rhs.iconName  // Added this line
     }
 }
