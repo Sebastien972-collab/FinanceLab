@@ -37,8 +37,7 @@ struct UserCardProfile: View {
 
 #Preview {
     VStack {
-        UserCardProfile()
-            .padding()
+
         UserCardProfile()
             .padding()
     }

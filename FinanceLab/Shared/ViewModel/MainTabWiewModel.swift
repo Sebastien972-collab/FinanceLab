@@ -50,6 +50,17 @@ class TabViewModel {
             authState = .notAuthenticated
         }
     }
+    
+    func setupQuestionDatabase() async {
+        do {
+            let question = try await QuestionsService.shared.fetchQuestion()
+            if question.isEmpty {
+                
+            }
+        } catch <#pattern#> {
+            <#statements#>
+        }
+    }
 }
 
 enum AuthState {

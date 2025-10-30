@@ -14,7 +14,7 @@ struct Question: Identifiable, Hashable{
     var followUpLabel: String?
     var questionGroup: QuestionGroup
     
-    init(label: String,content: String,followUpLabel: String? = nil,
+    init(id: UUID = UUID(),label: String,content: String,followUpLabel: String? = nil,
         questionGroup: QuestionGroup
     ) {
         self.id = UUID()
@@ -22,5 +22,15 @@ struct Question: Identifiable, Hashable{
         self.content = content
         self.followUpLabel = followUpLabel
         self.questionGroup = questionGroup
+    }
+    
+    func toQuestionData() -> QuestionsData{
+        QuestionsData(
+            id: id,
+            label: label,
+            content: content,
+            followUpLabel: followUpLabel,
+            questionGroup:  questionGroup.rawValue
+        )
     }
 }

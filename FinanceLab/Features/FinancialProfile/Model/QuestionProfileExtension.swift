@@ -120,19 +120,4 @@ extension Question {
             ),
         ]
     }
-    
-//    static var unusedQuestions: [Question] = [
-//        Question(label: "Statut", content: "Es-tu marié(e), pacsé(e) ou célibataire ?", questionGroup: .personal),
-//        Question(label: "Emploi", content: "Quelle est ta situation professionnelle ?", questionGroup: .professional),
-//    Question(
-//        label: "Risque",
-//        content: "Comment réagis-tu face aux risques financiers ?",
-//        questionGroup: .risk
-//    ),
-//    Question(
-//        label: "Santé",
-//        content: "As-tu une mutuelle ou complémentaire santé ?",
-//        questionGroup: .protection
-//    ),
-//    ]
 }
