@@ -6,27 +6,18 @@
 //
 
 
-import XCTest
+import Foundation
+import Testing
 @testable import FinanceLab
 
-final class AccountViewModelTests: XCTestCase {
-    
-    var viewModel: AccountViewModel!
-    
-    override func setUp() {
-        super.setUp()
-        viewModel = AccountViewModel()
-    }
-    
-    override func tearDown() {
-        viewModel = nil
-        super.tearDown()
-    }
+struct AccountViewModelTests {
     
     // MARK: - calcCurrentMonthTransactions Tests
     
-    func testCalcCurrentMonthTransactions_WithCurrentMonthTransactions_ReturnsOnlyCurrentMonth() {
+    @Test func calcCurrentMonthTransactions_WithCurrentMonthTransactions_ReturnsOnlyCurrentMonth() {
+        
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         let lastMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
         let nextMonth = Calendar.current.date(byAdding: .month, value: 1, to: currentDate)!
@@ -70,25 +61,27 @@ final class AccountViewModelTests: XCTestCase {
         let result = viewModel.calcCurrentMonthTransactions()
         
         // Then
-        XCTAssertEqual(result.count, 2, "Should only return current month transactions")
-        XCTAssertTrue(result.contains(where: { $0.name == "Current 1" }))
-        XCTAssertTrue(result.contains(where: { $0.name == "Current 2" }))
-        XCTAssertFalse(result.contains(where: { $0.name == "Last Month" }))
+        #expect(result.count == 2, "Should only return current month transactions")
+        #expect(result.contains { $0.name == "Current 1" })
+        #expect(result.contains { $0.name == "Current 2" })
+        #expect(!result.contains { $0.name == "Last Month" })
     }
     
-    func testCalcCurrentMonthTransactions_WithEmptyList_ReturnsEmptyArray() {
+    @Test func calcCurrentMonthTransactions_WithEmptyList_ReturnsEmptyArray() {
         // Given
+        let viewModel = AccountViewModel()
         viewModel.transactionsList = []
         
         // When
         let result = viewModel.calcCurrentMonthTransactions()
         
         // Then
-        XCTAssertTrue(result.isEmpty, "Should return empty array when no transactions")
+        #expect(result.isEmpty, "Should return empty array when no transactions")
     }
     
-    func testCalcCurrentMonthTransactions_WithDifferentYears_OnlyReturnsCurrentYear() {
+    @Test func calcCurrentMonthTransactions_WithDifferentYears_OnlyReturnsCurrentYear() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: currentDate)!
         
@@ -120,14 +113,15 @@ final class AccountViewModelTests: XCTestCase {
         let result = viewModel.calcCurrentMonthTransactions()
         
         // Then
-        XCTAssertEqual(result.count, 1, "Should only return current year and month")
-        XCTAssertEqual(result.first?.name, "This Year")
+        #expect(result.count == 1, "Should only return current year and month")
+        #expect(result.first?.name == "This Year")
     }
     
     // MARK: - calcSpendingRepartition Tests
     
-    func testCalcSpendingRepartition_WithNegativeTransactions_CalculatesCorrectSpent() {
+    @Test func calcSpendingRepartition_WithNegativeTransactions_CalculatesCorrectSpent() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -160,11 +154,12 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.spent, 85.5, "Should sum all negative amounts as positive")
+        #expect(viewModel.spent == 85.5, "Should sum all negative amounts as positive")
     }
     
-    func testCalcSpendingRepartition_WithPositiveTransactions_CalculatesCorrectGained() {
+    @Test func calcSpendingRepartition_WithPositiveTransactions_CalculatesCorrectGained() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -197,11 +192,12 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.gained, 1750.75, "Should sum all positive amounts")
+        #expect(viewModel.gained == 1750.75, "Should sum all positive amounts")
     }
     
-    func testCalcSpendingRepartition_WithMixedTransactions_CalculatesBothCorrectly() {
+    @Test func calcSpendingRepartition_WithMixedTransactions_CalculatesBothCorrectly() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -242,24 +238,26 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.spent, 75.5)
-        XCTAssertEqual(viewModel.gained, 1500.0)
+        #expect(viewModel.spent == 75.5)
+        #expect(viewModel.gained == 1500.0)
     }
     
-    func testCalcSpendingRepartition_WithEmptyTransactions_BothAreZero() {
+    @Test func calcSpendingRepartition_WithEmptyTransactions_BothAreZero() {
         // Given
+        let viewModel = AccountViewModel()
         viewModel.transactionsList = []
         
         // When
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.spent, 0)
-        XCTAssertEqual(viewModel.gained, 0)
+        #expect(viewModel.spent == 0)
+        #expect(viewModel.gained == 0)
     }
     
-    func testCalcSpendingRepartition_OnlyCountsCurrentMonth() {
+    @Test func calcSpendingRepartition_OnlyCountsCurrentMonth() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         let lastMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
         
@@ -286,11 +284,12 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.spent, 50.0, "Should only count current month")
+        #expect(viewModel.spent == 50.0, "Should only count current month")
     }
     
-    func testCalcSpendingRepartition_WithZeroAmounts_HandlesCorrectly() {
+    @Test func calcSpendingRepartition_WithZeroAmounts_HandlesCorrectly() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -315,14 +314,15 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcSpendingRepartition()
         
         // Then
-        XCTAssertEqual(viewModel.spent, 10.0, accuracy: 0.01)
-        XCTAssertEqual(viewModel.gained, 0.0)
+        #expect(viewModel.spent == 10.0)
+        #expect(viewModel.gained == 0.0)
     }
     
     // MARK: - calcCategoryCharts Tests
     
-    func testCalcCategoryCharts_WithNegativeTransactions_GroupsByIcon() {
+    @Test func calcCategoryCharts_WithNegativeTransactions_GroupsByIcon() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -353,21 +353,20 @@ final class AccountViewModelTests: XCTestCase {
         
         // When
         viewModel.calcCategoryCharts()
-        
+
         // Then
-        XCTAssertEqual(viewModel.transactionsChartSpent.count, 2)
-        
         let foodCategory = viewModel.transactionsChartSpent.first(where: { $0.icon == .carrotFill })
-        XCTAssertNotNil(foodCategory, "Food category should exist")
-        XCTAssertEqual(foodCategory!.amount, 50.0)
-        
         let cartCategory = viewModel.transactionsChartSpent.first(where: { $0.icon == .shoppingCartSimpleFill })
-        XCTAssertNotNil(cartCategory, "Cart category should exist")
-        XCTAssertEqual(cartCategory!.amount, 50.0)
+        #expect(foodCategory != nil, "Food category should exist")
+        #expect(foodCategory!.amount == 50.0)
+        #expect(viewModel.transactionsChartSpent.count == 2)
+        #expect(cartCategory != nil, "Cart category should exist")
+        #expect(cartCategory!.amount == 50.0)
     }
     
-    func testCalcCategoryCharts_SortsSpentByAmountDescending() {
+    @Test func calcCategoryCharts_SortsSpentByAmountDescending() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -400,14 +399,15 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcCategoryCharts()
         
         // Then
-        XCTAssertEqual(viewModel.transactionsChartSpent[0].icon, .shoppingCartSimpleFill)
-        XCTAssertEqual(viewModel.transactionsChartSpent[0].amount, 100.0)
-        XCTAssertEqual(viewModel.transactionsChartSpent[1].icon, .houseLineFill)
-        XCTAssertEqual(viewModel.transactionsChartSpent[2].icon, .carrotFill)
+        #expect(viewModel.transactionsChartSpent[0].icon == .shoppingCartSimpleFill)
+        #expect(viewModel.transactionsChartSpent[0].amount == 100.0)
+        #expect(viewModel.transactionsChartSpent[1].icon == .houseLineFill)
+        #expect(viewModel.transactionsChartSpent[2].icon == .carrotFill)
     }
     
-    func testCalcCategoryCharts_WithMoreThan5Categories_GroupsOthers() {
+    @Test func calcCategoryCharts_WithMoreThan5Categories_GroupsOthers() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -472,15 +472,15 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcCategoryCharts()
         
         // Then
-        XCTAssertEqual(viewModel.transactionsChartSpent.count, 6, "Should have 5 categories plus Others")
-        
         let othersCategory = viewModel.transactionsChartSpent.last
-        XCTAssertEqual(othersCategory?.icon, .selectionFill)
-        XCTAssertEqual(othersCategory?.amount, 15.0, "Others should sum the last 2 categories")
+        #expect(viewModel.transactionsChartSpent.count == 6, "Should have 5 categories plus Others")
+        #expect(othersCategory?.icon == .selectionFill)
+        #expect(othersCategory?.amount == 15.0, "Others should sum the last 2 categories")
     }
     
-    func testCalcCategoryCharts_WithPositiveTransactions_GroupsByIcon() {
+    @Test func calcCategoryCharts_WithPositiveTransactions_GroupsByIcon() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -511,16 +511,16 @@ final class AccountViewModelTests: XCTestCase {
         
         // When
         viewModel.calcCategoryCharts()
-        
+                
         // Then
-        XCTAssertEqual(viewModel.transactionsChartGained.count, 2)
-        
         let euroCategory = viewModel.transactionsChartGained.first(where: { $0.icon == .currencyEurFill })
-        XCTAssertEqual(euroCategory?.amount, 2500.0)
+        #expect(viewModel.transactionsChartGained.count == 2)
+        #expect(euroCategory?.amount == 2500.0)
     }
     
-    func testCalcCategoryCharts_OnlyCountsCurrentMonth() {
+    @Test func calcCategoryCharts_OnlyCountsCurrentMonth() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         let lastMonth = Calendar.current.date(byAdding: .month, value: -1, to: currentDate)!
         
@@ -547,24 +547,26 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcCategoryCharts()
         
         // Then
-        XCTAssertEqual(viewModel.transactionsChartSpent.count, 1)
-        XCTAssertEqual(viewModel.transactionsChartSpent[0].amount, 50.0)
+        #expect(viewModel.transactionsChartSpent.count == 1)
+        #expect(viewModel.transactionsChartSpent[0].amount == 50.0)
     }
     
-    func testCalcCategoryCharts_WithEmptyTransactions_ReturnsEmptyCharts() {
+    @Test func calcCategoryCharts_WithEmptyTransactions_ReturnsEmptyCharts() {
         // Given
+        let viewModel = AccountViewModel()
         viewModel.transactionsList = []
         
         // When
         viewModel.calcCategoryCharts()
         
         // Then
-        XCTAssertTrue(viewModel.transactionsChartSpent.isEmpty)
-        XCTAssertTrue(viewModel.transactionsChartGained.isEmpty)
+        #expect(viewModel.transactionsChartSpent.isEmpty)
+        #expect(viewModel.transactionsChartGained.isEmpty)
     }
     
-    func testCalcCategoryCharts_IgnoresZeroAmounts() {
+    @Test func calcCategoryCharts_IgnoresZeroAmounts() {
         // Given
+        let viewModel = AccountViewModel()
         let currentDate = Date()
         viewModel.transactionsList = [
             Transaction(
@@ -589,7 +591,7 @@ final class AccountViewModelTests: XCTestCase {
         viewModel.calcCategoryCharts()
         
         // Then
-        XCTAssertEqual(viewModel.transactionsChartSpent.count, 1)
-        XCTAssertEqual(viewModel.transactionsChartSpent[0].icon, .carrotFill)
+        #expect(viewModel.transactionsChartSpent.count == 1)
+        #expect(viewModel.transactionsChartSpent[0].icon == .carrotFill)
     }
 }

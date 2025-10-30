@@ -6,14 +6,15 @@
 //
 
 
-import XCTest
+import Foundation
+import Testing
 @testable import FinanceLab
 
-final class TransactionDataTests: XCTestCase {
+struct TransactionDataTests {
     
     // MARK: - Initialization Tests
     
-    func testTransactionData_InitializesWithAllProperties() {
+    @Test func transactionData_InitializesWithAllProperties() {
         // Given
         let id = UUID()
         let name = "Coffee"
@@ -33,15 +34,15 @@ final class TransactionDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertEqual(transactionData.id, id)
-        XCTAssertEqual(transactionData.name, name)
-        XCTAssertEqual(transactionData.iconName, iconName)
-        XCTAssertEqual(transactionData.amount, amount)
-        XCTAssertEqual(transactionData.date, date)
-        XCTAssertEqual(transactionData.contractor, contractor)
+        #expect(transactionData.id == id)
+        #expect(transactionData.name == name)
+        #expect(transactionData.iconName == iconName)
+        #expect(transactionData.amount == amount)
+        #expect(transactionData.date == date)
+        #expect(transactionData.contractor == contractor)
     }
     
-    func testTransactionData_GeneratesUUIDByDefault() {
+    @Test func transactionData_GeneratesUUIDByDefault() {
         // When
         let data1 = TransactionData(
             name: "Test",
@@ -59,12 +60,12 @@ final class TransactionDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertNotEqual(data1.id, data2.id)
+        #expect(data1.id != data2.id)
     }
     
     // MARK: - toTransaction Tests
     
-    func testToTransaction_ConvertsAllPropertiesCorrectly() {
+    @Test func toTransaction_ConvertsAllPropertiesCorrectly() {
         // Given
         let id = UUID()
         let name = "Dinner"
@@ -86,15 +87,15 @@ final class TransactionDataTests: XCTestCase {
         let transaction = transactionData.toTransaction()
         
         // Then
-        XCTAssertEqual(transaction.id, id)
-        XCTAssertEqual(transaction.name, name)
-        XCTAssertEqual(transaction.iconName, .forkKnifeFill)
-        XCTAssertEqual(transaction.amount, amount)
-        XCTAssertEqual(transaction.date, date)
-        XCTAssertEqual(transaction.contractor, contractor)
+        #expect(transaction.id == id)
+        #expect(transaction.name == name)
+        #expect(transaction.iconName == .forkKnifeFill)
+        #expect(transaction.amount == amount)
+        #expect(transaction.date == date)
+        #expect(transaction.contractor == contractor)
     }
     
-    func testToTransaction_UsesDefaultIconForInvalidRawValue() {
+    @Test func toTransaction_UsesDefaultIconForInvalidRawValue() {
         // Given
         let transactionData = TransactionData(
             name: "Test",
@@ -108,10 +109,10 @@ final class TransactionDataTests: XCTestCase {
         let transaction = transactionData.toTransaction()
         
         // Then
-        XCTAssertEqual(transaction.iconName, .selectionFill, "Should use default icon for invalid raw value")
+        #expect(transaction.iconName == .selectionFill, "Should use default icon for invalid raw value")
     }
     
-    func testToTransaction_UsesCurrentDateWhenDateIsNil() {
+    @Test func toTransaction_UsesCurrentDateWhenDateIsNil() {
         // Given
         var transactionData = TransactionData(
             name: "Test",
@@ -130,13 +131,13 @@ final class TransactionDataTests: XCTestCase {
         let afterConversion = Date()
         
         // Then
-        XCTAssertGreaterThanOrEqual(transaction.date, beforeConversion)
-        XCTAssertLessThanOrEqual(transaction.date, afterConversion)
+        #expect(transaction.date >= beforeConversion)
+        #expect(transaction.date <= afterConversion)
     }
     
     // MARK: - Equatable Tests
     
-    func testTransactionData_EqualityWithSameProperties() {
+    @Test func transactionData_EqualityWithSameProperties() {
         // Given
         let id = UUID()
         let date = Date()
@@ -158,10 +159,10 @@ final class TransactionDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertEqual(data1, data2)
+        #expect(data1 == data2)
     }
     
-    func testTransactionData_InequalityWithDifferentID() {
+    @Test func transactionData_InequalityWithDifferentID() {
         // Given
         let date = Date()
         let data1 = TransactionData(
@@ -182,10 +183,10 @@ final class TransactionDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertNotEqual(data1, data2)
+        #expect(data1 != data2)
     }
     
-    func testTransactionData_InequalityWithDifferentIconName() {
+    @Test func transactionData_InequalityWithDifferentIconName() {
         // Given
         let id = UUID()
         let date = Date()
@@ -207,12 +208,12 @@ final class TransactionDataTests: XCTestCase {
         )
         
         // Then
-        XCTAssertNotEqual(data1, data2, "Different iconNames should make transaction data unequal")
+        #expect(data1 != data2, "Different iconNames should make transaction data unequal")
     }
     
     // MARK: - Codable Tests
     
-    func testTransactionData_EncodesToJSON() throws {
+    @Test func transactionData_EncodesToJSON() throws {
         // Given
         let date = Date()
         let transactionData = TransactionData(
@@ -229,10 +230,10 @@ final class TransactionDataTests: XCTestCase {
         let data = try encoder.encode(transactionData)
         
         // Then
-        XCTAssertFalse(data.isEmpty, "Should encode to non-empty data")
+        #expect(!data.isEmpty, "Should encode to non-empty data")
     }
     
-    func testTransactionData_DecodesFromJSON() throws {
+    @Test func transactionData_DecodesFromJSON() throws {
         // Given
         let id = UUID()
         let date = Date()
@@ -253,14 +254,14 @@ final class TransactionDataTests: XCTestCase {
         let decoded = try decoder.decode(TransactionData.self, from: data)
         
         // Then
-        XCTAssertEqual(decoded.id, original.id)
-        XCTAssertEqual(decoded.name, original.name)
-        XCTAssertEqual(decoded.iconName, original.iconName)
-        XCTAssertEqual(decoded.amount, original.amount, accuracy: 0.01)
-        XCTAssertEqual(decoded.contractor, original.contractor)
+        #expect(decoded.id == original.id)
+        #expect(decoded.name == original.name)
+        #expect(decoded.iconName == original.iconName)
+        #expect(decoded.amount == original.amount)
+        #expect(decoded.contractor == original.contractor)
     }
     
-    func testTransactionData_RoundTripConversion() {
+    @Test func transactionData_RoundTripConversion() {
         // Given
         let original = Transaction(
             name: "Round Trip Test",
@@ -275,11 +276,11 @@ final class TransactionDataTests: XCTestCase {
         let converted = transactionData.toTransaction()
         
         // Then
-        XCTAssertEqual(converted.id, original.id)
-        XCTAssertEqual(converted.name, original.name)
-        XCTAssertEqual(converted.iconName, original.iconName)
-        XCTAssertEqual(converted.amount, original.amount, accuracy: 0.01)
-        XCTAssertEqual(converted.date, original.date)
-        XCTAssertEqual(converted.contractor, original.contractor)
+        #expect(converted.id == original.id)
+        #expect(converted.name == original.name)
+        #expect(converted.iconName == original.iconName)
+        #expect(converted.amount == original.amount)
+        #expect(converted.date == original.date)
+        #expect(converted.contractor == original.contractor)
     }
 }
