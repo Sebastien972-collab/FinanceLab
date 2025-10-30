@@ -56,9 +56,13 @@ class TabViewModel {
             let question = try await QuestionsService.shared.fetchQuestion()
             if question.isEmpty {
                 
+                for question in Question.questionDatabase {
+                    _ = try await QuestionsService.shared.postQuestion(question: question.toQuestionData())
+                }
             }
-        } catch <#pattern#> {
-            <#statements#>
+        } catch  {
+            self.error = error
+            showError = true
         }
     }
 }

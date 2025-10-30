@@ -49,7 +49,7 @@ struct FinancialProfile: View {
                     .frame(width: 200)
                         
                         Button("Valider") {
-                            viewModel.saveAnswer()
+                           // viewModel.saveAnswer()
                             viewModel.nextQuestion()
                         }
                         .buttonStyle(FinanceButton(size: .mini))

@@ -61,8 +61,7 @@ class FinancialProfileViewModel {
     var showError: Bool = false
     
     // MARK: - Question actuelle
-    var currentQuestion: Question? {
-        guard !questionsList.isEmpty, currentQuestionIndex < questionsList.count else { return nil }
+    var currentQuestion: Question {
         return questionsList[currentQuestionIndex]
     }
     
@@ -87,40 +86,40 @@ class FinancialProfileViewModel {
             print("Error posting question: \(error)")
         }
     }
-    
-    func putQuestion(_ question: Question) async {
-        do {
-            try await service.putQuestion(question: question.toQuestionData())
-            await fetchQuestions()
-        } catch {
-            self.error = error
-            showError = true
-            print("Error updating question: \(error)")
-        }
-    }
-    
-    func deleteQuestion(_ id: UUID) async {
-        do {
-            try await service.deleteQuestion(id: id)
-            await fetchQuestions()
-        } catch {
-            self.error = error
-            showError = true
-            print("Error deleting question: \(error)")
-        }
-    }
-    
-    // Gestion des réponses utilisateur
-    func saveAnswer() {
-        guard !textAnswer.isEmpty, let currentQuestion else { return }
-        let answer = Answer(
-            content: textAnswer,
-            user: .guest,
-            question: currentQuestion
-        )
-        userAnswers.append(answer)
-        nextQuestion()
-    }
+//    
+//    func putQuestion(_ question: Question) async {
+//        do {
+//            try await service.putQuestion(question: question.toQuestionData())
+//            await fetchQuestions()
+//        } catch {
+//            self.error = error
+//            showError = true
+//            print("Error updating question: \(error)")
+//        }
+//    }
+//    
+//    func deleteQuestion(_ id: UUID) async {
+//        do {
+//            try await service.deleteQuestion(id: id)
+//            await fetchQuestions()
+//        } catch {
+//            self.error = error
+//            showError = true
+//            print("Error deleting question: \(error)")
+//        }
+//    }
+//    
+//    // Gestion des réponses utilisateur
+//    func saveAnswer() {
+//        guard !textAnswer.isEmpty, let currentQuestion else { return }
+//        let answer = Answer(
+//            content: textAnswer,
+//            user: .guest,
+//            question: currentQuestion
+//        )
+//        userAnswers.append(answer)
+//        nextQuestion()
+//    }
     
     func nextQuestion() {
         if currentQuestionIndex < questionsList.count - 1 {
