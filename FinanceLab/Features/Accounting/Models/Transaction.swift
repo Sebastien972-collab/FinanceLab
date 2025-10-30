@@ -38,6 +38,11 @@ class Transaction: Identifiable, Equatable {
 
     // Ça permet de rendre la Classe Equatable
     static func == (lhs: Transaction, rhs: Transaction) -> Bool {
-        lhs.id == rhs.id && lhs.date == rhs.date && lhs.name == rhs.name && lhs.contractor == rhs.contractor && lhs.amount == rhs.amount
+        lhs.id == rhs.id &&
+        lhs.date == rhs.date &&
+        lhs.name == rhs.name &&
+        lhs.contractor == rhs.contractor &&
+        lhs.amount == rhs.amount &&
+        lhs.iconName == rhs.iconName
     }
 }
