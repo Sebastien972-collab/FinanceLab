@@ -9,7 +9,7 @@
 
 import SwiftUI
 
-struct FinancialProfile: View {
+struct FinancialProfileView: View {
     @State private var viewModel = FinancialProfileViewModel()
     
     var body: some View {
@@ -66,5 +66,5 @@ struct FinancialProfile: View {
 }
 
 #Preview {
-    FinancialProfile()
+    FinancialProfileView()
 }

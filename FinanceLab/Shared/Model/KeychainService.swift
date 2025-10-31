@@ -62,4 +62,7 @@ class KeychainService {
         guard let data = KeychainService.shared.read(service: "com.financelab.auth", account: "jwtToken"), let token = String(data: data, encoding: .utf8) else { throw LoginError.unknown  }
         return token
     }
+    func deleteToken() {
+        delete(service: "com.financelab.auth", account: "jwtToken")
+    }
 }
