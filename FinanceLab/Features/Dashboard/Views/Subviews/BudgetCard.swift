@@ -9,8 +9,8 @@ import SwiftUI
 
 struct BudgetCard: View {
     var healthScore: Double
-    var monthlyRAS: Double
-    var dailyRAS: Double
+    var monthlyRAS: Decimal
+    var dailyRAS: Decimal
     
     var body: some View {
         StandardCard {

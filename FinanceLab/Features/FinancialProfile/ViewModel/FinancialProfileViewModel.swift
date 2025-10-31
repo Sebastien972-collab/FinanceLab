@@ -67,10 +67,10 @@ class FinancialProfileViewModel {
         let expense = userAnswers.filter { $0.question.isCharge }
         
         let totalRent = calcul(answers: rent)
+        UserStorage.shared.saveUserString(String(totalRent), forKey: .totalRent)
         let totalExpense = calcul(answers: expense)
-        let financialManager = FinancialProfileManager(revenues: Decimal(totalRent), expenses: Decimal(totalExpense))
-        financialManager.calculateSavingDistribution()
-        userManager.currentUser.balance = financialManager.ras
+        UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
+        
         
         
     }
