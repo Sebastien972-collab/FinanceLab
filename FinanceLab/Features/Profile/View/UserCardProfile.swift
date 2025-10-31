@@ -13,15 +13,20 @@ struct UserCardProfile: View {
         StandardCard {
             HStack(spacing: 12) {
                 CircleImageProfil(urlImage: profileVm.userManager.currentUser.profilePictureUrl)
-                    .frame(width: 30, height: 30)
-                VStack(alignment: .leading) {
-                    Text(profileVm.userManager.currentUser.displayName)
-                        .font(Font.cardTitle)
-                        .foregroundStyle(Color.Text.primary)
+                    .frame(width: 44, height: 44)
+                VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Bienvenue")
+                            .font(.cardSubtitle)
+                        Text(profileVm.userManager.currentUser.displayName)
+                            .font(.cardTitle)
+                            .foregroundStyle(Color.Text.primary)
+                    }
                     Text("Profil financier")
-                        .font(Font.cardSubtitle)
+                        .font(.cardCallout)
                         .foregroundStyle(Color.Text.primary)
                 }
+                .lineLimit(1)
             }
             .padding()
         }

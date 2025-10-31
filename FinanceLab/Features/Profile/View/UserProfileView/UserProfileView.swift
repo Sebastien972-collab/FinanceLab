@@ -16,7 +16,7 @@ struct UserProfileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                VStack(alignment: .leading, spacing: 32) {
                     Text("Mon profil")
                         .font(.title)
                     VStack(alignment: .leading, spacing: 16) {

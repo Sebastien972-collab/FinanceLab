@@ -24,6 +24,7 @@ struct DashboardView : View {
                         UserProfileView(profilVM: profileVM)
                     } label: {
                         UserCardProfile()
+                            .frame(maxWidth: 260)
                     }
                     BudgetCard(
                         healthScore: healthScore,

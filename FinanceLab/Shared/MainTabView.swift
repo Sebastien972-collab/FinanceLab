@@ -20,7 +20,7 @@ struct MainTabView: View {
                     }
             case .authenticated:
                 TabView {
-                    Tab("Mon budget", systemImage: "wallet.bifold.fill") {
+                    Tab("Budget", systemImage: "wallet.bifold.fill") {
                         DashboardView(
                             userName: tabVm.currentUser.displayName,
                             userCategory: "Bâtisseuse",
@@ -30,7 +30,7 @@ struct MainTabView: View {
                         )
                         .tag(TabViewModel.Selection.home)
                     }
-                    Tab("Mes Projets", systemImage: "powermeter") {
+                    Tab("Projets", systemImage: "powermeter") {
                         ProjectsView()
                             .tag(TabViewModel.Selection.project)
                     }
