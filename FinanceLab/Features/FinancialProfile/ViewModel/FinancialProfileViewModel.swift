@@ -4,38 +4,71 @@
 //
 //  Created by Dembo on 15/10/2025.
 //
-import Observation
+
+import Foundation
 
 @Observable
 class FinancialProfileViewModel {
-    var questions: [Question] = Question.questionDatabase
+    // Services
+    private let service = QuestionsService.shared
+    private let answerService = AnswersService.shared
+    private let userManager = UserManager.shared
+    // Données
+    var questionsList: [Question] = []
     var userAnswers: [Answer] = []
     
+    //  État de navigation
     var currentQuestionIndex: Int = 0
     var textAnswer: String = ""
     
-    var currentQuestion: Question {
-        questions[currentQuestionIndex]
+    //  Gestion des erreurs
+    var error: Error = LoginError.unknown
+    var showError: Bool = false
+    
+    // MARK: - Question actuelle
+    var currentQuestion: Question? {
+        questionsList.first
     }
     
-    // Sauvegarde la réponse de l’utilisateur
-    func saveAnswer() {
-        guard !textAnswer.isEmpty else { return }
-        let answer = Answer(
-            content: textAnswer,
-            user: .guest,   // TODO: replace with current user
-            question: currentQuestion,
-        )
-        userAnswers.append(answer)
-        guard currentQuestionIndex < questions.count - 1 else { return }
-        nextQuestion()
-    }
+    var selectedQuestionGroup: QuestionGroup = .essential
     
-    // Passe à la question suivante
-    func nextQuestion() {
-        if currentQuestionIndex < questions.count - 1 {
-            currentQuestionIndex += 1
-            textAnswer.removeAll()
+    
+    // CRUD
+    func fetchQuestions() async {
+        do {
+            questionsList = try await service.getQuestionByGroup(selectedQuestionGroup)
+        } catch {
+            self.error = error
+            showError = true
+            print("Error fetching questions: \(error)")
         }
     }
+    func saveAnswer(callback: (() -> Void)? = nil) async {
+        print("Le nombre de question est \(questionsList.count)")
+        guard !textAnswer.isEmpty, let currentQuestion = currentQuestion else {
+            launchError(LoginError.emptyFiels)
+            return
+        }
+        let answer = Answer(
+            content: textAnswer,
+            user: userManager.currentUser,
+            question: currentQuestion
+        )
+        userAnswers.append(answer)
+        guard questionsList.count > 1 else {
+            userManager.currentUser.asnwer = userAnswers
+            if let callback = callback {
+                callback()
+            }
+            return
+        }
+        questionsList.remove(at: 0)
+        
+    }
+    
+    func launchError(_ error: Error) {
+        self.error = error
+        self.showError = true
+    }
 }
+
