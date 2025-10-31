@@ -13,6 +13,7 @@ struct InformationView: View {
     
     @State var isPresented: Bool = false
         
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -44,12 +45,15 @@ struct InformationView: View {
                         }
                     }
                     .padding(.horizontal)
+
+                    
+
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 10) {
                             Spacer()
                                 .frame(width: 6)
-                            ForEach(infoVM.getCarouselArticles()) { article in
-                                NavigationLink(destination: SingleArticleView(article: article)) {
+                            ForEach(infoVM.carouselArticles) { article in
+                                NavigationLink(destination: SingleArticleView(article: article).environment(infoVM)) {
                                     InfoCarouselCard(article: article)
                                 }
                             }
@@ -73,6 +77,14 @@ struct InformationView: View {
             .onAppear {
                 randomGlossaire = infoVM.getRandomGlossaire()
             }
+            .task {
+                await infoVM.fetchArticles()
+                infoVM.getLatestArticles()
+                infoVM.getCarouselArticles()
+                await infoVM.getTips()
+            }
+            
+            
             .sheet(isPresented: $isPresented) {
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
