@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43EAA8192EB360C300E5080E /* TestPlan.xctestplan in Resources */ = {isa = PBXBuildFile; fileRef = 43EAA8182EB360C300E5080E /* TestPlan.xctestplan */; };
 		CF8833FF2E8579C200EBF048 /* FinanceCore in Frameworks */ = {isa = PBXBuildFile; productRef = CF8833FE2E8579C200EBF048 /* FinanceCore */; };
 /* End PBXBuildFile section */
 
@@ -21,6 +22,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		43EAA8182EB360C300E5080E /* TestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TestPlan.xctestplan; sourceTree = "<group>"; };
 		CF7DC9592E8571580084762E /* FinanceLab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FinanceLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CF7DC9662E85715A0084762E /* FinanceLabTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FinanceLabTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 		CF7DC9502E8571570084762E = {
 			isa = PBXGroup;
 			children = (
+				43EAA8182EB360C300E5080E /* TestPlan.xctestplan */,
 				CF7DC95B2E8571580084762E /* FinanceLab */,
 				CF7DC9692E85715A0084762E /* FinanceLabTests */,
 				CF7DC95A2E8571580084762E /* Products */,
@@ -184,6 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43EAA8192EB360C300E5080E /* TestPlan.xctestplan in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
