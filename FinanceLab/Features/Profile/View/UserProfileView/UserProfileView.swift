@@ -8,78 +8,94 @@
 import SwiftUI
 
 struct UserProfileView: View {
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var showDeleteAlert: Bool = false
     @State var profilVM = ProfileViewModel()
+    
     var body: some View {
         NavigationStack {
-                ScrollView {
-                    VStack(spacing:24 ) {
-                    VStack(alignment: .leading) {
-                        Text("Réglages du compte")
-                            .font(Font.header)
-                            .foregroundStyle(Color.Text.contrasted)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Mon profil")
+                        .font(.title)
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("Informations du compte")
                         StandardCard {
-                            HStack{
+                            HStack {
                                 VStack(alignment: .leading) {
                                     Text(profilVM.currentUser.firstName)
-                                        .font(Font.body)
+                                        .font(.cardTitle)
                                     Text(verbatim: profilVM.currentUser.email)
-                                        .font(Font.body)
+                                        .font(.cardSubtitle)
                                 }
                                 .foregroundStyle(Color.Text.primary)
                                 Spacer()
                                 CircleImageProfil(urlImage: profilVM.currentUser.profilePictureUrl)
-                                    .clipShape(Circle())
+                                    .frame(width: 55, height: 55)
                             }
                             .padding()
-                            
                         }
-                        
                     }
-                    
-                        VStack(alignment: .leading, spacing: 12) {
-                        Text("Profil Financier ")
-                            .font(Font.header)
-                            .foregroundStyle(Color.Text.contrasted)
-                        ContinuButtonView (
-                            title: "Répond à une autre question ",
-                            state: .validate,
-                            action: {}
+                    VStack(alignment: .leading, spacing: 16) {
+                    Text("Profil financier")
+                    ContinuButtonView (
+                        title: "Répondre à plus de questions ",
+                        state: .validate,
+                        action: {}
+                    )
+                    ForEach(profilVM.userAnswers) { answer in
+                        CardProfil(
+                            iconName: answer.question.questionGroup.icon.resource,
+                            title: answer.question.questionGroup.titlePrefix,
+                            subtitle: answer.question.label,
+                            content:  (answer.question.followUpLabel ?? "") + " : " + answer.content
                         )
-//                        CardProfil(iconName: .currencyEurFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
-//                        CardProfil(iconName: .houseLineFill, title: "Emploi", subtitle: ["Je suis en CDI", "je gagne 1300 € / mois ",])
-                            ForEach(profilVM.userAnswers) { answer in
-                                CardProfil(
-                                    iconName: answer.question.questionGroup.icon.resource,
-                                    title: answer.question.questionGroup.titlePrefix,
-                                    subtitle: answer.question.label,
-                                    content:  (answer.question.followUpLabel ?? "") + " : " + answer.content
-                                )
-                            }
                     }
-                    
-                    DemboCard {
-                        Text("Plus tu complètes ton profil financier, plus mes conseil seront précis et utiles")
-                    }
-                    
-                    Spacer()
-                    
                 }
-                .foregroundStyle(Color.Text.contrasted)
-                
-                
-                
-                
+                DemboCard {
+                    Text("Plus tu complètes ton profil financier, plus mes conseil seront précis et utiles")
+                }
+                VStack(alignment: .leading, spacing: 16) {
+                    Text("Actions irréversibles")
+                        .font(.header)
+                    ContinuButtonView (
+                        title: "Supprimer mon compte",
+                        state: .cancel,
+                        action: {
+                            showDeleteAlert = true
+                        }
+                    )
+                }
             }
-            .navigationTitle(Text("Mon profil"))
-            .padding(.horizontal)
+                .font(.header)
+                .foregroundStyle(Color.Text.contrasted)
+                .padding()
+        }
+            .alert("Supprimer votre compte", isPresented: $showDeleteAlert) {
+                Button("Supprimer", role: .destructive) {
+                    // TODO: mettre ici l'action de suppression de compte
+                    dismiss()
+                }
+                Button("Annuler", role: .cancel) {}
+            } message: {
+                Text("Attention, cette action est irréversible. Toutes vos données seront perdues.")
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button("Précédent", systemImage: "chevron.left") {
+                        dismiss()
+                    }
+                    .buttonStyle(FinanceButton(size: .round))
+                }
+                .sharedBackgroundVisibility(.hidden)
+            }
+            .navigationBarBackButtonHidden()
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
             }
-            
         }
-        
-        
     }
 }
 

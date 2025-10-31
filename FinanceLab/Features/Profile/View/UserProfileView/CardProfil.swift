@@ -12,17 +12,18 @@ struct CardProfil: View {
             Image(iconName)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 60, height: 60)
-                .foregroundStyle(LinearGradient.redGradient)
-            VStack(alignment: .leading, spacing: 2) {
+                .frame(width: 55, height: 55)
+                .foregroundStyle(LinearGradient.primaryGradient)
+            VStack(alignment: .leading, spacing: 4) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(title)
                         .font(.cardTitle)
                         .foregroundColor(.white)
                     Text(subtitle)
-                        .font(.cardTitle)
+                        .font(.cardSubtitle)
                 }
-                    Text(content)
+                Text(content)
+                    .font(.body)
                 }
                 .foregroundStyle(Color.Text.primary)
             }
