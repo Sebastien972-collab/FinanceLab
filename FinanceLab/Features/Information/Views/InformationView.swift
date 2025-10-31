@@ -9,10 +9,11 @@ import SwiftUI
 
 struct InformationView: View {
     @State var infoVM = InfoViewModel()
-    @State var randomGlossaire = Glossaire(title: "", description: "")
+    @State var randomDefinition = Definition(name: "", content: "")
     
     @State var isPresented: Bool = false
         
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -36,7 +37,7 @@ struct InformationView: View {
                                 icon: .lightbulbFill
                             )
                         }
-                        NavigationLink(destination: GlossaireView().environment(infoVM)) {
+                        NavigationLink(destination: DefinitionView().environment(infoVM)) {
                             InfoPickCard(
                                 label: "Glossaire",
                                 icon: .bookOpenTextFill
@@ -44,12 +45,15 @@ struct InformationView: View {
                         }
                     }
                     .padding(.horizontal)
+
+                    
+
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 10) {
                             Spacer()
                                 .frame(width: 6)
-                            ForEach(infoVM.getCarouselArticles()) { article in
-                                NavigationLink(destination: SingleArticleView(article: article)) {
+                            ForEach(infoVM.carouselArticles) { article in
+                                NavigationLink(destination: SingleArticleView(article: article).environment(infoVM)) {
                                     InfoCarouselCard(article: article)
                                 }
                             }
@@ -59,8 +63,8 @@ struct InformationView: View {
                     }
                     .frame(height: 225)
                         DemboCard() {
-                            Text(LocalizedStringResource("Le mot du jour : **\(randomGlossaire.title)**"))
-                            Text(randomGlossaire.description).lineLimit(2)
+                            Text(LocalizedStringResource("Un mot au hasard : **\(infoVM.randomDefinition.name)**"))
+                            Text(infoVM.randomDefinition.content).lineLimit(2)
                         }
                         .padding(.horizontal)
                         .onTapGesture {
@@ -70,17 +74,23 @@ struct InformationView: View {
             }
             .foregroundStyle(Color.Text.contrasted)
             .padding(.vertical)
-            .onAppear {
-                randomGlossaire = infoVM.getRandomGlossaire()
+            .task {
+                await infoVM.fetchArticles()
+                await infoVM.getRandomDefinition()
+                await infoVM.getTips()
+                infoVM.getLatestArticles()
+                infoVM.getCarouselArticles()
             }
+            
+            
             .sheet(isPresented: $isPresented) {
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Le mot du jour")
                             .font(.title)
-                        Text(randomGlossaire.title)
+                        Text(infoVM.randomDefinition.name)
                             .font(.title2)
-                        Text(randomGlossaire.description)
+                        Text(infoVM.randomDefinition.content)
                             .font(.body)
                     }
                     Spacer()

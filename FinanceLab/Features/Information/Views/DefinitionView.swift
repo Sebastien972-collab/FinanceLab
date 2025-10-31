@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct GlossaireView: View {
+struct DefinitionView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(InfoViewModel.self) var infoVM
 
@@ -19,12 +19,12 @@ struct GlossaireView: View {
                         .font(.title)
                         .foregroundStyle(Color.Text.contrasted)
                     VStack (alignment: .leading, spacing: 16){
-                        ForEach(infoVM.getGlossaire()) { glo in
+                        ForEach(infoVM.definitions) { def in
                             StandardCard {
                                 VStack(alignment: .leading, spacing: 16) {
-                                    Text(glo.title).font(.cardTitle)
+                                    Text(def.name).font(.cardTitle)
                                         .foregroundStyle(Color.Text.secondary)
-                                    Text(glo.description).font(.body)
+                                    Text(def.content).font(.body)
                                         .foregroundStyle(Color.Text.primary)
                                 }
                                 .padding()
@@ -47,11 +47,14 @@ struct GlossaireView: View {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
             }
+            .task {
+                await infoVM.getDefinitions()
+            }
             .navigationBarBackButtonHidden()
         }
     }
 }
 
 #Preview {
-    GlossaireView()
+    DefinitionView()
 }
