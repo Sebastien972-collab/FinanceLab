@@ -24,8 +24,8 @@ struct ArticleListView: View {
                     }
                     LazyVStack(spacing: 16) {
                         if isTips {
-                            ForEach(infoVM.getTips()) { article in
-                                NavigationLink(destination: SingleArticleView(article: article)) {
+                            ForEach(infoVM.tips) { article in
+                                NavigationLink(destination: SingleArticleView(article: article).environment(infoVM)) {
                                     StandardCard {
                                         Text(article.title)
                                             .font(.cardTitle)
@@ -35,8 +35,8 @@ struct ArticleListView: View {
                                 }
                             }
                         } else {
-                            ForEach(infoVM.getLatestArticles()) { article in
-                                NavigationLink(destination: SingleArticleView(article: article)) {
+                            ForEach(infoVM.latestArticles) { article in
+                                NavigationLink(destination: SingleArticleView(article: article).environment(infoVM)) {
                                     InfoCarouselCard(article: article, isInfiniteWidth: true)
                                 }
                             }
