@@ -13,6 +13,7 @@ class InfoViewModel {
     var manager: UserManager = .shared
     var articleService = ArticleService()
     var articleContentService = ArticleContentService()
+    var definitionService = DefinitionService()
     
     // Affichage d'un message d'erreur explicite
     var error: Error = LoginError.unknown
@@ -27,6 +28,8 @@ class InfoViewModel {
     
     var articleContent: [ArticleContent] = []
     
+    var definitions: [Definition] = []
+    var randomDefinition: Definition = Definition(name: "", content: "")
 
     
     func fetchArticles() async {
@@ -74,13 +77,35 @@ class InfoViewModel {
         }
     }
     
-    func getGlossaire() -> [Glossaire] {
-        return glossaires
+    func getDefinitions() async {
+        do {
+            definitions = try await definitionService.fetchDefinitions().sorted(by: { $0.name < $1.name })
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error fetching definitions list: \(error)")
+        }
+
     }
     
-    func getRandomGlossaire() -> Glossaire {
-        return glossaires.randomElement()!
+    func getRandomDefinition() async {
+        do {
+            randomDefinition = try await definitionService.fetchRandomDefinition()
+        } catch {
+            self.error = error
+            showError.toggle()
+            print("Error fetching random definition: \(error)")
+
+        }
     }
+    
+//    func getGlossaire() -> [Glossaire] {
+//        return glossaires
+//    }
+//    
+//    func getRandomGlossaire() -> Glossaire {
+//        return glossaires.randomElement()!
+//    }
     
 //    private let articlesTab: [Article] = [
 //        Article(
@@ -276,51 +301,51 @@ class InfoViewModel {
 //        )
 //    ]
     
-    private let glossaires: [Glossaire] = [
-        Glossaire(title: "Action", description: "Titre qui représente une petite part de propriété d'une entreprise. En acheter, c'est devenir 'co-propriétaire' et espérer profiter des bénéfices si l'entreprise se porte bien."),
-        Glossaire(title: "Actif", description: "Tout ce qui a de la valeur et qui peut appartenir à une personne (argent, maison, voiture, placements financiers). Les actifs peuvent générer des revenus ou prendre de la valeur avec le temps."),
-        Glossaire(title: "Amortissement", description: "Répartition du coût d’un bien sur plusieurs années. Par exemple, une voiture achetée 10 000 € perd de la valeur chaque année : c’est son amortissement."),
-        Glossaire(title: "Assurance", description: "Contrat qui protège financièrement contre certains risques (maladie, accident, vol, incendie). En échange d'une cotisation régulière, l'assureur couvre tout ou une partie des pertes éventuelles."),
-        Glossaire(title: "Banque", description: "Institution financière qui garde ton argent, propose des moyens de paiement, des crédits et des produits d’épargne."),
-        Glossaire(title: "Bourse", description: "Marché où s’échangent des actions, obligations ou autres titres financiers. C’est un lieu virtuel où se rencontrent acheteurs et vendeurs."),
-        Glossaire(title: "Budget", description: "Outil de gestion permettant de comparer ses revenus et ses dépenses. Il sert à savoir combien on peut épargner, investir ou consommer sans dépasser ses moyens."),
-        Glossaire(title: "Capital", description: "Somme d’argent ou valeur de départ utilisée pour créer un revenu ou une entreprise. C’est la base sur laquelle on construit de la richesse."),
-        Glossaire(title: "Carte de crédit", description: "Moyen de paiement qui permet d’acheter maintenant et de rembourser plus tard, souvent avec des intérêts si le solde n’est pas payé à temps."),
-        Glossaire(title: "Compte courant", description: "Compte bancaire utilisé au quotidien pour déposer son salaire, payer ses factures ou retirer de l’argent."),
-        Glossaire(title: "Compte épargne", description: "Compte bancaire destiné à mettre de l’argent de côté. Il rapporte souvent des intérêts selon la somme déposée."),
-        Glossaire(title: "Crédit", description: "Somme d’argent empruntée à une banque ou un organisme. Il faut la rembourser avec des intérêts, sur une durée définie."),
-        Glossaire(title: "Crédit immobilier", description: "Prêt utilisé pour acheter un bien immobilier (maison, appartement). Il s’étale généralement sur 15 à 25 ans."),
-        Glossaire(title: "Crypto-monnaie", description: "Monnaie numérique décentralisée, comme le Bitcoin, qui fonctionne sans banque centrale et repose sur la technologie de la blockchain."),
-        Glossaire(title: "Débit", description: "Somme d’argent qui sort d’un compte bancaire. Par exemple, un paiement par carte ou un prélèvement."),
-        Glossaire(title: "Déficit", description: "Situation où les dépenses sont supérieures aux revenus. C’est l’opposé de l’excédent."),
-        Glossaire(title: "Dépense", description: "Somme d’argent utilisée pour acheter un bien ou un service. Suivre ses dépenses permet de mieux gérer son budget."),
-        Glossaire(title: "Diversification", description: "Stratégie qui consiste à répartir ses investissements sur plusieurs types d’actifs pour réduire les risques."),
-        Glossaire(title: "Dividende", description: "Part des bénéfices qu’une entreprise verse à ses actionnaires, généralement une fois par an."),
-        Glossaire(title: "Épargne", description: "Argent mis de côté pour des projets futurs ou pour se protéger des imprévus."),
-        Glossaire(title: "Épargne de précaution", description: "Somme mise de côté pour faire face aux urgences (panne, perte d’emploi, frais médicaux). Généralement 3 à 6 mois de dépenses."),
-        Glossaire(title: "Emprunt", description: "Fait d’obtenir de l’argent d’un prêteur (banque, particulier) en s’engageant à le rembourser avec des intérêts."),
-        Glossaire(title: "Fonds d’investissement", description: "Portefeuille collectif géré par des professionnels qui investissent dans différentes entreprises ou obligations."),
-        Glossaire(title: "Impôt", description: "Somme versée à l’État pour financer les services publics (éducation, santé, sécurité…). Le montant dépend des revenus et du patrimoine."),
-        Glossaire(title: "Inflation", description: "Hausse générale et durable des prix. Elle diminue le pouvoir d’achat de la monnaie."),
-        Glossaire(title: "Intérêt", description: "Somme versée en échange d’un prêt d’argent. C’est le 'prix' du temps ou du risque."),
-        Glossaire(title: "Investissement", description: "Achat d’un actif dans l’objectif de le voir prendre de la valeur ou générer un revenu futur."),
-        Glossaire(title: "Liquidité", description: "Capacité à transformer rapidement un actif en argent liquide sans perte de valeur."),
-        Glossaire(title: "Monnaie", description: "Instrument d’échange accepté par tous pour acheter des biens et des services."),
-        Glossaire(title: "Obligation", description: "Titre de dette émis par une entreprise ou un État. L’investisseur prête de l’argent en échange d’un remboursement futur avec intérêts."),
-        Glossaire(title: "Patrimoine", description: "Ensemble des biens qu’une personne possède (immobilier, placements, objets de valeur…)."),
-        Glossaire(title: "Pension", description: "Revenu régulier versé à une personne après sa retraite, souvent issu de cotisations versées durant sa vie active."),
-        Glossaire(title: "Placements", description: "Utilisation de son argent pour le faire fructifier (livret, assurance-vie, bourse, immobilier…)."),
-        Glossaire(title: "Pouvoir d’achat", description: "Quantité de biens et services que l’on peut acheter avec un certain revenu. Il baisse quand les prix augmentent."),
-        Glossaire(title: "Prêt à taux zéro", description: "Crédit sans intérêts, souvent accordé pour aider à acheter un logement sous certaines conditions."),
-        Glossaire(title: "Revenu", description: "Argent perçu régulièrement (salaire, allocations, loyers, dividendes…). C’est ce qui alimente ton budget."),
-        Glossaire(title: "Risque", description: "Possibilité de perdre une partie de son argent lorsqu’on investit. Plus le rendement espéré est élevé, plus le risque l’est aussi."),
-        Glossaire(title: "Salaire", description: "Rémunération reçue en échange d’un travail fourni. Il peut être fixe ou inclure des primes."),
-        Glossaire(title: "Solvabilité", description: "Capacité d’une personne à rembourser ses dettes. Une bonne solvabilité facilite l’accès au crédit."),
-        Glossaire(title: "Taux d’intérêt", description: "Pourcentage appliqué à un prêt ou à un placement pour calculer les intérêts dus ou gagnés."),
-        Glossaire(title: "Titre", description: "Document ou valeur financière représentant un droit de propriété (action) ou de créance (obligation)."),
-        Glossaire(title: "Transaction", description: "Opération d’achat ou de vente d’un bien, d’un service ou d’un titre financier."),
-        Glossaire(title: "Valeur ajoutée", description: "Différence entre le prix de vente d’un produit et le coût de ses matières premières. C’est la richesse créée par l’entreprise."),
-        Glossaire(title: "Volatilité", description: "Mesure des variations de prix d’un actif. Plus un actif est volatile, plus son prix change rapidement."),
-        Glossaire(title: "Zone euro", description: "Ensemble des pays européens utilisant l’euro comme monnaie commune. Ils partagent une même politique monétaire.")
-    ]
+//    private let glossaires: [Glossaire] = [
+//        Glossaire(title: "Action", description: "Titre qui représente une petite part de propriété d'une entreprise. En acheter, c'est devenir 'co-propriétaire' et espérer profiter des bénéfices si l'entreprise se porte bien."),
+//        Glossaire(title: "Actif", description: "Tout ce qui a de la valeur et qui peut appartenir à une personne (argent, maison, voiture, placements financiers). Les actifs peuvent générer des revenus ou prendre de la valeur avec le temps."),
+//        Glossaire(title: "Amortissement", description: "Répartition du coût d’un bien sur plusieurs années. Par exemple, une voiture achetée 10 000 € perd de la valeur chaque année : c’est son amortissement."),
+//        Glossaire(title: "Assurance", description: "Contrat qui protège financièrement contre certains risques (maladie, accident, vol, incendie). En échange d'une cotisation régulière, l'assureur couvre tout ou une partie des pertes éventuelles."),
+//        Glossaire(title: "Banque", description: "Institution financière qui garde ton argent, propose des moyens de paiement, des crédits et des produits d’épargne."),
+//        Glossaire(title: "Bourse", description: "Marché où s’échangent des actions, obligations ou autres titres financiers. C’est un lieu virtuel où se rencontrent acheteurs et vendeurs."),
+//        Glossaire(title: "Budget", description: "Outil de gestion permettant de comparer ses revenus et ses dépenses. Il sert à savoir combien on peut épargner, investir ou consommer sans dépasser ses moyens."),
+//        Glossaire(title: "Capital", description: "Somme d’argent ou valeur de départ utilisée pour créer un revenu ou une entreprise. C’est la base sur laquelle on construit de la richesse."),
+//        Glossaire(title: "Carte de crédit", description: "Moyen de paiement qui permet d’acheter maintenant et de rembourser plus tard, souvent avec des intérêts si le solde n’est pas payé à temps."),
+//        Glossaire(title: "Compte courant", description: "Compte bancaire utilisé au quotidien pour déposer son salaire, payer ses factures ou retirer de l’argent."),
+//        Glossaire(title: "Compte épargne", description: "Compte bancaire destiné à mettre de l’argent de côté. Il rapporte souvent des intérêts selon la somme déposée."),
+//        Glossaire(title: "Crédit", description: "Somme d’argent empruntée à une banque ou un organisme. Il faut la rembourser avec des intérêts, sur une durée définie."),
+//        Glossaire(title: "Crédit immobilier", description: "Prêt utilisé pour acheter un bien immobilier (maison, appartement). Il s’étale généralement sur 15 à 25 ans."),
+//        Glossaire(title: "Crypto-monnaie", description: "Monnaie numérique décentralisée, comme le Bitcoin, qui fonctionne sans banque centrale et repose sur la technologie de la blockchain."),
+//        Glossaire(title: "Débit", description: "Somme d’argent qui sort d’un compte bancaire. Par exemple, un paiement par carte ou un prélèvement."),
+//        Glossaire(title: "Déficit", description: "Situation où les dépenses sont supérieures aux revenus. C’est l’opposé de l’excédent."),
+//        Glossaire(title: "Dépense", description: "Somme d’argent utilisée pour acheter un bien ou un service. Suivre ses dépenses permet de mieux gérer son budget."),
+//        Glossaire(title: "Diversification", description: "Stratégie qui consiste à répartir ses investissements sur plusieurs types d’actifs pour réduire les risques."),
+//        Glossaire(title: "Dividende", description: "Part des bénéfices qu’une entreprise verse à ses actionnaires, généralement une fois par an."),
+//        Glossaire(title: "Épargne", description: "Argent mis de côté pour des projets futurs ou pour se protéger des imprévus."),
+//        Glossaire(title: "Épargne de précaution", description: "Somme mise de côté pour faire face aux urgences (panne, perte d’emploi, frais médicaux). Généralement 3 à 6 mois de dépenses."),
+//        Glossaire(title: "Emprunt", description: "Fait d’obtenir de l’argent d’un prêteur (banque, particulier) en s’engageant à le rembourser avec des intérêts."),
+//        Glossaire(title: "Fonds d’investissement", description: "Portefeuille collectif géré par des professionnels qui investissent dans différentes entreprises ou obligations."),
+//        Glossaire(title: "Impôt", description: "Somme versée à l’État pour financer les services publics (éducation, santé, sécurité…). Le montant dépend des revenus et du patrimoine."),
+//        Glossaire(title: "Inflation", description: "Hausse générale et durable des prix. Elle diminue le pouvoir d’achat de la monnaie."),
+//        Glossaire(title: "Intérêt", description: "Somme versée en échange d’un prêt d’argent. C’est le 'prix' du temps ou du risque."),
+//        Glossaire(title: "Investissement", description: "Achat d’un actif dans l’objectif de le voir prendre de la valeur ou générer un revenu futur."),
+//        Glossaire(title: "Liquidité", description: "Capacité à transformer rapidement un actif en argent liquide sans perte de valeur."),
+//        Glossaire(title: "Monnaie", description: "Instrument d’échange accepté par tous pour acheter des biens et des services."),
+//        Glossaire(title: "Obligation", description: "Titre de dette émis par une entreprise ou un État. L’investisseur prête de l’argent en échange d’un remboursement futur avec intérêts."),
+//        Glossaire(title: "Patrimoine", description: "Ensemble des biens qu’une personne possède (immobilier, placements, objets de valeur…)."),
+//        Glossaire(title: "Pension", description: "Revenu régulier versé à une personne après sa retraite, souvent issu de cotisations versées durant sa vie active."),
+//        Glossaire(title: "Placements", description: "Utilisation de son argent pour le faire fructifier (livret, assurance-vie, bourse, immobilier…)."),
+//        Glossaire(title: "Pouvoir d’achat", description: "Quantité de biens et services que l’on peut acheter avec un certain revenu. Il baisse quand les prix augmentent."),
+//        Glossaire(title: "Prêt à taux zéro", description: "Crédit sans intérêts, souvent accordé pour aider à acheter un logement sous certaines conditions."),
+//        Glossaire(title: "Revenu", description: "Argent perçu régulièrement (salaire, allocations, loyers, dividendes…). C’est ce qui alimente ton budget."),
+//        Glossaire(title: "Risque", description: "Possibilité de perdre une partie de son argent lorsqu’on investit. Plus le rendement espéré est élevé, plus le risque l’est aussi."),
+//        Glossaire(title: "Salaire", description: "Rémunération reçue en échange d’un travail fourni. Il peut être fixe ou inclure des primes."),
+//        Glossaire(title: "Solvabilité", description: "Capacité d’une personne à rembourser ses dettes. Une bonne solvabilité facilite l’accès au crédit."),
+//        Glossaire(title: "Taux d’intérêt", description: "Pourcentage appliqué à un prêt ou à un placement pour calculer les intérêts dus ou gagnés."),
+//        Glossaire(title: "Titre", description: "Document ou valeur financière représentant un droit de propriété (action) ou de créance (obligation)."),
+//        Glossaire(title: "Transaction", description: "Opération d’achat ou de vente d’un bien, d’un service ou d’un titre financier."),
+//        Glossaire(title: "Valeur ajoutée", description: "Différence entre le prix de vente d’un produit et le coût de ses matières premières. C’est la richesse créée par l’entreprise."),
+//        Glossaire(title: "Volatilité", description: "Mesure des variations de prix d’un actif. Plus un actif est volatile, plus son prix change rapidement."),
+//        Glossaire(title: "Zone euro", description: "Ensemble des pays européens utilisant l’euro comme monnaie commune. Ils partagent une même politique monétaire.")
+//    ]
 }

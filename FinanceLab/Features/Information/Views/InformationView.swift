@@ -9,7 +9,7 @@ import SwiftUI
 
 struct InformationView: View {
     @State var infoVM = InfoViewModel()
-    @State var randomGlossaire = Glossaire(title: "", description: "")
+    @State var randomDefinition = Definition(name: "", content: "")
     
     @State var isPresented: Bool = false
         
@@ -37,7 +37,7 @@ struct InformationView: View {
                                 icon: .lightbulbFill
                             )
                         }
-                        NavigationLink(destination: GlossaireView().environment(infoVM)) {
+                        NavigationLink(destination: DefinitionView().environment(infoVM)) {
                             InfoPickCard(
                                 label: "Glossaire",
                                 icon: .bookOpenTextFill
@@ -63,8 +63,8 @@ struct InformationView: View {
                     }
                     .frame(height: 225)
                         DemboCard() {
-                            Text(LocalizedStringResource("Le mot du jour : **\(randomGlossaire.title)**"))
-                            Text(randomGlossaire.description).lineLimit(2)
+                            Text(LocalizedStringResource("Un mot au hasard : **\(infoVM.randomDefinition.name)**"))
+                            Text(infoVM.randomDefinition.content).lineLimit(2)
                         }
                         .padding(.horizontal)
                         .onTapGesture {
@@ -74,14 +74,12 @@ struct InformationView: View {
             }
             .foregroundStyle(Color.Text.contrasted)
             .padding(.vertical)
-            .onAppear {
-                randomGlossaire = infoVM.getRandomGlossaire()
-            }
             .task {
                 await infoVM.fetchArticles()
+                await infoVM.getRandomDefinition()
+                await infoVM.getTips()
                 infoVM.getLatestArticles()
                 infoVM.getCarouselArticles()
-                await infoVM.getTips()
             }
             
             
@@ -90,9 +88,9 @@ struct InformationView: View {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Le mot du jour")
                             .font(.title)
-                        Text(randomGlossaire.title)
+                        Text(infoVM.randomDefinition.name)
                             .font(.title2)
-                        Text(randomGlossaire.description)
+                        Text(infoVM.randomDefinition.content)
                             .font(.body)
                     }
                     Spacer()
