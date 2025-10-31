@@ -17,7 +17,14 @@ class UserManager {
     }
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
+            let answers = currentUser.asnwer
             self.currentUser = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
+            
+            guard !answers.isEmpty else {
+                return
+            }
+            let aswerdata = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData()} )
+            
         } catch  {
             throw error
         }

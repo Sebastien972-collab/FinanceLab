@@ -9,15 +9,26 @@
 import Foundation
 
 enum QuestionGroup: String, CaseIterable, Codable, Identifiable {
-    case essential = "Questions essentielles"
-    case personal = "Situation personnelle et familiale"
-    case savings = "Épargne de précaution"
-    case protection = "Protection & prévoyance"
-    case patrimony = "Patrimoine existant"
-    case risk = "Gestion du risque & profil investisseur"
+    case essential = "essential"
+    case personal = "personal"
+    case savings = "savings"
+    case protection = "protection"
+    case patrimony = "patrimony"
+    case risk = "risk"
     
     var id: String { rawValue }
 
+    var displayName: String {
+        switch self {
+        case .essential: return "Questions essentielles"
+        case .personal: return "Situation personnelle et familiale"
+        case .savings: return "Épargne de précaution"
+        case .protection: return "Protection & prévoyance"
+        case .patrimony: return "Patrimoine existant"
+        case .risk: return "Gestion du risque & profil investisseur"
+        }
+    }
+    
     var icon: CategoryIcon {
         switch self {
         case .essential:    return .selectionFill

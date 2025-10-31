@@ -20,13 +20,23 @@ final class AnswersService{
 //        return response.map{ $0.toAnswer(user: .guest, question: Q) }
 //    }
 //    
-    func postAnswer(answer: AnswersData) async throws {
+    func postAnswer(answer: AnswersData) async throws -> AnswersData {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(answer)
         let token = try keychain.getToken()
         let apiRequest = APIRequest(endpoint: "/answer/", httpMethod: .POST, body: data)
-        let _ = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
+        let answer = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
+        return answer
+    }
+    func postAllAnswers(answer: [AnswersData]) async throws -> [AnswersData] {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        let data = try encoder.encode(answer)
+        let token = try keychain.getToken()
+        let apiRequest = APIRequest(endpoint: "/answer/bulk", httpMethod: .POST, body: data)
+        let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
+        return answer
     }
     
     func putAnswer(answer: AnswersData) async throws {
