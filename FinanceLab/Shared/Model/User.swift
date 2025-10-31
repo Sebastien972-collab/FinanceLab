@@ -18,6 +18,7 @@ class User: Identifiable {
     var balance: Decimal = 0.00
     var profilePictureUrl: String?
     var transactions: [Transaction] = []
+    var asnwer: [Answer] = []
     init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
         self.firstName = firstName
         self.lastName = lastName

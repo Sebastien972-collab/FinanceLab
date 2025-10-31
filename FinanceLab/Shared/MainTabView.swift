@@ -42,6 +42,18 @@ struct MainTabView: View {
                 }
             case .notAuthenticated:
                 LoginView(loginVM: LoginViewModel(), authState: $tabVm.authState)
+            case .firstLaunch:
+                OnboardingView()
+                    .task {
+                        do {
+                            _ = try  await QuestionsService.shared.fetchQuestion()
+                        } catch {
+                            tabVm.launchError(error)
+                        }
+                    }
+            case .questionPhase:
+                FinancialQuestionView()
+                
             }
         })
         .alert("Erreur", isPresented: $tabVm.showError) {

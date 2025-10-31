@@ -1,0 +1,30 @@
+//
+//  QuestionsService.swift
+//  FinanceLab
+//
+//  Created by Dembo on 29/10/2025.
+//
+
+import Foundation
+
+final class QuestionsService{
+    static let shared = QuestionsService()
+    private let keychain = KeychainService.shared
+    private let service = NetworkingService.shared
+    private var questions: [Question] = []
+    
+    func getQuestionByGroup(_ questionGroup: QuestionGroup ) async throws -> [Question] {
+        guard questions.isEmpty else {
+            return questions.filter { $0.questionGroup == questionGroup }
+        }
+        _ = try await fetchQuestion()
+        return questions.filter { $0.questionGroup == questionGroup }
+    }
+    
+    func fetchQuestion() async throws -> [Question] {
+        let questionsRequest = APIRequest(endpoint: "/questions", httpMethod: .GET)
+        let response = try await service.request(questionsRequest, responseType: [QuestionsData].self)
+        questions = response.map{ $0.toQuestion() }
+        return questions
+    }
+}

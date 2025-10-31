@@ -35,11 +35,12 @@ struct OnboardingView: View {
         } else {
             Button("C'est parti !") {
                 // dismiss
+                tabVm.authState = .questionPhase
             }
             .buttonStyle(FinanceButton(state: .validate))
         }
     }
-        
+    @Environment(TabViewModel.self) private var tabVm: TabViewModel
     var body: some View {
         VStack {
             Spacer()
@@ -59,4 +60,5 @@ struct OnboardingView: View {
 
 #Preview {
     OnboardingView()
+        .environment(TabViewModel())
 }

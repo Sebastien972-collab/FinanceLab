@@ -15,9 +15,8 @@ struct FinancialProfile: View {
     var body: some View {
         VStack {
             Spacer()
-            
-            let question = viewModel.currentQuestion
-            
+            let question = viewModel.currentQuestion ?? .questionDatabase[0]
+
             QuestionCard {
                 VStack(alignment: .center, spacing: 24) {
                     // Titre et icône
@@ -49,8 +48,10 @@ struct FinancialProfile: View {
                     .frame(width: 200)
                         
                         Button("Valider") {
-                            viewModel.saveAnswer()
-                            viewModel.nextQuestion()
+                            Task {
+                                await viewModel.saveAnswer()
+                            }
+                          
                         }
                         .buttonStyle(FinanceButton(size: .mini))
                 }

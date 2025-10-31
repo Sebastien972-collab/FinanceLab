@@ -7,27 +7,31 @@
 import SwiftUI
 
 struct FinancialQuestionView: View {
+    @Environment(TabViewModel.self) private var tabVm: TabViewModel
     @State private var viewModel = FinancialProfileViewModel()
+    var currentQuestion: Question {
+        viewModel.currentQuestion ?? Question.questionDatabase[0]
+    }
     var body: some View {
         VStack {
             Spacer()
             QuestionCard {
                 VStack(alignment: .center, spacing: 24) {
                     // Titre et icône
-                    Text(viewModel.currentQuestion.questionGroup.rawValue)
+                    Text(currentQuestion.questionGroup.rawValue)
                         .font(.title)
                         .foregroundStyle(Color.Text.contrasted)
                     HStack {
-                        Text(viewModel.currentQuestion.questionGroup.titlePrefix)
+                        Text(currentQuestion.questionGroup.displayName)
                             .font(.title2)
-                        viewModel.currentQuestion.questionGroup.icon.image
+                        currentQuestion.questionGroup.icon.image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 30, height: 30)
                             .foregroundStyle(LinearGradient.redGradient)
                     }
                     // Texte de la question
-                    Text(viewModel.currentQuestion.content)
+                    Text(currentQuestion.content)
                         .font(.body)
                         .foregroundStyle(Color.Text.contrasted)
                     
@@ -40,7 +44,11 @@ struct FinancialQuestionView: View {
                     .frame(width: 200)
                         
                         Button("Valider") {
-                            viewModel.saveAnswer()
+                            Task {
+                                await viewModel.saveAnswer {
+                                    tabVm.authState = .notAuthenticated
+                                }
+                            }
                         }
                         .buttonStyle(FinanceButton(size: .mini))
                 }
@@ -51,9 +59,20 @@ struct FinancialQuestionView: View {
         .background {
             FinancialBackground().ignoresSafeArea()
         }
+        .task {
+            await viewModel.fetchQuestions()
+        }
+        .alert("Error", isPresented: $viewModel.showError) {
+            Button {} label: {
+                Text("Ok")
+            }
+        } message: {
+            Text(viewModel.error.localizedDescription)
+        }
     }
 }
 
 #Preview {
     FinancialQuestionView()
+        .environment(TabViewModel())
 }

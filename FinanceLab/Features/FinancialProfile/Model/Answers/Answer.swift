@@ -22,4 +22,12 @@ struct Answer: Identifiable {
         self.user = user
         self.question = question
     }
+    
+    
+    func toAnswerData() -> AnswersData{
+        AnswersData(
+            id: id,
+            content: content, idQuestion: question.id
+        )
+    }
 }
