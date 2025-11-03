@@ -69,7 +69,9 @@ class InfoViewModel {
     
     func getTips() async {
         do {
-            tips = try await articleService.fetchArticles().filter({ $0.articleCategory == .tips })
+            tips = try await articleService.fetchArticles()
+                .filter({ $0.articleCategory == .tips })
+                .sorted(by: { $0.title < $1.title })
         } catch {
             self.error = error
             showError.toggle()
