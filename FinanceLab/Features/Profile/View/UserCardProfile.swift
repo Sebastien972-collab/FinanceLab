@@ -12,18 +12,24 @@ struct UserCardProfile: View {
     @State private var isPresented: Bool = false
     var body: some View {
         StandardCard {
-            HStack(alignment: .center) {
+            HStack(spacing: 12) {
                 CircleImageProfil(urlImage: tabVm.manager.currentUser.profilePictureUrl)
-                    .padding(.vertical, 5)
-                VStack(alignment: .leading) {
-                    Text(tabVm.manager.currentUser.displayName)
-                        .font(Font.cardTitle)
-                        .foregroundStyle(Color.Text.primary)
+                    .frame(width: 44, height: 44)
+                VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("Bienvenue")
+                            .font(.cardSubtitle)
+                        Text(tabVm.manager.currentUser.displayName)
+                            .font(.cardTitle)
+                            .foregroundStyle(Color.Text.primary)
+                    }
                     Text("Profil financier")
-                        .font(Font.cardSubtitle)
+                        .font(.cardCallout)
                         .foregroundStyle(Color.Text.primary)
                 }
+                .lineLimit(1)
             }
+            .padding()
         }
         .onTapGesture {apGesture in
             isPresented.toggle()
@@ -41,7 +47,6 @@ struct UserCardProfile: View {
 
             }
         }
-        
     }
 }
 

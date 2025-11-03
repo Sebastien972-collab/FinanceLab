@@ -36,8 +36,8 @@ struct SingleTransactionView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                        Text(initialTransaction != nil ? "Éditer une entrée" : "Nouvelle entrée")
-                            .font(.title)
+                    Text(initialTransaction != nil ? "Éditer une entrée" : "Nouvelle entrée")
+                        .font(.title)
                     FinancialPicker(options: ["Dépense", "Recette"], isTransaction: true, selected: $pickerSelected)
                     HStack(spacing: 42) {
                         VStack(alignment: .leading) {
@@ -145,12 +145,12 @@ struct SingleTransactionView: View {
             }
             .sheet(isPresented: $isCategoryPickerPresented) {
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 70))]) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]) {
                         ForEach(CategoryIcon.allCases) { icon in
                             Image(icon.resource)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .padding(6)
+                                .padding(12)
                                 .background(icon == editableTransaction.iconName ? LinearGradient.greenGradient : LinearGradient.clearGradient)
                                 .foregroundStyle(icon == editableTransaction.iconName ? Color.Text.primary : Color.Text.contrasted)
                                 .cornerRadius(24)

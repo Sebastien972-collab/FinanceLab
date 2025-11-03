@@ -10,6 +10,7 @@ import FinanceCore
 
 struct ProjectDetailsView: View {
     @State var project: Project
+    @Environment(\.dismiss) private var dismiss
     @Environment(ProjectViewModel.self) private var projectVM
     @State var manager: ProjectCreatorViewModel = .init()
     @State private var updateManager: ProjectUpdateCreator = .init(project: .preview)
@@ -26,88 +27,85 @@ struct ProjectDetailsView: View {
                     .padding(.bottom)
 
             }
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading) {
-                    Text("\(project.name)")
-                        .font(Font.custom("Host Grotesk", size: 24))
-                        .fontWeight(.bold)
-                        .foregroundStyle(Color.Text.contrasted)
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    Text(project.name)
+                        .font(.title)
                     StandardCard {
                         VStack(alignment: .leading) {
                             VStack(alignment: .leading) {
-                                Text("Avancé du projet")
+                                Text("Avancée du projet")
                                     .font(.cardTitle)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(Color.Text.primary)
                                 Text("J'ai déja mis de côté")
                                     .font(.cardSubtitle)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(Color.Text.primary)
                             }
-                            
                             VStack(alignment: .leading, spacing: 5) {
                                 AmountView(amount: Decimal(project.progressPercentage), selection: .percent)
-                                ProgressView(value: project.progressPercentage)
+                                PercentageSlider(percentage: project.progressPercentage, color: .greenToRed)
                                 HStack {
                                     AmountView(amount: project.amountSaved)
                                     Spacer()
-                                    Text("/" + project.goalAmount.formatted() + " €")
-                                        .font(Font.custom("Host Grotesk", size: 12))
+                                    Text("/ " + project.goalAmount.formatted() + " €")
+                                        .font(.body)
                                         .foregroundStyle(Color.Text.secondary)
                                 }
                             }
                         }
+                        .foregroundStyle(Color.Text.primary)
                         .padding()
                     }
-                    VStack(alignment: .leading) {
-                        Text("Détails")
-                            .font(Font.custom("Host Grotesk", size: 18))
-                            .fontWeight(.bold)
-                            .foregroundStyle(Color.Text.contrasted)
-                        ProjectDetailsCardView(title: "Épargne mensuelle", subtitle: "Je mets de côté chaque mois", info: "\(project.monthlyAmount.formatted()) €")
-                        ProjectDetailsCardView(title: "Durée", subtitle: "Ce projet dure depuis", info: "\(project.numberOfMonthsToReachGoal) mois ")
-                        ProjectDetailsCardView(title: "Fin", subtitle: "À ce rythme, ce projet sera fini en", info: project.deadlineFormatted)
+                    Text("Dans le détail")
+                        .font(.title2)
+                    VStack(alignment: .leading, spacing: 16) {
+                        ProjectDetailsCardView(
+                            title: "Épargne mensuelle",
+                            subtitle: "Je mets de côté chaque mois",
+                            info: "\(project.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €"
+                        )
+                        ProjectDetailsCardView(
+                            title: "Durée",
+                            subtitle: "Ce projet dure depuis",
+                            info: "\(project.numberOfMonthsToReachGoal) mois"
+                        )
+                        ProjectDetailsCardView(
+                            title: "Fin",
+                            subtitle: "À ce rythme, ce projet sera fini en",
+                            info: project.deadlineFormatted
+                        )
                     }
-                    
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
+                .foregroundStyle(Color.Text.contrasted)
+                .padding()
             }
-            .padding()
-            .sheet(isPresented: $manager.isEditing) {
-                ProjectCreatorView(projectManager: updateManager)
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
-            }
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button {
-                        updateManager.manager = projectVM
-                        updateManager.setupProject(project)
-                        manager.isEditing = true
-                        
-                    } label: {
-                        Text("Modifier")
-                            .frame(width: 120, height: 44)
-                            .background {
-                                Capsule()
-                                    .foregroundStyle(LinearGradient.greenGradient)
-                            }
-                            .buttonStyle(.plain)
-                    }
-        
-                    
-                    
-                }
-            }
-            .toolbarBackground(.clear, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar) // contrôle la visibilité, mais avec .clear comme matériau
         }
+        .sheet(isPresented: $manager.isEditing) {
+            ProjectCreatorView(projectManager: updateManager)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button("Précédent", systemImage: "chevron.left") {
+                    dismiss()
+                }
+                .buttonStyle(FinanceButton(size: .round))
+            }
+            .sharedBackgroundVisibility(.hidden)
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Modifier") {
+                    updateManager.manager = projectVM
+                    updateManager.setupProject(project)
+                    manager.isEditing = true
+                }
+                .buttonStyle(FinanceButton(state: .validate, size: .mini))
+            }
+            .sharedBackgroundVisibility(.hidden)
+        }
+        .navigationBarBackButtonHidden()
         .background {
             FinancialBackground()
                 .ignoresSafeArea(.all)
         }
-        
     }
 }
 
@@ -129,25 +127,23 @@ fileprivate struct AmountView: View {
     var size: CGFloat = 32
     var selection: Selection = .eur
     var body: some View {
-        HStack(spacing: 2) {
+        HStack(spacing: 4) {
             // On convertit et formate correctement selon le type
             let displayedText: String = {
                 switch selection {
                 case .eur:
-                    amount.formatted(.currency(code: "EUR"))
+                    amount.formatted(.number.precision(.fractionLength(2)))
                 case .percent:
                     "\(decimalToInt(amount))"
                 }
             }()
             Text(LocalizedStringResource(stringLiteral: displayedText))
-                .font(Font.custom("Host Grotesk", size: size))
-                .fontWeight(.bold)
-                .foregroundStyle(Color.Text.primary)
+                .font(.cardNumber)
             Text(selection.rawValue)
-                .font(Font.custom("Host Grotesk", size: size - 4))
-                .fontWeight(.bold)
-                .foregroundStyle(Color.Text.primary)
+                .font(.cardCurrency)
+                .foregroundStyle(Color.Text.secondary)
         }
+        .foregroundStyle(Color.Text.primary)
     }
     
     /// Conversion sécurisée Decimal → Int

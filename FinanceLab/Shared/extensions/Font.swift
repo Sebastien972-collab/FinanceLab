@@ -44,11 +44,11 @@ extension Font {
     }
     
     static var cardSubtitle: Font {
-        .custom(customFontMedium, size: 12)
+        .custom(customFontMedium, size: 13)
     }
     
     static var cardCallout: Font {
-        .custom(customFont, size: 10)
+        .custom(customFont, size: 12)
     }
     
     static var cardNumber: Font {

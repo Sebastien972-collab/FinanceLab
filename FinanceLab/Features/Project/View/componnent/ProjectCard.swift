@@ -11,40 +11,43 @@ struct ProjectCard: View {
     let project: Project
     var body: some View {
         StandardCard {
-            HStack {
+            HStack(spacing: 16) {
                 if let image = CategoryIcon(rawValue: project.iconName ?? CategoryIcon.houseLineFill.rawValue) {
                     image.image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .foregroundStyle(LinearGradient.primaryGradient)
                         .frame(maxWidth: 56, maxHeight: 56)
-                        .padding()
                 } else {
                     ImageCard(imageName: "target")
                 }
                 VStack(alignment: .leading) {
                     Text(project.name)
-                        .font(Font.cardTitle)
-                        .foregroundStyle(Color.Text.primary)
-                        .minimumScaleFactor(0.7)
+                        .font(.cardTitle)
                         .lineLimit(1)
-                    Text(project.formattedAmount)
-                        .font(Font.cardNumber)
-                        .foregroundStyle(Color.Text.primary)
-                        .minimumScaleFactor(0.7)
-                        .lineLimit(1)
+                    HStack {
+                        Text(project.amountSaved.formatted(.number.precision(.fractionLength(2))))
+                            .font(.cardCurrency)
+                            .lineLimit(1)
+                        Text(project.currency.symbol)
+                            .font(.cardCurrency)
+                    }
                 }
                 Spacer()
-                VStack {
+                VStack(alignment: .trailing, spacing: -4) {
                     Text("terminé à")
-                        .font(Font.cardCallout)
-                        .foregroundStyle(Color.Text.primary)
-                    Text("\(Int(project.progressPercentage)) %")
-                        .font(Font.cardNumber)
-                        .foregroundStyle(Color.Text.primary)
+                        .font(.cardCallout)
+                        .foregroundStyle(Color.Text.secondary)
+                    HStack {
+                        Text("\(Int(project.progressPercentage))")
+                            .font(.cardNumber)
+                        Text("%")
+                            .font(.cardCurrency)
+                    }
                 }
             }
-            .padding(.horizontal)
+            .foregroundStyle(Color.Text.primary)
+            .padding()
             .clipped()
             
         }
@@ -67,6 +70,5 @@ private struct ImageCard: View {
             .aspectRatio(contentMode: .fit)
             .foregroundStyle(LinearGradient.primaryGradient)
             .frame(maxWidth: 56, maxHeight: 56)
-            .padding()
     }
 }

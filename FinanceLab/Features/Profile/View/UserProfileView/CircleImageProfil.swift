@@ -8,6 +8,15 @@
 import SwiftUI
 
 struct CircleImageProfil: View {
+    struct ImagePersonFill: View {
+        var body: some View {
+            Image(systemName: "person.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .clipShape(Circle())
+        }
+    }
+    
     var urlImage: String?
     var body: some View {
         if let urlString = urlImage, let url = URL(string: urlString) {
@@ -17,7 +26,6 @@ struct CircleImageProfil: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .clipShape(Circle())
-                        .frame(maxWidth: 67, maxHeight: 67) // Displays the loaded image.
                 } else if phase.error != nil {
                     ImagePersonFill()
                 } else {
@@ -31,19 +39,8 @@ struct CircleImageProfil: View {
 }
 
 #Preview {
-    HStack {
+    ScrollView {
         CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
         CircleImageProfil(urlImage: nil)
-    }
-}
-
-struct ImagePersonFill: View {
-    var body: some View {
-        Image(systemName: "person.fill")
-            .resizable()
-            .aspectRatio(contentMode: .fill)
-            .clipShape(Circle())
-            .frame(maxWidth: 60, maxHeight: 60) // Displays the loaded image.
-            .padding(5)
     }
 }

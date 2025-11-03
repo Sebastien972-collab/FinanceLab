@@ -30,7 +30,7 @@ extension Project {
     }
     static func formattedDate(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
+        formatter.dateFormat = "MMM yyyy"
         formatter.locale = Locale(identifier: "fr_FR")
         return formatter.string(from: date)
     }

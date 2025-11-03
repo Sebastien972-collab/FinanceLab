@@ -16,32 +16,37 @@ struct ProjectsView: View {
         NavigationStack {
             @Bindable var projectVM = projectVM
             ScrollView {
-                VStack(alignment: .center) {
-                    ForEach(projectVM.projects) { project in
-                        SwipeableCard {
-                            ProjectCard(project: project)
-                                .frame(maxWidth: .infinity)
-                                .padding(.horizontal)
-                                .onTapGesture {
-                                    projectCreatorVM.manager = projectVM
-                                    selectedProject = project
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Mes projets")
+                        .font(.title)
+                    VStack(spacing: 16) {
+                        ForEach(projectVM.projects) { project in
+                            SwipeableCard {
+                                ProjectCard(project: project)
+                                    .frame(maxWidth: .infinity)
+                                    .onTapGesture {
+                                        projectCreatorVM.manager = projectVM
+                                        selectedProject = project
+                                    }
+                            } onDelete: {
+                                Task {
+                                    await projectVM.remove(project)
                                 }
-                        } onDelete: {
-                            Task {
-                                await projectVM.remove(project)
                             }
                         }
                     }
-                    .padding(.bottom)
-                    ContinueButtonView(title: "+ Démarrer un nouveau projet", state: .validate) {
+                    Button("Démarrer un nouveau projet") {
                         projectCreatorVM.manager = projectVM
                         projectCreatorVM.isEditing.toggle()
                     }
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
-                .navigationTitle(Text("Mes Projets"))
-                .task {
-                    await projectVM.fetchProjects()
-                }
+                .font(.body)
+                .foregroundStyle(Color.Text.contrasted)
+                .padding()
+            }
+            .task {
+                await projectVM.fetchProjects()
             }
             .alert("Error", isPresented: $projectVM.showError) {
                 Button {} label: {
@@ -57,7 +62,7 @@ struct ProjectsView: View {
             .sheet(isPresented: $projectCreatorVM.isEditing) {
                 ProjectCreatorView(projectManager: projectCreatorVM)
                     .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                    .presentationDragIndicator(.hidden)
             }
             .navigationDestination(item: $selectedProject) { project in
                 ProjectDetailsView(project: project)
