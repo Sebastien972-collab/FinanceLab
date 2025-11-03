@@ -13,12 +13,8 @@ struct DashboardView : View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 32) {
-                    NavigationLink {
-                        UserProfileView(profilVM: profileVM)
-                    } label: {
-                        UserCardProfile()
-                            .frame(maxWidth: 260)
-                    }
+                    UserCardProfile()
+                        .frame(maxWidth: 260)
                     BudgetCard(
                         healthScore: dashboardVM.healthScore,
                         monthlyRAS: dashboardVM.monthlyRAS,
