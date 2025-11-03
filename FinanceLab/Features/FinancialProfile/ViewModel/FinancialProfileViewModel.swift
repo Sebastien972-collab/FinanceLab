@@ -55,7 +55,7 @@ class FinancialProfileViewModel {
         )
         userAnswers.append(answer)
         guard questionsList.count > 1 else {
-            userManager.currentUser.asnwer = userAnswers
+            userManager.currentUser.answers = userAnswers
             if let callback = callback {
                 callback()
             }

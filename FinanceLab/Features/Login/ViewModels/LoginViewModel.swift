@@ -20,75 +20,75 @@ class LoginViewModel {
     var error: Error = LoginError.unknown
     var showError: Bool = false
     var isWorking: Bool = false
-    
-    
-    
-    
+
     func login(callback: (() -> Void)? = nil) async {
-        // Takes email, password, and logs to an existing account
         isWorking = true
-        checkField()
+        defer { isWorking = false }
+        guard checkField() else { return }
+        
         do {
             try await manager.login(email: email, password: password)
             if let callback = callback {
-                DispatchQueue.main.async {
-                    callback()
-                }
+                await MainActor.run { callback() }
             }
-        } catch  {
-            isWorking = false
-            self.error = error
+        } catch let err {
+            self.error = err
             self.showError = true
         }
     }
     
     func create(callback: (() -> Void)? = nil) async {
-        // Takes email, password, first name and last name, and creates a new account with it
         isWorking = true
         defer { isWorking = false }
-        checkField()
+        guard checkField() else { return }
+        
         do {
-            let answers = UserManager.shared.currentUser.asnwer
+            let answers = manager.currentUser.answers
             try await manager.create(firstName: firstName, lastName: lastName, email: email, password: password)
             if let callback = callback {
-                DispatchQueue.main.async {
-                    callback()
-                }
+                await MainActor.run { callback() }
             }
-            guard !answers.isEmpty else {
-                return
+            if !answers.isEmpty {
+                _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData() })
             }
-            _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData()} )
-        } catch  {
-            self.error = error
+        } catch let err {
+            self.error = err
             self.showError = true
         }
     }
-    
+
     func fetchUser() async {
         do {
             try await manager.fetchProfile()
-        } catch  {
-            self.error = error
+        } catch let err {
+            self.error = err
             self.showError = true
         }
     }
-    ///A function that verifies that the camps are not empty
-    private func checkField() {
+
+    @discardableResult
+    private func checkField() -> Bool {
         if pickerSelected == 0 {
             guard !email.isEmpty && !password.isEmpty else {
-                isWorking = false
-                self.error = LoginError.emptyFiels
-                self.showError = true
-                return
+                failValidation()
+                return false
             }
-        } else  {
-            guard !email.isEmpty || !password.isEmpty || !passwordConfirmation.isEmpty || !firstName.isEmpty || !lastName.isEmpty else {
-                isWorking = false
-                self.error = LoginError.emptyFiels
-                self.showError = true
-                return
+        } else {
+            guard !email.isEmpty,
+                  !password.isEmpty,
+                  !passwordConfirmation.isEmpty,
+                  !firstName.isEmpty,
+                  !lastName.isEmpty else {
+                failValidation()
+                return false
             }
         }
+        return true
+    }
+    
+    private func failValidation() {
+        isWorking = false
+        self.error = LoginError.emptyFiels
+        self.showError = true
     }
 }
