@@ -10,7 +10,7 @@ import FinanceCore
 
 @Observable
 class ProjectViewModel {
-    private(set) var projects: [Project] = Project.previews
+    private(set) var projects: [Project] = []
     var error: Error = ProjectCreatorError.emptyFiels
     var showError: Bool = false
     var creatorMode: Bool = false

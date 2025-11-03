@@ -63,7 +63,7 @@ class ProjectService {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(project)
-        let apiResquest = APIRequest(endpoint: endpoint + "projects/\(project.id)" , httpMethod: .PUT, body: data)
+        let apiResquest = APIRequest(endpoint: endpoint + "/\(project.id)" , httpMethod: .PUT, body: data)
         return try await service.request(apiResquest, responseType: ProjectData.self, token: token).toProject()
     }
     

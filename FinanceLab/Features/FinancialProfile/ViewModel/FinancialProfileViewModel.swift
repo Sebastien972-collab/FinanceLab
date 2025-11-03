@@ -44,7 +44,6 @@ class FinancialProfileViewModel {
         }
     }
     func saveAnswer(callback: (() -> Void)? = nil) async {
-        print("Le nombre de question est \(questionsList.count)")
         guard !textAnswer.isEmpty, let currentQuestion = currentQuestion else {
             launchError(LoginError.emptyFiels)
             return
@@ -70,7 +69,8 @@ class FinancialProfileViewModel {
         UserStorage.shared.saveUserString(String(totalRent), forKey: .totalRent)
         let totalExpense = calcul(answers: expense)
         UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
-        
+        let manager = FinancialProfileManager(revenues: Decimal(totalRent), expenses: Decimal(totalExpense))
+        userManager.currentUser.userCategory = manager.profile
         
         
     }

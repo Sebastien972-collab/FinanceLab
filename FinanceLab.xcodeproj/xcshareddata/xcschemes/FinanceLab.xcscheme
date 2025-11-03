@@ -68,6 +68,13 @@
             ReferencedContainer = "container:FinanceLab.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <EnvironmentVariables>
+         <EnvironmentVariable
+            key = "BASE_URL"
+            value = "&quot;https://lusterless-nondisingenuously-selina.ngrok-free.dev/&quot;"
+            isEnabled = "NO">
+         </EnvironmentVariable>
+      </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
