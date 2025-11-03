@@ -18,7 +18,7 @@ struct ProjectCreatorView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 24) {
                 HStack {
                     CustomFieldView(label: "Nom du projet", text: $projectManager.name, placeholder: "Le nom de mon projet", state: .project)
                         .focused($selection, equals: .name)
@@ -44,31 +44,38 @@ struct ProjectCreatorView: View {
                         }
                         .navigationDestination(isPresented: $isPresented) {
                             ZStack {
-                                FinancialBackground()
+                                Rectangle()
+                                    .foregroundStyle(Color.App.background)
                                     .ignoresSafeArea(.all)
                                 DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
                                     .datePickerStyle(.graphical)
+                                .padding()
                             }
                         }
                 }
                 Spacer()
                 VStack {
-                    ContinueButtonView(title: "Calculer", state: .normal) {
+                    Button("Calculer")  {
                         projectManager.recalculator(1000)
                     }
-                    ContinuButtonView(title: "Valider", state: .validate) {
+                    .buttonStyle(FinanceButton(state: .normal))
+                    Button("Valider") {
                         Task {
                             await projectManager.validate()
                         }
                     }
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
             }
+            .foregroundStyle(Color.Text.primary)
+            .font(.body)
             .padding(24)
         }
-//        .background(content: {
-//            FinancialBackground()
-//                .ignoresSafeArea(edges: .all)
-//        })
+        .background {
+            Rectangle()
+                .foregroundStyle(Color.App.background)
+                .ignoresSafeArea()
+        }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 if selection != nil {

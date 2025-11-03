@@ -35,13 +35,11 @@ struct ProjectsView: View {
                             }
                         }
                     }
-                    ContinueButtonView(
-                        title: "Démarrer un nouveau projet",
-                        state: .validate
-                    ) {
+                    Button("Démarrer un nouveau projet") {
                         projectCreatorVM.manager = projectVM
                         projectCreatorVM.isEditing.toggle()
                     }
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
                 .font(.body)
                 .foregroundStyle(Color.Text.contrasted)
@@ -58,13 +56,13 @@ struct ProjectsView: View {
                 Text(projectVM.error.localizedDescription)
             }
             .background {
-                Rectangle()
-                    .foregroundStyle(Color.App.background).ignoresSafeArea()
+                FinancialBackground()
+                    .ignoresSafeArea(.all)
             }
             .sheet(isPresented: $projectCreatorVM.isEditing) {
                 ProjectCreatorView(projectManager: projectCreatorVM)
                     .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.visible)
+                    .presentationDragIndicator(.hidden)
             }
             .navigationDestination(item: $selectedProject) { project in
                 ProjectDetailsView(project: project)

@@ -30,14 +30,9 @@ struct SwipeableCard<Content: View>: View {
                         }
                     } label: {
                         Image(systemName: "trash")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundColor(.white)
-                            .frame(width: 70, height: 70)
-                            .background(Color.red)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .shadow(radius: 4)
                     }
-                    .padding(.trailing, 8)
+                    .padding(.trailing, 24)
+                    .buttonStyle(FinanceButton(state: .cancel, size: .delete))
                 }
             }
             

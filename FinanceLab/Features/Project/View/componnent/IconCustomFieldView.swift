@@ -16,7 +16,7 @@ struct IconCustomFieldView: View {
         } label: {
             VStack(alignment: .leading) {
                 Text("Icône")
-                    .font(Font.inputFieldText)
+                    .font(.listHeader)
                 ZStack {
                     Color.Card.background.opacity(0.5)
                         .clipShape(Circle())

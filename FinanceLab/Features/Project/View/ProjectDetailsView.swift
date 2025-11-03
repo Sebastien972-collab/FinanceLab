@@ -60,7 +60,7 @@ struct ProjectDetailsView: View {
                         ProjectDetailsCardView(
                             title: "Épargne mensuelle",
                             subtitle: "Je mets de côté chaque mois",
-                            info: "\(project.monthlyAmount.formatted()) €"
+                            info: "\(project.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €"
                         )
                         ProjectDetailsCardView(
                             title: "Durée",

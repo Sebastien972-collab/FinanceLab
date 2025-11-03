@@ -16,7 +16,7 @@ struct FinanceButton: ButtonStyle {
     }
     
     enum ButtonSize {
-        case round, mini, normal, large
+        case round, mini, normal, large, delete
     }
     
     init(state: ButtonState = .normal, size: ButtonSize = .normal) {
@@ -45,6 +45,7 @@ struct FinanceButton: ButtonStyle {
             case .round: return 42
             case .mini: return 42
             case .large: return 64
+            case .delete: return 64
             default: return 42
         }
     }
@@ -53,6 +54,7 @@ struct FinanceButton: ButtonStyle {
             case .round: return 42
             case .mini: return 120
             case .large: return 152
+            case .delete: return 42
             default: return .infinity
         }
     }

@@ -145,12 +145,12 @@ struct SingleTransactionView: View {
             }
             .sheet(isPresented: $isCategoryPickerPresented) {
                 ScrollView {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 70))]) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 60))]) {
                         ForEach(CategoryIcon.allCases) { icon in
                             Image(icon.resource)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .padding(6)
+                                .padding(12)
                                 .background(icon == editableTransaction.iconName ? LinearGradient.greenGradient : LinearGradient.clearGradient)
                                 .foregroundStyle(icon == editableTransaction.iconName ? Color.Text.primary : Color.Text.contrasted)
                                 .cornerRadius(24)
