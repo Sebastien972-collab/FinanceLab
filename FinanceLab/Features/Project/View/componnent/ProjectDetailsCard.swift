@@ -17,25 +17,20 @@ struct ProjectDetailsCardView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(title)
-                        .font(Font.custom("Host Grotesk", size: 15))
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.Text.primary)
+                        .font(.cardTitle)
                     Text(subtitle)
-                        .font(Font.custom("Host Grotesk", size: 12))
-                        .fontWeight(.semibold)
-                        .foregroundColor(Color.Text.primary)
-                    
+                        .font(.cardSubtitle)
+                        .foregroundStyle(Color.Text.secondary)
                 }
                 Spacer()
                 Text(info)
-                    .font(Font.custom("Host Grotesk", size: 32))
-                    .fontWeight(.bold)
-                    .foregroundStyle(Color.Text.primary)
+                    .font(.cardCurrency)
+                    .multilineTextAlignment(.trailing)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.2)
             }
             .padding()
         }
+        .foregroundStyle(Color.Text.primary)
     }
 }
 

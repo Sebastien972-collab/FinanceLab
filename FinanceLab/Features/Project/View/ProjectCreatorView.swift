@@ -63,43 +63,39 @@ struct ProjectCreatorView: View {
                     }
                 }
             }
-            .background(content: {
-                FinancialBackground()
-                    .ignoresSafeArea(edges: .all)
-            })
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    if selection != nil {
-                        Button {
-                            selection = nil
-                        } label: {
-                            Text("OK")
-                                .font(.buttonLabel)
-                        }
-                    }
-                }
-                ToolbarItem(placement: .principal) {
-                    Text("Mon projet")
-                        .font(.buttonLabel)
-                }
-                ToolbarItem(placement: .confirmationAction) {
+            .padding(24)
+        }
+//        .background(content: {
+//            FinancialBackground()
+//                .ignoresSafeArea(edges: .all)
+//        })
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                if selection != nil {
                     Button {
-                        projectManager.reset {
-                            dismiss()
-                        }
+                        selection = nil
                     } label: {
-                        Image(systemName: "trash.fill")
-                            .foregroundStyle(LinearGradient.redGradient)
+                        Text("OK")
+                            .font(.buttonLabel)
                     }
                 }
             }
-            .alert("Error", isPresented: $projectManager.showError) {
-                Button {} label: {
-                    Text("Ok")
+            ToolbarItem(placement: .destructiveAction) {
+                Button("Supprimer", image: .trashFill) {
+                    projectManager.reset {
+                        dismiss()
+                    }
                 }
-            } message: {
-                Text(projectManager.error.localizedDescription)
+                .buttonStyle(FinanceButton(state: .cancel, size: .round))
             }
+            .sharedBackgroundVisibility(.hidden)
+        }
+        .alert("Error", isPresented: $projectManager.showError) {
+            Button {} label: {
+                Text("Ok")
+            }
+        } message: {
+            Text(projectManager.error.localizedDescription)
         }
     }
 }
