@@ -16,12 +16,9 @@ struct ArticleListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 16) {
-                    HStack {
-                        Text(isTips ? "Toutes les astuces" : "Derniers articles")
-                            .font(.title)
-                        Spacer()
-                    }
+                VStack(alignment: .leading, spacing: 24) {
+                    Text(isTips ? "Toutes les astuces" : "Derniers articles")
+                        .font(.title)
                     LazyVStack(spacing: 16) {
                         if isTips {
                             ForEach(infoVM.tips) { article in
@@ -44,8 +41,8 @@ struct ArticleListView: View {
                     }
                 }
                 .padding()
+                .foregroundStyle(Color.Text.contrasted)
             }
-            .foregroundStyle(Color.Text.contrasted)
             .toolbar {
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {

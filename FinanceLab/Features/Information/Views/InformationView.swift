@@ -39,15 +39,12 @@ struct InformationView: View {
                         }
                         NavigationLink(destination: DefinitionView().environment(infoVM)) {
                             InfoPickCard(
-                                label: "Glossaire",
+                                label: "Définitions",
                                 icon: .bookOpenTextFill
                             )
                         }
                     }
                     .padding(.horizontal)
-
-                    
-
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 10) {
                             Spacer()
@@ -62,18 +59,18 @@ struct InformationView: View {
                         }
                     }
                     .frame(height: 225)
-                        DemboCard() {
-                            Text(LocalizedStringResource("Un mot au hasard : **\(infoVM.randomDefinition.name)**"))
-                            Text(infoVM.randomDefinition.content).lineLimit(2)
-                        }
-                        .padding(.horizontal)
-                        .onTapGesture {
-                            isPresented = true
-                        }
+                    DemboCard() {
+                        Text(LocalizedStringResource("Un mot au hasard : **\(infoVM.randomDefinition.name)**"))
+                        Text(infoVM.randomDefinition.content).lineLimit(2)
+                    }
+                    .padding(.horizontal)
+                    .onTapGesture {
+                        isPresented = true
+                    }
                 }
+                .foregroundStyle(Color.Text.contrasted)
+                .padding(.vertical)
             }
-            .foregroundStyle(Color.Text.contrasted)
-            .padding(.vertical)
             .task {
                 await infoVM.fetchArticles()
                 await infoVM.getRandomDefinition()
@@ -81,12 +78,10 @@ struct InformationView: View {
                 infoVM.getLatestArticles()
                 infoVM.getCarouselArticles()
             }
-            
-            
             .sheet(isPresented: $isPresented) {
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Le mot du jour")
+                        Text("Un mot au hasard")
                             .font(.title)
                         Text(infoVM.randomDefinition.name)
                             .font(.title2)

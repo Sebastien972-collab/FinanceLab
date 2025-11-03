@@ -35,7 +35,7 @@ class ProjectCreatorViewModel {
     /// Représentation localisée (fr_FR) de `finalDate` pour l'affichage.
     var finalDateFormatted: String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .long
+        formatter.dateStyle = .medium
         formatter.timeStyle = .none
         formatter.locale = Locale(identifier: "fr_FR")
         return formatter.string(from: finalDate)

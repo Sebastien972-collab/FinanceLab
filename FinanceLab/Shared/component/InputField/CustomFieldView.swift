@@ -52,7 +52,7 @@ fileprivate struct HeaderView: View {
     var label: String
     var body: some View {
         Text(label)
-            .font(Font.listHeader)
+            .font(.listHeader)
             .foregroundColor(Color.Text.contrasted)
             .padding(.horizontal)
     }

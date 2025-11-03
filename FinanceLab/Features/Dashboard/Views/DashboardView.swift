@@ -12,8 +12,9 @@ struct DashboardView : View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading ,spacing: 32) {
+                VStack(alignment: .leading, spacing: 32) {
                     UserCardProfile()
+                        .frame(maxWidth: 260)
                     BudgetCard(
                         healthScore: dashboardVM.healthScore,
                         monthlyRAS: dashboardVM.monthlyRAS,
@@ -29,17 +30,6 @@ struct DashboardView : View {
                     .buttonStyle(FinanceButton(state: .validate))
                 }
                 .padding()
-            }
-            .toolbar {
-
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Nouvelle transaction", image: .circlesThreePlusFill) {
-                        // action
-                    }
-                    .labelStyle(.iconOnly)
-                    .buttonStyle(FinanceButton(size: .round))
-                }
-                .sharedBackgroundVisibility(.hidden)
             }
             .background {
                 FinancialBackground().ignoresSafeArea()

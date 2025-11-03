@@ -14,11 +14,11 @@ struct DefinitionView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 32) {
-                    Text("Glossaire")
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Définitions")
                         .font(.title)
                         .foregroundStyle(Color.Text.contrasted)
-                    VStack (alignment: .leading, spacing: 16){
+                    VStack (spacing: 16) {
                         ForEach(infoVM.definitions) { def in
                             StandardCard {
                                 VStack(alignment: .leading, spacing: 16) {
@@ -32,7 +32,7 @@ struct DefinitionView: View {
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
             }
             .toolbar {
                 ToolbarItem(placement: .navigation) {
@@ -56,5 +56,5 @@ struct DefinitionView: View {
 }
 
 #Preview {
-    DefinitionView()
+    DefinitionView().environment(InfoViewModel())
 }

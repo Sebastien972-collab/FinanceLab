@@ -20,11 +20,11 @@ struct MainTabView: View {
                     }
             case .authenticated:
                 TabView {
-                    Tab("Mon budget", systemImage: "wallet.bifold.fill") {
+                    Tab("Budget", systemImage: "wallet.bifold.fill") {
                         DashboardView()
-                        .tag(TabViewModel.Selection.home)
+                          .tag(TabViewModel.Selection.home)
                     }
-                    Tab("Mes Projets", systemImage: "powermeter") {
+                    Tab("Projets", systemImage: "powermeter") {
                         ProjectsView()
                             .tag(TabViewModel.Selection.project)
                     }

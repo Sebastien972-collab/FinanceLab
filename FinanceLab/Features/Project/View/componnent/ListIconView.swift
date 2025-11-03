@@ -16,11 +16,6 @@ struct ListIconView: View {
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack {
-                Text("Icône du projet")
-                    .font(.title2.bold())
-                    .foregroundStyle(Color.Text.primary)
-                    .padding(.top)
-                
                 LazyVGrid(columns: columns, spacing: 20) {
                     ForEach(CategoryIcon.allCases) { icon in
                         icon.image
@@ -42,11 +37,13 @@ struct ListIconView: View {
                             }
                     }
                 }
+                .foregroundStyle(LinearGradient.primaryGradient)
                 .padding()
             }
         }
         .background {
-            FinancialBackground()
+            Rectangle()
+                .foregroundStyle(Color.App.background)
                 .ignoresSafeArea()
         }
     }
