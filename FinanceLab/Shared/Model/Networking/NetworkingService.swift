@@ -39,7 +39,7 @@ class NetworkingService {
     func request<T: Decodable>(_ apiRequest: APIRequest, responseType: T.Type, token: String? = nil) async throws -> T {
         let ngrokURL = "https://lusterless-nondisingenuously-selina.ngrok-free.dev/\(apiRequest.endpoint)"
         let stringUrl = "http://127.0.0.1:8080/\(apiRequest.endpoint)"
-        guard let url = URL(string: stringUrl) else { throw URLError.init(.badURL) }
+        guard let url = URL(string: ngrokURL) else { throw URLError.init(.badURL) }
         // Log the resolved URL for debugging (consider replacing with a proper logger in production).
         print("📡 URL:", url.absoluteString)
         var request:  URLRequest = URLRequest(url: url)
