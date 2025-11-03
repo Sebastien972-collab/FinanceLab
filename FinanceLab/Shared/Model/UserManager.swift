@@ -53,6 +53,9 @@ class UserManager {
     func upadateUser(_ newUser: User) {
         self.currentUser = newUser
     }
+    func updateBalance(of balance: Decimal) async throws {
+        self.currentUser.balance = try await Decimal(service.updateBalance(balance: balance.toDoucble()))
+    }
     /// Réinitialise l'état utilisateur en le repassant à `.guest`.
     func logout() {
         self.currentUser = .guest

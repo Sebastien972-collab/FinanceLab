@@ -44,6 +44,9 @@ final class UserService {
             KeychainService.shared.save(data: data, service: "com.financelab.auth", account: "jwtToken")
         }
         // Récupère le profil immédiatement après la création.
+        let rents = Decimal(string: UserStorage.shared.getUserString(forKey: .totalRent) ?? "") ?? 0
+        let expenses = Decimal(string: UserStorage.shared.getUserString(forKey: .totalExpenses) ?? "") ?? 0
+        _ = try await updateBalance(balance: rents.toDoucble() - expenses.toDoucble())
         return try await fetchProfile()
     }
     
@@ -78,6 +81,15 @@ final class UserService {
         let loginRequest = APIRequest(endpoint: "users/update", httpMethod: .PATCH, body: jsonData)
         let response = try await service.request(loginRequest, responseType: UserData.self, token: token)
         return response.toUser()
+    }
+    
+    func updateBalance(balance: Double) async throws -> Double {
+        let token = try KeychainService.shared.getToken()
+        let data = UpdateBalanceData(balance: balance)
+        let jsonData = try JSONEncoder().encode(data)
+        let loginRequest = APIRequest(endpoint: "users/balance", httpMethod: .PATCH, body: jsonData)
+        let response = try await service.request(loginRequest, responseType: UpdateBalanceData.self, token: token)
+        return response.balance
     }
     
     /// Récupère le profil de l'utilisateur courant à partir de l'API.

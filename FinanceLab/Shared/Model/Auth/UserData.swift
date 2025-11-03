@@ -25,6 +25,7 @@ struct UserData: Decodable {
             email: email
         )
         user.profilePictureUrl = self.profilePictureURL
+        user.balance = Decimal(self.balance)
         return user
     }
 }

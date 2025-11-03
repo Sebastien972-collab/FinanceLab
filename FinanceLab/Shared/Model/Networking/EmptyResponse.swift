@@ -8,3 +8,6 @@
 import Foundation
 
 struct EmptyResponse: Decodable {}
+struct UpdateBalanceData: Codable {
+    let balance: Double
+}

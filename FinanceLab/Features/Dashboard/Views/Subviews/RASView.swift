@@ -41,7 +41,7 @@ struct RASView: View {
                         Spacer()
                         Text("~")
                             .font(.cardCurrency)
-                        Text(dailyRAS.description)
+                        Text(dailyRAS.roundedFormatted())
                             .font(.cardNumber)
                         Text("€")
                             .font(.cardCurrency)

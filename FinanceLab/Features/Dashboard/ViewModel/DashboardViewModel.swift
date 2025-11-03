@@ -19,15 +19,12 @@ class DashboardViewModel {
     var dailyRAS: Decimal {
         monthlyRAS / 30
     }
+    private let rents = Decimal(string: UserStorage.shared.getUserString(forKey: .totalRent) ?? "") ?? 0
+    private let expenses = Decimal(string: UserStorage.shared.getUserString(forKey: .totalExpenses) ?? "") ?? 0
     
     
     func setup()  {
-        let rents = Decimal(string: UserStorage.shared.getUserString(forKey: .totalRent) ?? "") ?? 0
-        let expenses = Decimal(string: UserStorage.shared.getUserString(forKey: .totalExpenses) ?? "") ?? 0
-        let financialManager = FinancialProfileManager(revenues: rents, expenses: expenses)
-        financialManager.calculateSavingDistribution()
-        self.monthlyRAS = financialManager.ras
-        
+       updatedRAS()
     }
     func calcul(answers : [Answer]) -> Double {
         var result: Double = 0
@@ -36,4 +33,13 @@ class DashboardViewModel {
         }
         return result
     }
+    
+    func updatedRAS() {
+        let financialManager = FinancialProfileManager(revenues: rents, expenses: expenses)
+        financialManager.calculateSavingDistribution()
+        print(rents , expenses, currentUser.balance)
+        print("Les montants sont : \(financialManager.availableForSaving) , \(financialManager.savingProvide) , \(financialManager.longTermSavings)")
+        monthlyRAS = currentUser.balance - financialManager.availableForSaving - financialManager.bufferAmount - financialManager.longTermSavings
+    }
+    
 }

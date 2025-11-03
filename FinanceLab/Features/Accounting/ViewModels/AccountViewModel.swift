@@ -30,6 +30,7 @@ class AccountViewModel {
         do {
             transactionsList = try await service.fetchTransactions()
                 .sorted(by: { $0.date > $1.date })
+            manager.currentUser.transactions = transactionsList
         } catch {
             self.error = error
             showError.toggle()
@@ -40,6 +41,7 @@ class AccountViewModel {
     func postTransaction(_ transaction: Transaction) async {
         do {
             try await service.postTransaction(transaction: transaction.toTransactionData())
+            try await manager.updateBalance(of: Decimal(transaction.amount))
         } catch {
             self.error = error
             showError.toggle()

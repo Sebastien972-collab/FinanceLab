@@ -21,5 +21,5 @@ struct UserStorage {
 }
 
 enum UserStorageKey: String {
-case totalRent, totalExpenses
+case totalRent, totalExpenses, totalSaving
 }
