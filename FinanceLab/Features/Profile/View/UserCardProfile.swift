@@ -35,17 +35,7 @@ struct UserCardProfile: View {
             isPresented.toggle()
         }
         .navigationDestination(isPresented: $isPresented) {
-            UserProfileView()
-        }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button {
-                    tabVm.logout()
-                } label: {
-                    Image(systemName: "rectangle.portrait.and.arrow.right.fill")
-                }
-
-            }
+            UserProfileView().environment(tabVm)
         }
     }
 }

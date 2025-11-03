@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct UserProfileView: View {
+    @Environment(TabViewModel.self) private var tabVm: TabViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var showDeleteAlert: Bool = false
+    @State private var showLogoutAlert: Bool = false
     @State var profilVM = ProfileViewModel()
     
     var body: some View {
@@ -24,9 +25,9 @@ struct UserProfileView: View {
                         StandardCard {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    Text(profilVM.currentUser.firstName)
+                                    Text(tabVm.currentUser.firstName)
                                         .font(.cardTitle)
-                                    Text(verbatim: profilVM.currentUser.email)
+                                    Text(verbatim: tabVm.currentUser.email)
                                         .font(.cardSubtitle)
                                 }
                                 .foregroundStyle(Color.Text.primary)
@@ -54,34 +55,29 @@ struct UserProfileView: View {
                     }
                 }
                 DemboCard {
-                    Text("Plus tu complètes ton profil financier, plus mes conseil seront précis et utiles")
-                }
-                VStack(alignment: .leading, spacing: 16) {
-                    Text("Actions irréversibles")
-                        .font(.header)
-                    ContinuButtonView (
-                        title: "Supprimer mon compte",
-                        state: .cancel,
-                        action: {
-                            showDeleteAlert = true
-                        }
-                    )
+                    Text("Plus tu complètes ton profil financier, plus mes conseils seront précis et utiles !")
                 }
             }
                 .font(.header)
                 .foregroundStyle(Color.Text.contrasted)
                 .padding()
         }
-            .alert("Supprimer votre compte", isPresented: $showDeleteAlert) {
-                Button("Supprimer", role: .destructive) {
-                    // TODO: mettre ici l'action de suppression de compte
-                    dismiss()
+            .alert("Se déconnecter", isPresented: $showLogoutAlert) {
+                Button("Se déconnecter", role: .destructive) {
+                    tabVm.logout()
                 }
                 Button("Annuler", role: .cancel) {}
             } message: {
-                Text("Attention, cette action est irréversible. Toutes vos données seront perdues.")
+                Text("Voulez-vous vraiment vous déconnecter de votre compte ?")
             }
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Se déconnecter", systemImage: "rectangle.portrait.and.arrow.right.fill") {
+                        showLogoutAlert = true
+                    }
+                    .buttonStyle(FinanceButton(state: .cancel, size: .round))
+                }
+                .sharedBackgroundVisibility(.hidden)
                 ToolbarItem(placement: .navigation) {
                     Button("Précédent", systemImage: "chevron.left") {
                         dismiss()
@@ -101,5 +97,6 @@ struct UserProfileView: View {
 
 #Preview {
     UserProfileView()
+        .environment(TabViewModel())
 }
 
