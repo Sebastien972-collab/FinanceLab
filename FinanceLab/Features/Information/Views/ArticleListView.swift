@@ -16,7 +16,7 @@ struct ArticleListView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
+                LazyVStack(alignment: .leading, spacing: 24) {
                     Text(isTips ? "Toutes les astuces" : "Derniers articles")
                         .font(.title)
                     LazyVStack(spacing: 16) {
