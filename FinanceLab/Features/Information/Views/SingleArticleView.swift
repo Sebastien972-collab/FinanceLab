@@ -25,7 +25,7 @@ struct SingleArticleView: View {
                 } placeholder: {
                     FinancialPlaceholder()
                 }
-                    VStack {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text(article.title)
                             .font(.title)
                     ForEach(infoVM.articleContent) { content in
@@ -36,7 +36,6 @@ struct SingleArticleView: View {
                             case .subtitle:
                                 Text(content.content)
                                     .font(.title2)
-                                    .padding(.top, 8)
                             case .image:
                                 AsyncImage(url: URL(string: content.content)) { image in
                                     image
@@ -47,7 +46,7 @@ struct SingleArticleView: View {
                                 }
                             case .list:
                                 let list = content.content.split(separator: "\\n")
-                                VStack(alignment: .leading, spacing: 0) {
+                                VStack(alignment: .leading, spacing: 2) {
                                     ForEach(list, id:\.self) { item in
                                         Text("• " + item)
                                             .font(.body)
