@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
+import FinanceCore
 @Observable
 class FinancialProfileViewModel {
     // Services
@@ -63,12 +63,28 @@ class FinancialProfileViewModel {
             return
         }
         questionsList.remove(at: 0)
+        let rent = userAnswers.filter { $0.question.isRevenue }
+        let expense = userAnswers.filter { $0.question.isCharge }
+        
+        let totalRent = calcul(answers: rent)
+        UserStorage.shared.saveUserString(String(totalRent), forKey: .totalRent)
+        let totalExpense = calcul(answers: expense)
+        UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
+        
+        
         
     }
     
     func launchError(_ error: Error) {
         self.error = error
         self.showError = true
+    }
+    func calcul(answers : [Answer]) -> Double {
+        var result: Double = 0
+        for answer in answers {
+            result += Double(answer.content) ?? 0
+        }
+        return result
     }
 }
 

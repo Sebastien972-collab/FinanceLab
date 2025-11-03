@@ -21,25 +21,22 @@ class UserManager {
     private let service: UserService = .shared
     /// Représentation de l'utilisateur courant (invité par défaut).
     private(set) var currentUser: User = .guest
-    /// Indique si un utilisateur est connecté (différent de `.guest`).
+    /// Indique si un utilisateur est connecté (différent de `.guest`).`
     var isLoggedIn: Bool {
         currentUser != .guest
     }
+    
     /// Crée un utilisateur puis met à jour `currentUser` avec le profil obtenu.
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
-            let answers = currentUser.asnwer
             self.currentUser = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
-            
-            guard !answers.isEmpty else {
-                return
-            }
-            let aswerdata = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData()} )
             
         } catch  {
             throw error
         }
     }
+    
+    
     /// Authentifie l'utilisateur puis met à jour `currentUser`.
     func login(email: String, password: String) async throws {
         do {
@@ -59,5 +56,7 @@ class UserManager {
     /// Réinitialise l'état utilisateur en le repassant à `.guest`.
     func logout() {
         self.currentUser = .guest
+        
+        
     }
 }

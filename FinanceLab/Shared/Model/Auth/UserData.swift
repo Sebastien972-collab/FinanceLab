@@ -24,7 +24,16 @@ struct UserData: Decodable {
             lastName: lastName,
             email: email
         )
-        user.profilePictureUrl = nil
+        user.profilePictureUrl = self.profilePictureURL
         return user
     }
+}
+
+struct PatchedUserData: Decodable {
+    var firstName: String?
+    var lastName: String?
+    var userCategory: String?
+    var profilePictureURL: String?
+    var email: String?
+    var balance: Double?
 }

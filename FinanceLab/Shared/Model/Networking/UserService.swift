@@ -119,4 +119,8 @@ final class UserService {
         let expirationDate = Date(timeIntervalSince1970: exp)
         return expirationDate < Date()
     }
+    
+    func logOut() {
+        KeychainService.shared.deleteToken()
+    }
 }

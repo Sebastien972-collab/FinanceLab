@@ -121,3 +121,34 @@ extension Question {
         ]
     }
 }
+extension Question {
+
+    var isRevenue: Bool {
+        switch label.lowercased() {
+        case let text where text.contains("revenu"):
+            return true
+        default:
+            return false
+        }
+    }
+
+    var isCharge: Bool {
+        switch label.lowercased() {
+        case let text where
+            text.contains("crédit") ||
+            text.contains("charge") ||
+            text.contains("épargne"):
+            return true
+        default:
+            return false
+        }
+    }
+
+    static var revenueQuestions: [Question] {
+        questionDatabase.filter { $0.isRevenue }
+    }
+
+    static var expenseQuestions: [Question] {
+        questionDatabase.filter { $0.isCharge }
+    }
+}

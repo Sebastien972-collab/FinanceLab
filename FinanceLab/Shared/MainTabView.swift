@@ -21,14 +21,8 @@ struct MainTabView: View {
             case .authenticated:
                 TabView {
                     Tab("Budget", systemImage: "wallet.bifold.fill") {
-                        DashboardView(
-                            userName: tabVm.currentUser.displayName,
-                            userCategory: "Bâtisseuse",
-                            healthScore: 0.5,
-                            monthlyRAS: 120,
-                            dailyRAS: 5.55
-                        )
-                        .tag(TabViewModel.Selection.home)
+                        DashboardView()
+                          .tag(TabViewModel.Selection.home)
                     }
                     Tab("Projets", systemImage: "powermeter") {
                         ProjectsView()

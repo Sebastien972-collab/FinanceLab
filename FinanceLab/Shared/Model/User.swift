@@ -19,6 +19,7 @@ class User: Identifiable {
     var profilePictureUrl: String?
     var transactions: [Transaction] = []
     var asnwer: [Answer] = []
+    var userCategory: FinancialProfile = .none
     init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
         self.firstName = firstName
         self.lastName = lastName
@@ -69,5 +70,9 @@ extension User: Equatable {
     
     func getToken() {
        
+    }
+    
+    func toUserData() -> UserData {
+        UserData(id: self.id, firstName: self.firstName, lastName: self.lastName, userCategory: self.userCategory.rawValue, profilePictureURL: self.profilePictureUrl ?? "", email: self.email, balance: self.balance.toDoucble())
     }
 }

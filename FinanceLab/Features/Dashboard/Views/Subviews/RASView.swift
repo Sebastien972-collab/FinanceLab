@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct RASView: View {
-    var monthlyRAS: Double
-    var dailyRAS: Double
+    var monthlyRAS: Decimal
+    var dailyRAS: Decimal
     var endOfMonth: String = "30 septembre" // TODO: replace with dynamic end of month
     
     var body: some View {

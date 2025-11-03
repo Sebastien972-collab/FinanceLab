@@ -48,13 +48,17 @@ class LoginViewModel {
         defer { isWorking = false }
         checkField()
         do {
-            
+            let answers = UserManager.shared.currentUser.asnwer
             try await manager.create(firstName: firstName, lastName: lastName, email: email, password: password)
             if let callback = callback {
                 DispatchQueue.main.async {
                     callback()
                 }
             }
+            guard !answers.isEmpty else {
+                return
+            }
+            _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData()} )
         } catch  {
             self.error = error
             self.showError = true

@@ -8,17 +8,18 @@
 import SwiftUI
 
 struct UserCardProfile: View {
-    let profileVm = ProfileViewModel()
+    @Environment(TabViewModel.self) private var tabVm: TabViewModel
+    @State private var isPresented: Bool = false
     var body: some View {
         StandardCard {
             HStack(spacing: 12) {
-                CircleImageProfil(urlImage: profileVm.userManager.currentUser.profilePictureUrl)
+                CircleImageProfil(urlImage: tabVm.manager.currentUser.profilePictureUrl)
                     .frame(width: 44, height: 44)
                 VStack(alignment: .leading, spacing: 2) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("Bienvenue")
                             .font(.cardSubtitle)
-                        Text(profileVm.userManager.currentUser.displayName)
+                        Text(tabVm.manager.currentUser.displayName)
                             .font(.cardTitle)
                             .foregroundStyle(Color.Text.primary)
                     }
@@ -30,13 +31,29 @@ struct UserCardProfile: View {
             }
             .padding()
         }
+        .onTapGesture {apGesture in
+            isPresented.toggle()
+        }
+        .navigationDestination(isPresented: $isPresented) {
+            UserProfileView()
+        }
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button {
+                    tabVm.logout()
+                } label: {
+                    Image(systemName: "rectangle.portrait.and.arrow.right.fill")
+                }
+
+            }
+        }
     }
 }
 
 #Preview {
     VStack {
-
         UserCardProfile()
             .padding()
+            .environment(TabViewModel())
     }
 }

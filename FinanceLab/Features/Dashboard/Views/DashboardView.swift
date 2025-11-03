@@ -8,14 +8,7 @@
 import SwiftUI
 
 struct DashboardView : View {
-    @State var profileVM = ProfileViewModel()
-    
-    var userName: String
-    var userCategory: String
-    var healthScore: Double
-    var monthlyRAS: Double
-    var dailyRAS: Double
-    
+    @State private var dashboardVM: DashboardViewModel = .init()
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -27,9 +20,9 @@ struct DashboardView : View {
                             .frame(maxWidth: 260)
                     }
                     BudgetCard(
-                        healthScore: healthScore,
-                        monthlyRAS: monthlyRAS,
-                        dailyRAS: dailyRAS
+                        healthScore: dashboardVM.healthScore,
+                        monthlyRAS: dashboardVM.monthlyRAS,
+                        dailyRAS: dashboardVM.dailyRAS
                     )
                     DemboCard() {
                         Text("Tu t'en sors bien ce mois-ci !")
@@ -45,16 +38,13 @@ struct DashboardView : View {
             .background {
                 FinancialBackground().ignoresSafeArea()
             }
+            .onAppear {
+                dashboardVM.setup()
+            }
         }
     }
 }
 
 #Preview {
-    DashboardView(
-        userName: "Jeanne Dupont",
-        userCategory: "Bâtisseuse",
-        healthScore: 0.5,
-        monthlyRAS: 120,
-        dailyRAS: 5.55
-    )
+    DashboardView()
 }
