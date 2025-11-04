@@ -39,11 +39,12 @@ struct UserProfileView: View {
                     }
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Profil financier")
-                        ContinuButtonView (
-                            title: "Répondre à plus de questions ",
-                            state: .validate,
-                            action: {}
-                        )
+                        NavigationLink {
+                            FinancialQuestionView(isNewQuestion: true)
+                        } label : {
+                            Text("Répondre à plus de questions")
+                        }
+                        .buttonStyle(FinanceButton(state: .validate))
                         ForEach(profilVM.userAnswers) { answer in
                             CardProfil(
                                 iconName: answer.question.questionGroup.icon.resource,
