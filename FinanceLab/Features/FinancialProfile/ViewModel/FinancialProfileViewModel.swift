@@ -71,8 +71,6 @@ class FinancialProfileViewModel {
         UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
         let manager = FinancialProfileManager(revenues: Decimal(totalRent), expenses: Decimal(totalExpense))
         userManager.currentUser.userCategory = manager.profile
-        
-        
     }
     
     func launchError(_ error: Error) {

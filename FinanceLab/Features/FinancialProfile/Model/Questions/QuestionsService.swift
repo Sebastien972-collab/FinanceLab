@@ -27,4 +27,10 @@ final class QuestionsService{
         questions = response.map{ $0.toQuestion() }
         return questions
     }
+    
+    func getQuestion(byID idQuestion: UUID) async throws -> Question {
+        let questionRequest = APIRequest(endpoint: "/questions/\(idQuestion)", httpMethod: .GET)
+        let response = try await service.request(questionRequest, responseType: QuestionsData.self)
+        return response.toQuestion()
+    }
 }

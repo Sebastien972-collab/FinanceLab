@@ -10,10 +10,9 @@ import SwiftUI
 struct UserProfileView: View {
     @Environment(TabViewModel.self) private var tabVm: TabViewModel
     @Environment(\.dismiss) private var dismiss
-
+    
     @State private var showLogoutAlert: Bool = false
     @State var profilVM = ProfileViewModel()
-    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -39,29 +38,29 @@ struct UserProfileView: View {
                         }
                     }
                     VStack(alignment: .leading, spacing: 16) {
-                    Text("Profil financier")
-                    ContinuButtonView (
-                        title: "Répondre à plus de questions ",
-                        state: .validate,
-                        action: {}
-                    )
-                    ForEach(profilVM.userAnswers) { answer in
-                        CardProfil(
-                            iconName: answer.question.questionGroup.icon.resource,
-                            title: answer.question.questionGroup.titlePrefix,
-                            subtitle: answer.question.label,
-                            content:  (answer.question.followUpLabel ?? "") + " : " + answer.content
+                        Text("Profil financier")
+                        ContinuButtonView (
+                            title: "Répondre à plus de questions ",
+                            state: .validate,
+                            action: {}
                         )
+                        ForEach(profilVM.currentUser.answers) { answer in
+                            CardProfil(
+                                iconName: answer.question.questionGroup.icon.resource,
+                                title: answer.question.questionGroup.titlePrefix,
+                                subtitle: answer.question.label,
+                                content:  (answer.question.followUpLabel ?? "") + " : " + answer.content
+                            )
+                        }
+                    }
+                    DemboCard {
+                        Text("Plus tu complètes ton profil financier, plus mes conseils seront précis et utiles !")
                     }
                 }
-                DemboCard {
-                    Text("Plus tu complètes ton profil financier, plus mes conseils seront précis et utiles !")
-                }
-            }
                 .font(.header)
                 .foregroundStyle(Color.Text.contrasted)
                 .padding()
-        }
+            }
             .alert("Se déconnecter", isPresented: $showLogoutAlert) {
                 Button("Se déconnecter", role: .destructive) {
                     tabVm.logout()
@@ -90,6 +89,9 @@ struct UserProfileView: View {
             .background {
                 FinancialBackground()
                     .ignoresSafeArea(.all)
+            }
+            .task {
+                await profilVM.fetchAnswer()
             }
         }
     }

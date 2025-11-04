@@ -42,7 +42,6 @@ struct FinancialQuestionView: View {
                         state: .project
                     )
                     .frame(width: 200)
-                        
                         Button("Valider") {
                             Task {
                                 await viewModel.saveAnswer {

@@ -19,29 +19,22 @@ class ProfileViewModel {
     //    var userAnswers: [Answer] = Answer.userAnswerDatabase
     var userAnswers: [Answer] = []
     init() {
-        // Exemples de réponses à afficher dans le profil
-        userAnswers = [
-            Answer(
-                content: "1300",
-                user: currentUser,
-                question: Question.questionDatabase[0] // "Revenus stables"
-            ),
-            Answer(
-                content: "700",
-                user: currentUser,
-                question: Question.questionDatabase[3] // "Charges"
-            ),
-            Answer(
-                content: "150",
-                user: currentUser,
-                question: Question.questionDatabase[4] // "Épargne"
-            ),
-            Answer(
-                content: "2",
-                user: currentUser,
-                question: Question.questionDatabase[5] // "Enfants"
-            )
-        ]
+        
+    }
+    
+    func fetchAnswer() async {
+        do {
+            let questions = try await QuestionsService.shared.fetchQuestion()
+            let answerDatas = try await AnswersService.shared.fetchAnswer()
+            for answer in answerDatas {
+                if let question = questions.filter({ $0.id == answer.id }).first {
+                    currentUser.answers.append(answer.toAnswer(user: currentUser, question: question))
+                }
+            }
+        } catch  {
+            
+        }
+
     }
 }
 

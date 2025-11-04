@@ -13,13 +13,13 @@ final class AnswersService{
     let keychain = KeychainService.shared
     let service = NetworkingService.shared
     let userManager = UserManager.shared
-//    func fetchAnswer() async throws -> [Answer] {
-//        let token = try keychain.getToken()
-//        let answersRequest = APIRequest(endpoint: "/answers/", httpMethod: .GET)
-//        let response = try await service.request(answersRequest, responseType: [AnswersData].self, token: token)
-//        return response.map{ $0.toAnswer(user: .guest, question: Q) }
-//    }
-//    
+    func fetchAnswer() async throws -> [AnswersData] {
+        let token = try keychain.getToken()
+        let answersRequest = APIRequest(endpoint: "/answers", httpMethod: .GET)
+        let response = try await service.request(answersRequest, responseType: [AnswersData].self, token: token)
+        return response
+    }
+    
     func postAnswer(answer: AnswersData) async throws -> AnswersData {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601

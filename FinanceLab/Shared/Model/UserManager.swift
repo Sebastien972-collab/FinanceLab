@@ -29,7 +29,15 @@ class UserManager {
     /// Crée un utilisateur puis met à jour `currentUser` avec le profil obtenu.
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
-            self.currentUser = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
+            let user = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
+            let answerDatas = try await AnswersService.shared.postAllAnswers(answer: self.currentUser.answers.map { $0.toAnswerData()})
+            let questions = try await QuestionsService.shared.fetchQuestion()
+            for answer in answerDatas {
+                if let question = questions.filter({ $0.id == answer.id }).first {
+                    user.answers.append(answer.toAnswer(user: user, question: question))
+                }
+            }
+            self.currentUser = user
             
         } catch  {
             throw error
@@ -62,4 +70,5 @@ class UserManager {
         
         
     }
+    
 }
