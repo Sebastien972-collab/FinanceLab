@@ -54,6 +54,7 @@ class FinancialProfileViewModel {
     // CRUD
     func fetchQuestions() async {
         if isNewQuestion {
+            print("Ce sont bien les nouvelles questions !? ")
             await pickQuestionGroup()
         }
         do {

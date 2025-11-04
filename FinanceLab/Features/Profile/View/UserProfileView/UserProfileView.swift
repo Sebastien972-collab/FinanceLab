@@ -10,9 +10,11 @@ import SwiftUI
 struct UserProfileView: View {
     @Environment(TabViewModel.self) private var tabVm: TabViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showQuestions = false
     
     @State private var showLogoutAlert: Bool = false
     @State var profilVM = ProfileViewModel()
+    private let vm = FinancialProfileViewModel()
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -39,12 +41,16 @@ struct UserProfileView: View {
                     }
                     VStack(alignment: .leading, spacing: 16) {
                         Text("Profil financier")
-                        NavigationLink {
-                            FinancialQuestionView(isNewQuestion: true)
-                        } label : {
+                        Button {
+                            showQuestions = true
+                        } label: {
                             Text("Répondre à plus de questions")
                         }
                         .buttonStyle(FinanceButton(state: .validate))
+                        .navigationDestination(isPresented: $showQuestions) {
+                            FinancialQuestionView(viewModel: vm, isNewQuestion: true)
+                        }
+                        
                         ForEach(profilVM.userAnswers) { answer in
                             CardProfil(
                                 iconName: answer.question.questionGroup.icon.resource,

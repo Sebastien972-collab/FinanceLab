@@ -8,7 +8,8 @@ import SwiftUI
 
 struct FinancialQuestionView: View {
     @Environment(TabViewModel.self) private var tabVm: TabViewModel
-    @State private var viewModel = FinancialProfileViewModel()
+    @Environment(\.dismiss) private var dismiss
+    @State var viewModel = FinancialProfileViewModel()
     var currentQuestion: Question {
         viewModel.currentQuestion ?? Question.questionDatabase[0]
     }
@@ -59,6 +60,7 @@ struct FinancialQuestionView: View {
         }
         .task {
             viewModel.isNewQuestion = isNewQuestion
+            viewModel.action = { dismiss() }
             await viewModel.fetchQuestions()
         }
         .alert("Error", isPresented: $viewModel.showError) {
