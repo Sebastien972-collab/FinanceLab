@@ -66,9 +66,11 @@ class UserManager {
     }
     /// Réinitialise l'état utilisateur en le repassant à `.guest`.
     func logout() {
-        self.currentUser = .guest
-        
-        
+        // Supprimer le token dans le Keychain
+        KeychainService.shared.delete(service: "com.financelab.auth", account: "jwtToken")
+        // Réinitialiser l’utilisateur actuel
+        self.currentUser = .guest // ou un User() vide selon ton modèle
+        print("Utilisateur déconnecté")
     }
     
 }

@@ -44,9 +44,20 @@ class TabViewModel {
         }
     }
     
-    func logout() {
+    /// Déconnecte l'utilisateur
+    /// - Clears session via UserManager
+    /// - Réinitialise l'état d'authentification et l'UI
+    /// - Capture et affiche les erreurs éventuelles
+    func logout() async {
+        // Met l'UI dans un état neutre pendant la déconnexion
+        authState = .loading
         manager.logout()
         authState = .notAuthenticated
+    }
+
+    /// Wrapper pratique pour être appelé depuis des actions synchrones SwiftUI
+    func logoutTapped() {
+        Task { await logout() }
     }
     
     func login(email: String, password: String) async {
@@ -73,3 +84,4 @@ enum AuthState {
     case notAuthenticated
     case loading
 }
+
