@@ -45,7 +45,7 @@ class FinancialProfileViewModel {
     }
     func saveAnswer(callback: (() -> Void)? = nil) async {
         guard !textAnswer.isEmpty, let currentQuestion = currentQuestion else {
-            launchError(LoginError.emptyFiels)
+            launchError(LoginError.emptyFields)
             return
         }
 
