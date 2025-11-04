@@ -43,14 +43,10 @@ class LoginViewModel {
         guard checkField() else { return }
         
         do {
-            let answers = manager.currentUser.answers
             try await manager.create(firstName: firstName, lastName: lastName, email: email, password: password)
             if let callback = callback {
                 await MainActor.run { callback() }
             }
-//            if !answers.isEmpty {
-//                _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData() })
-//            }
         } catch let err {
             self.error = err
             self.showError = true
@@ -73,6 +69,10 @@ class LoginViewModel {
                 failValidation()
                 return false
             }
+            guard email.isValidEmail, password.isValidPassword else {
+                failValidation()
+                return false
+            }
         } else {
             guard !email.isEmpty,
                   !password.isEmpty,
@@ -82,13 +82,29 @@ class LoginViewModel {
                 failValidation()
                 return false
             }
+            
+        }
+        guard checkEmailAndPassword() else { return false }
+        return true
+    }
+    
+    private func failValidation(withError error: Error = LoginError.emptyFields) {
+        isWorking = false
+        self.error = error
+        self.showError = true
+    }
+    
+    private func checkEmailAndPassword() -> Bool {
+        guard email.isValidEmail else {
+            failValidation(withError: LoginError.invalidEmail(email))
+            return false
+        }
+        guard password.isValidPassword else {
+            failValidation(withError: LoginError.invalidPassword)
+            return false
         }
         return true
     }
     
-    private func failValidation() {
-        isWorking = false
-        self.error = LoginError.emptyFiels
-        self.showError = true
-    }
+    
 }
