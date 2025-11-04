@@ -19,7 +19,7 @@ struct ArticleListView: View {
                 LazyVStack(alignment: .leading, spacing: 24) {
                     Text(isTips ? "Toutes les astuces" : "Derniers articles")
                         .font(.title)
-                    LazyVStack(spacing: 16) {
+                    VStack(spacing: 16) {
                         if isTips {
                             ForEach(infoVM.tips) { article in
                                 NavigationLink(destination: SingleArticleView(article: article).environment(infoVM)) {
