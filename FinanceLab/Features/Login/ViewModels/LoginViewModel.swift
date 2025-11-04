@@ -48,9 +48,9 @@ class LoginViewModel {
             if let callback = callback {
                 await MainActor.run { callback() }
             }
-            if !answers.isEmpty {
-                _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData() })
-            }
+//            if !answers.isEmpty {
+//                _ = try await AnswersService.shared.postAllAnswers(answer: answers.map { $0.toAnswerData() })
+//            }
         } catch let err {
             self.error = err
             self.showError = true

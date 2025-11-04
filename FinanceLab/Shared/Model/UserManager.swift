@@ -30,7 +30,7 @@ class UserManager {
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
             let user = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
-            let answerDatas = try await AnswersService.shared.postAllAnswers(answer: self.currentUser.answers.map { $0.toAnswerData()})
+            let answerDatas = try await AnswersService.shared.postAllAnswers(answers: self.currentUser.answers.map { $0.toAnswerData()})
             let questions = try await QuestionsService.shared.fetchQuestion()
             for answer in answerDatas {
                 if let question = questions.filter({ $0.id == answer.id }).first {

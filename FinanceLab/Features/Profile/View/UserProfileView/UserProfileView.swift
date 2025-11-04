@@ -44,7 +44,7 @@ struct UserProfileView: View {
                             state: .validate,
                             action: {}
                         )
-                        ForEach(profilVM.currentUser.answers) { answer in
+                        ForEach(profilVM.userAnswers) { answer in
                             CardProfil(
                                 iconName: answer.question.questionGroup.icon.resource,
                                 title: answer.question.questionGroup.titlePrefix,

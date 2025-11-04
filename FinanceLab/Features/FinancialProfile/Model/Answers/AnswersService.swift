@@ -25,16 +25,22 @@ final class AnswersService{
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(answer)
         let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answer/", httpMethod: .POST, body: data)
+        let apiRequest = APIRequest(endpoint: "/answers/", httpMethod: .POST, body: data)
         let answer = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
         return answer
     }
-    func postAllAnswers(answer: [AnswersData]) async throws -> [AnswersData] {
+    func postAllAnswers(answers: [AnswersData]) async throws -> [AnswersData] {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(answer)
+        let data = try encoder.encode(answers)
         let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answer/bulk", httpMethod: .POST, body: data)
+        let apiRequest = APIRequest(endpoint: "/answers/bulk", httpMethod: .POST, body: data)
+        let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
+        return answer
+    }
+    func fetchAllUserAnswers() async throws -> [AnswersData] {
+        let token = try keychain.getToken()
+        let apiRequest = APIRequest(endpoint: "/answers/", httpMethod: .GET)
         let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
         return answer
     }

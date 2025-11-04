@@ -14,10 +14,8 @@ struct Question: Identifiable, Hashable{
     var followUpLabel: String?
     var questionGroup: QuestionGroup
     
-    init(id: UUID = UUID(),label: String,content: String,followUpLabel: String? = nil,
-        questionGroup: QuestionGroup
-    ) {
-        self.id = UUID()
+    init(id: UUID = UUID(), label: String, content: String, followUpLabel: String? = nil, questionGroup: QuestionGroup) {
+        self.id = id 
         self.label = label
         self.content = content
         self.followUpLabel = followUpLabel

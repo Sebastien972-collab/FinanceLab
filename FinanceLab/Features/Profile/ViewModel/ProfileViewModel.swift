@@ -24,17 +24,18 @@ class ProfileViewModel {
     
     func fetchAnswer() async {
         do {
+            let answers = try await AnswersService.shared.fetchAllUserAnswers()
             let questions = try await QuestionsService.shared.fetchQuestion()
-            let answerDatas = try await AnswersService.shared.fetchAnswer()
-            for answer in answerDatas {
-                if let question = questions.filter({ $0.id == answer.id }).first {
-                    currentUser.answers.append(answer.toAnswer(user: currentUser, question: question))
+            for answer in answers {
+                if let question = questions.filter({ $0.id == answer.idQuestion }).first {
+                    userManager.currentUser.answers.append(answer.toAnswer(user: currentUser, question: question))
                 }
             }
+            userAnswers = userManager.currentUser.answers
+            print("L'utilisateurs à " + userAnswers.count.description + " Réponses ")
         } catch  {
-            
+            print(error.localizedDescription)
         }
-
     }
 }
 

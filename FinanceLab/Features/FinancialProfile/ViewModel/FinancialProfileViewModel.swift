@@ -48,29 +48,36 @@ class FinancialProfileViewModel {
             launchError(LoginError.emptyFiels)
             return
         }
-        let answer = Answer(
-            content: textAnswer,
-            user: userManager.currentUser,
-            question: currentQuestion
-        )
+
+        let answer = Answer(content: textAnswer, user: userManager.currentUser, question: currentQuestion)
         userAnswers.append(answer)
-        guard questionsList.count > 1 else {
+
+        // Retirer la question actuelle
+        questionsList.remove(at: 0)
+
+        // Si c'était la dernière question
+        if questionsList.isEmpty {
+            let rent = userAnswers.filter { $0.question.isRevenue }
+            let expense = userAnswers.filter { $0.question.isCharge }
+
+            let totalRent = calcul(answers: rent)
+            UserStorage.shared.saveUserString(String(totalRent), forKey: .totalRent)
+
+            let totalExpense = calcul(answers: expense)
+            UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
+
+            let manager = FinancialProfileManager(
+                revenues: Decimal(totalRent),
+                expenses: Decimal(totalExpense)
+            )
+            userManager.currentUser.userCategory = manager.profile
             userManager.currentUser.answers = userAnswers
-            if let callback = callback {
-                callback()
-            }
+
+            callback?()
             return
         }
-        questionsList.remove(at: 0)
-        let rent = userAnswers.filter { $0.question.isRevenue }
-        let expense = userAnswers.filter { $0.question.isCharge }
-        
-        let totalRent = calcul(answers: rent)
-        UserStorage.shared.saveUserString(String(totalRent), forKey: .totalRent)
-        let totalExpense = calcul(answers: expense)
-        UserStorage.shared.saveUserString(String(totalExpense), forKey: .totalExpenses)
-        let manager = FinancialProfileManager(revenues: Decimal(totalRent), expenses: Decimal(totalExpense))
-        userManager.currentUser.userCategory = manager.profile
+
+        // Sinon on continue
     }
     
     func launchError(_ error: Error) {
