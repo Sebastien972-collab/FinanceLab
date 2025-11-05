@@ -64,8 +64,8 @@ struct ProjectDetailsView: View {
                             info: "\(project.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €"
                         )
                         ProjectDetailsCardView(
-                            title: "Durée",
-                            subtitle: "Ce projet dure depuis",
+                            title: "Durée restante",
+                            subtitle: "Ce projet est prévu pour durer",
                             info: "\(project.numberOfMonthsToReachGoal) mois"
                         )
                         ProjectDetailsCardView(
