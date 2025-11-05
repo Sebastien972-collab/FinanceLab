@@ -24,7 +24,6 @@ class TabViewModel {
     init() {
         let hasSeenOnboarding = UserDefaults.standard.bool(forKey: "hasSeenOnboarding")
         if !hasSeenOnboarding {
-            UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
             self.authState = .firstLaunch
         } else {
             self.authState = .loading

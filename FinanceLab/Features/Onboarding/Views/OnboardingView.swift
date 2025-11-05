@@ -35,6 +35,7 @@ struct OnboardingView: View {
         } else {
             Button("C'est parti !") {
                 // dismiss
+                UserDefaults.standard.set(true, forKey: "hasSeenOnboarding")
                 tabVm.authState = .questionPhase
             }
             .buttonStyle(FinanceButton(state: .validate))

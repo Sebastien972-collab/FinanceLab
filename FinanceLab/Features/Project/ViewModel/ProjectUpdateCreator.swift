@@ -37,5 +37,6 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
         finalDate = project.deadline
         imageName = project.iconName ?? CategoryIcon.houseLineFill.rawValue
         stringGoalAmount = project.formattedGoalAmount
+        selectedIcon = CategoryIcon(rawValue: project.iconName ?? "") ?? .cakeFill
     }
 }

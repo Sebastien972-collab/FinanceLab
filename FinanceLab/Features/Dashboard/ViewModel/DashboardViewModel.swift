@@ -39,7 +39,8 @@ class DashboardViewModel {
         financialManager.calculateSavingDistribution()
         print(rents , expenses, currentUser.balance)
         print("Les montants sont : \(financialManager.availableForSaving) , \(financialManager.savingProvide) , \(financialManager.longTermSavings)")
-        monthlyRAS = currentUser.balance - financialManager.availableForSaving - financialManager.bufferAmount - financialManager.longTermSavings
+        let computedMonthlyRAS = currentUser.balance - financialManager.availableForSaving - financialManager.bufferAmount - financialManager.longTermSavings
+        monthlyRAS = max(0, computedMonthlyRAS)
     }
     
 }
