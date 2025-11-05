@@ -26,17 +26,30 @@ class ProfileViewModel {
         do {
             let answers = try await AnswersService.shared.fetchAllUserAnswers()
             let questions = try await QuestionsService.shared.fetchQuestion()
-            for answer in answers {
-                if let question = questions.filter({ $0.id == answer.idQuestion }).first {
-                    userManager.currentUser.answers.append(answer.toAnswer(user: currentUser, question: question))
+            
+            var uniqueAnswers: [Answer] = []
+            
+            for apiAnswer in answers {
+                if let question = questions.first(where: { $0.id == apiAnswer.idQuestion }) {
+                    let answerModel = apiAnswer.toAnswer(user: currentUser, question: question)
+                    
+                    // Vérifier si déjà présent
+                    if !uniqueAnswers.contains(where: { $0.id == answerModel.id }) {
+                        uniqueAnswers.append(answerModel)
+                    }
                 }
             }
-            userAnswers = userManager.currentUser.answers
-            print("L'utilisateurs à " + userAnswers.count.description + " Réponses ")
-        } catch  {
-            print(error.localizedDescription)
+            
+            // On met à jour le tableau final
+            self.userAnswers = uniqueAnswers
+            
+            print("L'utilisateur a \(userAnswers.count) réponses")
+            
+        } catch {
+            print("Erreur fetchAnswer : \(error.localizedDescription)")
         }
     }
+
 }
 
 

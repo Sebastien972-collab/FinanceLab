@@ -98,6 +98,7 @@ struct UserProfileView: View {
                     .ignoresSafeArea(.all)
             }
             .task {
+                
                 await profilVM.fetchAnswer()
             }
         }

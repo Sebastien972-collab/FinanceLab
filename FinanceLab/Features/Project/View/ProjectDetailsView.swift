@@ -14,6 +14,7 @@ struct ProjectDetailsView: View {
     @Environment(ProjectViewModel.self) private var projectVM
     @State var manager: ProjectCreatorViewModel = .init()
     @State private var updateManager: ProjectUpdateCreator = .init(project: .preview)
+    @State private var showAddView: Bool = false
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             if let imageName = project.iconName {
@@ -72,6 +73,14 @@ struct ProjectDetailsView: View {
                             subtitle: "À ce rythme, ce projet sera fini en",
                             info: project.deadlineFormatted
                         )
+                        Button(action: {
+                            showAddView.toggle()
+                            
+                        }, label: {
+                            Text("J'économise aujourd'hui !")
+                        })
+                        .buttonStyle(FinanceButton(state: .validate))
+                        
                     }
                 }
                 .foregroundStyle(Color.Text.contrasted)
@@ -83,6 +92,13 @@ struct ProjectDetailsView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
         }
+        .sheet(isPresented: $showAddView, content: {
+            AddAmountSheetView(onValidate: { amount in
+                project.amountSaved += amount
+            })
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
+        })
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button("Précédent", systemImage: "chevron.left") {
@@ -118,7 +134,7 @@ struct ProjectDetailsView: View {
 
 
 fileprivate struct AmountView: View {
-    let amount: Decimal
+    var amount: Decimal
     enum Selection: String {
         case eur = "€"
         case percent = "%"
@@ -153,5 +169,54 @@ fileprivate struct AmountView: View {
         // On arrondit à 0 décimales, mode .plain = arrondi classique (0.5 → 1)
         NSDecimalRound(&result, &decimal, 0, .plain)
         return NSDecimalNumber(decimal: result).intValue
+    }
+}
+
+struct AddAmountSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var amountText: String = ""
+    
+    var onValidate: ((Decimal) -> Void)? = nil
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            
+            Text("Ajouter à mon projet")
+                .font(.title2)
+                .padding(.top)
+
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Montant à ajouter")
+                    .font(.headline)
+                
+                TextField("0,00 €", text: $amountText)
+                    .keyboardType(.decimalPad)
+                    .textFieldStyle(.roundedBorder)
+            }
+            .padding(.horizontal)
+            Spacer()
+            HStack {
+                Button("Annuler") {
+                    dismiss()
+                }
+                .buttonStyle(FinanceButton(state: .cancel, size: .normal))
+                Spacer()
+                Button("Ajouter") {
+                    if let amount = Decimal(string: amountText.replacingOccurrences(of: ",", with: ".")) {
+                        (onValidate)?(amount)
+                        dismiss()
+                    }
+                }
+                .buttonStyle(FinanceButton(state: .validate, size: .normal))
+                .disabled(amountText.isEmpty)
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
+        }
+        .presentationDetents([.medium])
+        .background {
+            FinancialBackground()
+                .ignoresSafeArea()
+        }
     }
 }

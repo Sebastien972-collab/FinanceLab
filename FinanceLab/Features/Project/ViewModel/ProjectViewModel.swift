@@ -52,5 +52,9 @@ class ProjectViewModel {
         self.showError = true
     }
     
+    func updateProject(with project: Project) async throws -> Project {
+        return try await service.updatePrject(project: project.toProjectData())
+    }
+    
     
 }

@@ -16,7 +16,6 @@ struct FinancialProfileView: View {
         VStack {
             Spacer()
             let question = viewModel.currentQuestion ?? .questionDatabase[0]
-
             QuestionCard {
                 VStack(alignment: .center, spacing: 24) {
                     // Titre et icône

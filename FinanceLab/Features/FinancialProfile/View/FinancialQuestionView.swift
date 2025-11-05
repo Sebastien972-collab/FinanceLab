@@ -38,6 +38,14 @@ struct FinancialQuestionView: View {
                         text: $viewModel.textAnswer,
                         state: .project
                     )
+                    .keyboardType(.decimalPad)
+                    .onSubmit({
+                        Task {
+                            await viewModel.saveAnswer {
+                                tabVm.authState = .notAuthenticated
+                            }
+                        }
+                    })
                     .frame(width: 200)
                         Button("Valider") {
                             Task {

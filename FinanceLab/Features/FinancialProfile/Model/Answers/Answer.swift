@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Answer: Identifiable {
+struct Answer: Identifiable, Equatable {
     let id = UUID()
     var content: String
     var user: User

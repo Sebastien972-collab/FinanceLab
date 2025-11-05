@@ -70,7 +70,7 @@ class FinancialProfileViewModel {
             launchError(LoginError.emptyFields)
             return
         }
-
+        defer { textAnswer.removeAll() }
         let answer = Answer(content: textAnswer, user: userManager.currentUser, question: currentQuestion)
         userAnswers.append(answer)
 
