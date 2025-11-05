@@ -10,7 +10,6 @@ import SwiftUI
 struct RASView: View {
     var monthlyRAS: Decimal
     var dailyRAS: Decimal
-    var endOfMonth: String = "30 septembre" // TODO: replace with dynamic end of month
     
     var body: some View {
         VStack(spacing: 4) {
@@ -27,7 +26,7 @@ struct RASView: View {
                             .font(.cardCurrency)
                         Spacer()
                     }
-                    Text("jusqu'au " + endOfMonth)
+                    Text("jusqu'à la fin du mois")
                         .font(.cardCallout)
                         .foregroundStyle(Color.Text.secondary)
                 }

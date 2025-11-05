@@ -46,9 +46,11 @@ struct ProjectCreatorView: View {
                         }
                         .navigationDestination(isPresented: $isPresented) {
                             ZStack {
-                                DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
-                                    .datePickerStyle(.graphical)
-                                .padding()
+                                ScrollView {
+                                    DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
+                                        .datePickerStyle(.graphical)
+                                        .padding()
+                                }
                             }
                             .background {
                                 FinancialBackground()
@@ -57,18 +59,12 @@ struct ProjectCreatorView: View {
                         }
                 }
                 Spacer()
-                VStack {
-                    Button("Calculer")  {
-                        projectManager.recalculator(1000)
+                Button("Valider") {
+                    Task {
+                        await projectManager.validate(callback: action)
                     }
-                    .buttonStyle(FinanceButton(state: .normal))
-                    Button("Valider") {
-                        Task {
-                            await projectManager.validate(callback: action)
-                        }
-                    }
-                    .buttonStyle(FinanceButton(state: .validate))
                 }
+                .buttonStyle(FinanceButton(state: .validate))
             }
             .foregroundStyle(Color.Text.primary)
             .font(.body)
