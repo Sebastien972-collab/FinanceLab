@@ -12,6 +12,7 @@ enum LoginError: Error, LocalizedError, Sendable {
     case invalidPassword
     case emptyFields
     case unknown
+    case differentPasswords
     
     var errorDescription: String? {
         switch self {
@@ -24,8 +25,7 @@ enum LoginError: Error, LocalizedError, Sendable {
         case .invalidPassword:
             return """
             Mot de passe invalide.
-            Il doit contenir au minimum 8 caractères, dont une majuscule, \
-            une minuscule, un chiffre et un symbole.
+            Il doit contenir au minimum 6 caractères.
             """
             
         case .emptyFields:
@@ -33,6 +33,8 @@ enum LoginError: Error, LocalizedError, Sendable {
             
         case .unknown:
             return "Une erreur inattendue s'est produite. Veuillez réessayer."
+        case .differentPasswords:
+            return "Les mots de passe ne correspondent pas."
         }
     }
 }

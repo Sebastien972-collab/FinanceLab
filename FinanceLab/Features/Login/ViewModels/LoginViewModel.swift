@@ -103,6 +103,10 @@ class LoginViewModel {
             failValidation(withError: LoginError.invalidPassword)
             return false
         }
+        guard password == passwordConfirmation else {
+            failValidation(withError: LoginError.differentPasswords)
+            return false
+        }
         return true
     }
     
