@@ -18,8 +18,10 @@ class FinancialProfileViewModel {
     var userAnswers: [Answer] = []
     
     //  État de navigation
+    var isNewQuestion: Bool = false
     var currentQuestionIndex: Int = 0
     var textAnswer: String = ""
+    var action: (() -> Void)? = nil
     
     //  Gestion des erreurs
     var error: Error = LoginError.unknown
@@ -32,9 +34,29 @@ class FinancialProfileViewModel {
     
     var selectedQuestionGroup: QuestionGroup = .essential
     
+    func pickQuestionGroup() async {
+        var answeredQuestionGroups: [QuestionGroup] = []
+        do {
+            answeredQuestionGroups = try await answerService.fetchAllUserAnsweredQuestionGroups()
+        } catch {
+            self.error = error
+            showError = true
+            print("Error fetching already answered question groups: \(error)")
+        }
+        for group in QuestionGroup.allCases {
+            if !answeredQuestionGroups.contains(group) {
+                selectedQuestionGroup = group
+                return
+            }
+        }
+    }
     
     // CRUD
     func fetchQuestions() async {
+        if isNewQuestion {
+            print("Ce sont bien les nouvelles questions !? ")
+            await pickQuestionGroup()
+        }
         do {
             questionsList = try await service.getQuestionByGroup(selectedQuestionGroup)
         } catch {
@@ -73,7 +95,11 @@ class FinancialProfileViewModel {
             userManager.currentUser.userCategory = manager.profile
             userManager.currentUser.answers = userAnswers
 
-            callback?()
+            if isNewQuestion {
+                action?()
+            } else {
+                callback?()
+            }
             return
         }
 

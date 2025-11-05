@@ -8,19 +8,18 @@ import SwiftUI
 
 struct FinancialQuestionView: View {
     @Environment(TabViewModel.self) private var tabVm: TabViewModel
-    @State private var viewModel = FinancialProfileViewModel()
+    @Environment(\.dismiss) private var dismiss
+    @State var viewModel = FinancialProfileViewModel()
     var currentQuestion: Question {
         viewModel.currentQuestion ?? Question.questionDatabase[0]
     }
+    var isNewQuestion: Bool = false
+    
     var body: some View {
         VStack {
             Spacer()
             QuestionCard {
                 VStack(alignment: .center, spacing: 24) {
-                    // Titre et icône
-                    Text(currentQuestion.questionGroup.rawValue)
-                        .font(.title)
-                        .foregroundStyle(Color.Text.contrasted)
                     HStack {
                         Text(currentQuestion.questionGroup.displayName)
                             .font(.title2)
@@ -32,12 +31,10 @@ struct FinancialQuestionView: View {
                     }
                     // Texte de la question
                     Text(currentQuestion.content)
-                        .font(.body)
-                        .foregroundStyle(Color.Text.contrasted)
                     
                     // Si pas de choix prédéfinis → champ texte libre
                     CustomFieldView(
-                        label: "Réponse",
+                        label: currentQuestion.followUpLabel ?? "Réponse",
                         text: $viewModel.textAnswer,
                         state: .project
                     )
@@ -52,6 +49,9 @@ struct FinancialQuestionView: View {
                         .buttonStyle(FinanceButton(size: .mini))
                 }
             }
+            .font(.body)
+            .foregroundStyle(Color.Text.contrasted)
+            .padding()
             
             Spacer()
         }
@@ -59,6 +59,8 @@ struct FinancialQuestionView: View {
             FinancialBackground().ignoresSafeArea()
         }
         .task {
+            viewModel.isNewQuestion = isNewQuestion
+            viewModel.action = { dismiss() }
             await viewModel.fetchQuestions()
         }
         .alert("Error", isPresented: $viewModel.showError) {

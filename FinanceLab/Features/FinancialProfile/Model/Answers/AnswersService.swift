@@ -44,6 +44,12 @@ final class AnswersService{
         let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
         return answer
     }
+    func fetchAllUserAnsweredQuestionGroups() async throws -> [QuestionGroup] {
+        let token = try keychain.getToken()
+        let apiRequest = APIRequest(endpoint: "answers/groups/", httpMethod: .GET)
+        let questionGroups = try await service.request(apiRequest, responseType: [String].self, token: token)
+        return questionGroups.compactMap { QuestionGroup(rawValue: $0) }
+    }
     
     func putAnswer(answer: AnswersData) async throws {
         let encoder = JSONEncoder()
