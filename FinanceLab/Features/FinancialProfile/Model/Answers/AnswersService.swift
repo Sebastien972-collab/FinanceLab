@@ -56,7 +56,10 @@ final class AnswersService{
         encoder.dateEncodingStrategy = .iso8601
         let data = try encoder.encode(answer)
         let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answers/\(answer.id)", httpMethod: .PUT, body: data)
+        guard let id = answer.id else {
+            throw NSError(domain: "Missing answer ID", code: -1)
+        }
+        let apiRequest = APIRequest(endpoint: "/answers/\(id)", httpMethod: .PUT, body: data)
         let _ = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
     }
     
