@@ -44,12 +44,13 @@ struct ProjectCreatorView: View {
                         }
                         .navigationDestination(isPresented: $isPresented) {
                             ZStack {
-                                Rectangle()
-                                    .foregroundStyle(Color.App.background)
-                                    .ignoresSafeArea(.all)
                                 DatePicker("Date de fin de projet", selection: $projectManager.finalDate, displayedComponents: .date)
                                     .datePickerStyle(.graphical)
                                 .padding()
+                            }
+                            .background {
+                                FinancialBackground()
+                                    .ignoresSafeArea()
                             }
                         }
                 }
@@ -72,8 +73,7 @@ struct ProjectCreatorView: View {
             .padding(24)
         }
         .background {
-            Rectangle()
-                .foregroundStyle(Color.App.background)
+            FinancialBackground()
                 .ignoresSafeArea()
         }
         .toolbar {

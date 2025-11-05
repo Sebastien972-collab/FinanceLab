@@ -38,42 +38,51 @@ class NetworkingService {
     /// - Throws: `URLError` for bad URLs or transport errors, or decoding errors if the response body cannot be decoded to `T`.
     func request<T: Decodable>(_ apiRequest: APIRequest, responseType: T.Type, token: String? = nil) async throws -> T {
         let ngrokURL = "https://clare-bacteriologic-grimily.ngrok-free.dev/\(apiRequest.endpoint)"
-        let stringUrl = "http://127.0.0.1:8080/\(apiRequest.endpoint)"
         guard let url = URL(string: ngrokURL) else { throw URLError.init(.badURL) }
-        // Log the resolved URL for debugging (consider replacing with a proper logger in production).
+
         print("📡 URL:", url.absoluteString)
-        var request:  URLRequest = URLRequest(url: url)
+        
+        var request = URLRequest(url: url)
         request.httpMethod = apiRequest.httpMethod.rawValue
-        // Prepare headers: JSON content type and optional Authorization token.
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
         if let token {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
-        
         if let body = apiRequest.body {
             request.httpBody = body
         }
+
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
-        // Handle empty responses (e.g., HTTP 204 No Content). If the caller expects `EmptyResponse`, return it; otherwise throw.
+
+        // 204 No Content → retourner valeur vide si possible
         if httpResponse.statusCode == 204 || data.isEmpty {
+            if let empty = [] as? T {
+                return empty
+            }
             if let empty = EmptyResponse() as? T {
                 return empty
-            } else {
-                throw URLError(.cannotParseResponse)
             }
+            throw URLError(.cannotParseResponse)
         }
-        
-        // Raw data received; avoid logging binary payloads in production.
-        // print(data)
+
         print("🧾 Réponse brute :", String(data: data, encoding: .utf8) ?? "Non décodable")
-        // Decode JSON into the expected type using ISO-8601 for date fields.
+
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode(T.self, from: data)
-        
+
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            if let emptyArray = [] as? T {
+                return emptyArray
+            }
+            throw error
+        }
     }
+
 }
 
