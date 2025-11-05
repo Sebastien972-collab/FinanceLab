@@ -22,7 +22,6 @@ struct DashboardView : View {
                     )
                     DemboCard() {
                         Text("Tu t'en sors bien ce mois-ci !")
-                        Text("Tu veux en apprendre plus sur la gestion de ton argent ?")
                     }
                     NavigationLink(destination: TransactionListView()) {
                         Text("Je fais mes comptes !")
