@@ -26,7 +26,7 @@ struct ProjectDetailsView: View {
                     .offset(x: 125, y: 20)
                     .foregroundStyle(LinearGradient.greenGradient)
                     .padding(.bottom)
-
+                
             }
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
@@ -92,13 +92,24 @@ struct ProjectDetailsView: View {
                 .presentationDetents([.medium, .large])
                 .presentationDragIndicator(.hidden)
         }
-        .sheet(isPresented: $showAddView, content: {
-            AddAmountSheetView(onValidate: { amount in
-                project.amountSaved += amount
-            })
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.hidden)
-        })
+        .sheet(isPresented: $showAddView) {
+            AddAmountSheetView(project: $project) { addedAmount in
+                let oldValue = project.amountSaved
+                Task {
+                    do {
+                        print("Le montant que j'envoi est de \(project.amountSaved)")
+                        self.project = try await projectVM.updateProject(with: project)
+                        print("Le montant que j'e recois est de \(project.amountSaved)")
+                    } catch {
+                        project.amountSaved = oldValue // rollback
+                        projectVM.launchError(withError: error)
+                    }
+                }
+            }
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.hidden)
+        }
+        
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button("Précédent", systemImage: "chevron.left") {
@@ -174,49 +185,58 @@ fileprivate struct AmountView: View {
 
 struct AddAmountSheetView: View {
     @Environment(\.dismiss) private var dismiss
+    @Binding var project: Project
     @State private var amountText: String = ""
-    
     var onValidate: ((Decimal) -> Void)? = nil
-    
     var body: some View {
         VStack(spacing: 24) {
-            
             Text("Ajouter à mon projet")
                 .font(.title2)
                 .padding(.top)
-
+            
             VStack(alignment: .leading, spacing: 12) {
                 Text("Montant à ajouter")
                     .font(.headline)
-                
-                TextField("0,00 €", text: $amountText)
+                CustomFieldView(label: "Je mets de côté :", text: $amountText, placeholder: "0.00 €", state: .amount)
                     .keyboardType(.decimalPad)
-                    .textFieldStyle(.roundedBorder)
             }
             .padding(.horizontal)
+            
             Spacer()
+            
             HStack {
                 Button("Annuler") {
                     dismiss()
                 }
-                .buttonStyle(FinanceButton(state: .cancel, size: .normal))
+                .buttonStyle(FinanceButton(state: .cancel))
+                
                 Spacer()
+                
                 Button("Ajouter") {
-                    if let amount = Decimal(string: amountText.replacingOccurrences(of: ",", with: ".")) {
-                        (onValidate)?(amount)
+                    if let value = decimalFromString(amountText) {
+                        project.amountSaved += value
+                        onValidate?(value)
                         dismiss()
                     }
                 }
-                .buttonStyle(FinanceButton(state: .validate, size: .normal))
-                .disabled(amountText.isEmpty)
+                .buttonStyle(FinanceButton(state: .validate))
+                .disabled(decimalFromString(amountText) == nil)
             }
             .padding(.horizontal)
-            .padding(.bottom, 16)
         }
+        .padding(.bottom, 16)
         .presentationDetents([.medium])
-        .background {
-            FinancialBackground()
-                .ignoresSafeArea()
+        .background(FinancialBackground().ignoresSafeArea())
+    }
+    
+    private func decimalFromString(_ text: String) -> Decimal? {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.numberStyle = .decimal
+        
+        if let number = formatter.number(from: text) {
+            return number.decimalValue
         }
+        return nil
     }
 }
