@@ -61,7 +61,7 @@ class ProjectCreatorViewModel {
     /// - Effectue une vérification minimale (champs requis),
     /// - Construit un `Project`, met à jour son icône, puis appelle `ProjectService.addProject`.
     /// - En cas de succès, sort du mode édition; en cas d'échec, expose l'erreur via `showError`.
-    func validate() async {
+    func validate(callback: (() -> Void)? = nil) async {
         check()
         do {
             // Construction du modèle métier à partir des champs du formulaire
@@ -71,6 +71,7 @@ class ProjectCreatorViewModel {
             // Persistance via le service (asynchrone)
             _ = try await service.addProject(project: newProject.toProjectData())
             // Sortie du mode édition après succès
+            callback?()
             self.isEditing = false
         } catch  {
             // Affiche l'erreur à l'UI

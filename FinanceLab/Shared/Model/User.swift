@@ -19,6 +19,7 @@ class User: Identifiable {
     var profilePictureUrl: String?
     var transactions: [Transaction] = []
     var answers: [Answer] = []
+    var projects: [Project] = []
     var userCategory: FinancialProfile = .none
     init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
         self.firstName = firstName

@@ -60,7 +60,11 @@ struct ProjectsView: View {
                     .ignoresSafeArea(.all)
             }
             .sheet(isPresented: $projectCreatorVM.isEditing) {
-                ProjectCreatorView(projectManager: projectCreatorVM)
+                ProjectCreatorView(projectManager: projectCreatorVM, action: {
+                    Task {
+                        await projectVM.fetchProjects()
+                    }
+                })
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.hidden)
             }

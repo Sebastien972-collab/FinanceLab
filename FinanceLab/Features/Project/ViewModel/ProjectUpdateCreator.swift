@@ -15,7 +15,7 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
         setupProject(project)
     
     }
-    override func validate() async {
+    override func validate(callback: (() -> Void)? = nil) async {
         check()
         do {
             let project = Project(name: name, iconName: imageName, finalDate: finalDate, amount: goalAmount)

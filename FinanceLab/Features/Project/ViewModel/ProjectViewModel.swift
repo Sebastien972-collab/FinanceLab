@@ -21,8 +21,7 @@ class ProjectViewModel {
         do {
             self.projects = try await service.fetProjects()
         } catch  {
-            self.error = error
-            self.showError =  true
+            launchError(withError: error)
         }
     }
     
@@ -31,8 +30,9 @@ class ProjectViewModel {
         do {
             let newProject = try await service.addProject(project: project.toProjectData())
             self.projects.append(newProject.toProject())
+            UserManager.shared.currentUser.projects = try await service.fetProjects()
         } catch  {
-            print(error.localizedDescription)
+            launchError(withError: error)
         }
         
     }
@@ -42,12 +42,15 @@ class ProjectViewModel {
             try await service.removeProject(projectID: project.id.uuidString)
             projects.remove(at: index)
         } catch  {
-            self.error = error
-            self.showError =  true
+            launchError(withError: error)
         }
        
     }
     
+    func launchError(withError error: Error = LoginError.unknown) {
+        self.error = error
+        self.showError = true
+    }
     
     
 }

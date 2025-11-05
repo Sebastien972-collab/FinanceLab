@@ -16,6 +16,8 @@ struct ProjectCreatorView: View {
     }
     @FocusState private var selection: InputField?
     
+    var action: (() -> Void)? = nil
+    
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -62,7 +64,7 @@ struct ProjectCreatorView: View {
                     .buttonStyle(FinanceButton(state: .normal))
                     Button("Valider") {
                         Task {
-                            await projectManager.validate()
+                            await projectManager.validate(callback: action)
                         }
                     }
                     .buttonStyle(FinanceButton(state: .validate))
