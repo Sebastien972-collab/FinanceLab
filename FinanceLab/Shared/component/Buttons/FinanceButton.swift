@@ -26,9 +26,9 @@ struct FinanceButton: ButtonStyle {
         
     private func getForegroundColor() -> Color {
         if state == .normal {
-            Color.Text.quaternary
+            return Color.Text.quaternary
         } else {
-            Color.Text.primary
+            return Color.Text.primary
         }
     }
     
@@ -55,7 +55,7 @@ struct FinanceButton: ButtonStyle {
             case .mini: return 120
             case .large: return 152
             case .delete: return 42
-            default: return .infinity
+            default: return 200
         }
     }
     
@@ -83,7 +83,8 @@ struct FinanceButton: ButtonStyle {
         .foregroundColor(getForegroundColor())
         .background(getBackgroundColor())
         .cornerRadius(50)
-        .frame(width: getButtonWidth(), height: getButtonHeight())
+        .frame(height: getButtonHeight())
+        .frame(minWidth: 0, maxWidth: size == .normal ? .infinity : getButtonWidth())
         .scaleEffect (configuration.isPressed ? 0.9 : 1)
         .animation(.easeInOut(duration: 0.05), value: configuration.isPressed)
     }
