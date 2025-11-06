@@ -42,7 +42,7 @@ struct FinanceButton: ButtonStyle {
     
     private func getButtonHeight() -> CGFloat {
         switch size {
-            case .round: return 42
+            case .round: return 38
             case .mini: return 42
             case .large: return 64
             case .delete: return 64
@@ -51,7 +51,7 @@ struct FinanceButton: ButtonStyle {
     }
     private func getButtonWidth() -> CGFloat {
         switch size {
-            case .round: return 42
+            case .round: return 38
             case .mini: return 120
             case .large: return 152
             case .delete: return 42
@@ -66,7 +66,7 @@ struct FinanceButton: ButtonStyle {
                 Spacer()
                 if size == .round {
                     configuration.label
-                        .frame(width: 20, height: 20)
+                        .frame(width: 22, height: 22)
                         .padding(0)
                 } else {
                     configuration.label
@@ -91,7 +91,7 @@ struct FinanceButton: ButtonStyle {
 }
 
 #Preview {
-    Button("Bonjour") {}
-        .buttonStyle(FinanceButton(size: .mini))
+    Button("<") {}
+        .buttonStyle(FinanceButton(size: .round))
         .padding()
 }

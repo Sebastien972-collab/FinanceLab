@@ -83,8 +83,8 @@ struct ProjectsView: View {
                         await projectVM.fetchProjects()
                     }
                 })
-                    .presentationDetents([.medium, .large])
-                    .presentationDragIndicator(.hidden)
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.hidden)
             }
             .navigationDestination(item: $selectedProject) { project in
                 ProjectDetailsView(project: project)

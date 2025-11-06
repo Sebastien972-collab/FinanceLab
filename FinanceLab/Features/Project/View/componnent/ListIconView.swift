@@ -37,14 +37,9 @@ struct ListIconView: View {
                             }
                     }
                 }
-                .foregroundStyle(LinearGradient.primaryGradient)
+                .foregroundStyle(Color.Text.contrasted)
                 .padding()
             }
-        }
-        .background {
-            Rectangle()
-                .foregroundStyle(Color.App.background)
-                .ignoresSafeArea()
         }
     }
 }
