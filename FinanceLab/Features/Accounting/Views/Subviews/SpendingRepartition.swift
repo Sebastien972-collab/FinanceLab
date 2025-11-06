@@ -23,11 +23,12 @@ struct SpendingRepartition: View {
             HStack {
                 VStack(alignment: .leading) {
                     HStack(spacing: 2) {
+                        let parts = String(format: "%.2f", spent).split(separator: ".")
                         Text("-")
-                        Text(spent.description.split(separator: ".")[0])
+                        Text(String(parts[0]))
                             .font(.listLargeNumber)
                         Text(",")
-                        Text(String(spent.description.split(separator: ".")[1].prefix(2)))
+                        Text(String(parts[1]))
                         Text("€")
                     }
                     .font(.listNumber)
@@ -37,11 +38,12 @@ struct SpendingRepartition: View {
                 Spacer()
                 VStack(alignment: .trailing) {
                     HStack(spacing: 2) {
+                        let parts = String(format: "%.2f", gained).split(separator: ".")
                         Text("+")
-                        Text(gained.description.split(separator: ".")[0])
+                        Text(String(parts[0]))
                             .font(.listLargeNumber)
                         Text(",")
-                        Text(String(gained.description.split(separator: ".")[1].prefix(2)))
+                        Text(String(parts[1]))
                         Text("€")
                     }
                     .font(.listNumber)

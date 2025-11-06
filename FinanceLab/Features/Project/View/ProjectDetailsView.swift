@@ -73,15 +73,13 @@ struct ProjectDetailsView: View {
                             subtitle: "À ce rythme, ce projet sera fini en",
                             info: project.deadlineFormatted
                         )
-                        Button(action: {
-                            showAddView.toggle()
-                            
-                        }, label: {
-                            Text("J'économise aujourd'hui !")
-                        })
-                        .buttonStyle(FinanceButton(state: .validate))
-                        
                     }
+                    Button(action: {
+                        showAddView.toggle()
+                    }, label: {
+                        Text("J'ajoute à ma cagnotte")
+                    })
+                    .buttonStyle(FinanceButton(state: .validate))
                 }
                 .foregroundStyle(Color.Text.contrasted)
                 .padding()
@@ -106,7 +104,7 @@ struct ProjectDetailsView: View {
                     }
                 }
             }
-            .presentationDetents([.medium, .large])
+            .presentationDetents([.fraction(0.20)])
             .presentationDragIndicator(.hidden)
         }
         
@@ -189,29 +187,16 @@ struct AddAmountSheetView: View {
     @State private var amountText: String = ""
     var onValidate: ((Decimal) -> Void)? = nil
     var body: some View {
-        VStack(spacing: 24) {
-            Text("Ajouter à mon projet")
-                .font(.title2)
-                .padding(.top)
-            
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Montant à ajouter")
-                    .font(.headline)
-                CustomFieldView(label: "Je mets de côté :", text: $amountText, placeholder: "0.00 €", state: .amount)
-                    .keyboardType(.decimalPad)
-            }
-            .padding(.horizontal)
-            
+        VStack(alignment: .leading, spacing: 24) {
             Spacer()
-            
+            CustomFieldView(label: "J'ai mis de côté", text: $amountText, placeholder: "0.00 €", state: .amount)
+                .keyboardType(.decimalPad)
+            Spacer()
             HStack {
                 Button("Annuler") {
                     dismiss()
                 }
-                .buttonStyle(FinanceButton(state: .cancel))
-                
-                Spacer()
-                
+                .buttonStyle(FinanceButton(state: .normal))
                 Button("Ajouter") {
                     if let value = decimalFromString(amountText) {
                         project.amountSaved += value
@@ -222,11 +207,9 @@ struct AddAmountSheetView: View {
                 .buttonStyle(FinanceButton(state: .validate))
                 .disabled(decimalFromString(amountText) == nil)
             }
-            .padding(.horizontal)
         }
-        .padding(.bottom, 16)
-        .presentationDetents([.medium])
-        .background(FinancialBackground().ignoresSafeArea())
+        .foregroundStyle(Color.Text.contrasted)
+        .padding()
     }
     
     private func decimalFromString(_ text: String) -> Decimal? {

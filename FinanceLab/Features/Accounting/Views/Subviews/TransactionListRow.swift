@@ -26,11 +26,12 @@ struct TransactionListRow: View {
             .font(.cardSubtitle)
             Spacer()
             HStack(spacing: 2) {
+                let parts = String(format: "%.2f", amount).split(separator: ".")
                 Spacer()
-                Text(amount.description.split(separator: ".")[0])
+                Text(String(parts[0]))
                     .font(.listLargeNumber)
                 Text(",")
-                Text(amount.description.split(separator: ".")[1])
+                Text(String(parts[1]))
                 Text("€")
             }
             .frame(width: 100, height: 42)
