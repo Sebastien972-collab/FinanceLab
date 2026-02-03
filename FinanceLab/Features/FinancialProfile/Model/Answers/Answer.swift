@@ -10,12 +10,12 @@ import Foundation
 struct Answer: Identifiable, Equatable {
     let id = UUID()
     var content: String
-    var user: User
+    var user: Customer
     let question: Question
     
     init(
         content: String,
-        user: User,
+        user: Customer,
         question: Question,
     ) {
         self.content = content

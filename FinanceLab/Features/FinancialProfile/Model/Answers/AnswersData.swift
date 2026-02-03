@@ -12,7 +12,7 @@ struct AnswersData: Identifiable, Equatable, Codable {
     let content: String
     let idQuestion: UUID
     
-    func toAnswer(user: User, question: Question) -> Answer{
+    func toAnswer(user: Customer, question: Question) -> Answer{
         Answer(content: self.content, user: user, question: question)
     }
 }

@@ -22,9 +22,7 @@ final class QuestionsService{
     }
     
     func fetchQuestion() async throws -> [Question] {
-        let questionsRequest = APIRequest(endpoint: "/questions", httpMethod: .GET)
-        let response = try await service.request(questionsRequest, responseType: [QuestionsData].self)
-        questions = response.map{ $0.toQuestion() }
+        questions = Question.questionDatabase
         return questions
     }
     

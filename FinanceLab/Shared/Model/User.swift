@@ -8,7 +8,7 @@
 import Foundation
 import FinanceCore
 
-class User: Identifiable {
+class Customer: Identifiable {
     private(set) var id: UUID = UUID()
     private(set) var firstName: String
     private(set) var lastName: String
@@ -52,19 +52,19 @@ class User: Identifiable {
     }
 }
 
-extension User: Equatable {
-    static func == (lhs: User, rhs: User) -> Bool {
+extension Customer: Equatable {
+    static func == (lhs: Customer, rhs: Customer) -> Bool {
         lhs.id == rhs.id && lhs.email == rhs.email
     }
     
     
     
     
-    static var guest: User {
+    static var guest: Customer {
         .init(firstName: "Visiteur", lastName: "Anonyme", email: "visiteur@finance.com")
     }
-    static var preview: User {
-        let user: User = .init(firstName: "Sébastien", lastName: "DAGUIN", email: "certifieddev@finance.com")
+    static var preview: Customer {
+        let user: Customer = .init(firstName: "Sébastien", lastName: "DAGUIN", email: "certifieddev@finance.com")
         user.profilePictureUrl = "https://media.istockphoto.com/id/965206748/fr/photo/toujours-profiter-à-des-promenades-imprudents.jpg?s=1024x1024&w=is&k=20&c=uMVZdiZB6OglGI4SY4s7fHAUmpXITOg3VA5PCstZ5do="
         return user
     }

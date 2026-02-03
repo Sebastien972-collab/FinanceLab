@@ -8,34 +8,34 @@
 import Foundation
 
 
-extension User {
-    static var userDatabase: [User] {
+extension Customer {
+    static var userDatabase: [Customer] {
         let users = [
-            User(
+            Customer(
                 firstName: "Alice",
                 lastName: "Dupont",
                 email: "alice.dupont@example.com",
                 profilePictureUrl: "https://randomuser.me/api/portraits/women/1.jpg"
             ),
-            User(
+            Customer(
                 firstName: "Karim",
                 lastName: "Benzaki",
                 email: "karim.benzaki@example.com",
                 profilePictureUrl: "https://randomuser.me/api/portraits/men/2.jpg"
             ),
-            User(
+            Customer(
                 firstName: "Sophie",
                 lastName: "Martin",
                 email: "sophie.martin@example.com",
                 profilePictureUrl:  "https://randomuser.me/api/portraits/women/3.jpg"
             ),
-            User(
+            Customer(
                 firstName: "Julien",
                 lastName: "Moreau",
                 email: "julien.moreau@example.com",
                 profilePictureUrl:  "https://randomuser.me/api/portraits/men/4.jpg"
             ),
-            User(
+            Customer(
                 firstName: "Clara",
                 lastName: "Lopez",
                 email: "clara.lopez@example.com",

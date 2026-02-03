@@ -14,8 +14,8 @@ class TabViewModel {
     }
     
     var selection: Selection = .home
-    var manager: UserManager = .shared
-    var currentUser: User { manager.currentUser }
+    var manager: CustomerManager = .shared
+    var currentUser: Customer { manager.currentUser }
     var authState: AuthState = .loading
     var error: Error? = nil
     

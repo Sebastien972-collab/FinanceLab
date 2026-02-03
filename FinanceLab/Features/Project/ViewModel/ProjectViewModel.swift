@@ -15,7 +15,7 @@ class ProjectViewModel {
     var showError: Bool = false
     var creatorMode: Bool = false
     var service: ProjectService = .shared
-    var manager: UserManager = .shared
+    var manager: CustomerManager = .shared
     
     func fetchProjects() async {
         do {
@@ -30,7 +30,7 @@ class ProjectViewModel {
         do {
             let newProject = try await service.addProject(project: project.toProjectData())
             self.projects.append(newProject.toProject())
-            UserManager.shared.currentUser.projects = try await service.fetProjects()
+            CustomerManager.shared.currentUser.projects = try await service.fetProjects()
         } catch  {
             launchError(withError: error)
         }

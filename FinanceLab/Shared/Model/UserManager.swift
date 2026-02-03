@@ -6,21 +6,24 @@
 //
 
 import Foundation
+import FirebaseAuth
 
+@MainActor
+@Observable
 /// Gestionnaire d'état utilisateur (session) côté client.
 ///
 /// - Maintient l'utilisateur courant en mémoire (`currentUser`).
 /// - Expose des méthodes de haut niveau pour créer, se connecter, récupérer et mettre à jour le profil.
 /// - Délègue les appels réseau à `UserService`.
-class UserManager {
+class CustomerManager {
     /// Singleton pour un accès global à l'état utilisateur.
-    static let shared: UserManager = .init()
+    static let shared: CustomerManager = .init()
     /// Initialisation privée pour imposer le pattern singleton.
     private init () {}
     /// Service en charge des opérations réseau utilisateur.
     private let service: UserService = .shared
     /// Représentation de l'utilisateur courant (invité par défaut).
-    private(set) var currentUser: User = .guest
+    private(set) var currentUser: Customer = .guest
     /// Indique si un utilisateur est connecté (différent de `.guest`).`
     var isLoggedIn: Bool {
         currentUser != .guest
@@ -30,13 +33,6 @@ class UserManager {
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
         do {
             let user = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
-            let answerDatas = try await AnswersService.shared.postAllAnswers(answers: self.currentUser.answers.map { $0.toAnswerData()})
-            let questions = try await QuestionsService.shared.fetchQuestion()
-            for answer in answerDatas {
-                if let question = questions.filter({ $0.id == answer.id }).first {
-                    user.answers.append(answer.toAnswer(user: user, question: question))
-                }
-            }
             self.currentUser = user
             
         } catch  {
@@ -55,10 +51,13 @@ class UserManager {
     }
     /// Récupère le profil depuis l'API et met à jour `currentUser`.
     func fetchProfile() async throws {
-        self.currentUser =  try await service.fetchProfile()
+        guard let currentUserId = Auth.auth().currentUser?.uid else {
+            throw LoginError.unknown
+        }
+        self.currentUser =  try await service.fetchProfile(id: currentUserId)
     }
     /// Met à jour localement l'utilisateur courant (sans appel réseau).
-    func upadateUser(_ newUser: User) {
+    func upadateUser(_ newUser: Customer) {
         self.currentUser = newUser
     }
     func updateBalance(of balance: Decimal) async throws {

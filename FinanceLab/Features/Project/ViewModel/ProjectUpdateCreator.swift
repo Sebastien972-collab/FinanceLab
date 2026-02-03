@@ -15,16 +15,15 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
         setupProject(project)
     
     }
-    override func validate(callback: (() -> Void)? = nil) async {
-        check()
+    func validate(callback: (() -> Void)? = nil) async {
         do {
-            let project = Project(name: name, iconName: imageName, finalDate: finalDate, amount: goalAmount)
+            let project = Project(name: name, iconName: selectedIcon.name, finalDate: finalDate, amount: goalAmount)
             project.id = idProject
             project.updateIcon(selectedIcon.rawValue)
             let projectData = try await service.updatePrject(project: project.toProjectData())
             setupProject(projectData)
         } catch  {
-            showError(error)
+            handleError(error)
         }
     }
     
@@ -35,7 +34,7 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
         name = project.name
         startedDate = project.startedDate
         finalDate = project.deadline
-        imageName = project.iconName ?? CategoryIcon.houseLineFill.rawValue
+        selectedIcon = CategoryIcon(rawValue: project.iconName ?? CategoryIcon.houseLineFill.rawValue) ?? .houseLineFill
         stringGoalAmount = project.formattedGoalAmount
         selectedIcon = CategoryIcon(rawValue: project.iconName ?? "") ?? .cakeFill
     }

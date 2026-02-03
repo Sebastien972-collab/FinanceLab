@@ -3,114 +3,138 @@
 //  FinanceLab
 //
 //  Created by Anne Ferret on 16/10/2025.
+//  Refactored by Gemini (Architecture Expert) 2026
 //
 
 import Foundation
+import SwiftUI
 
+
+@MainActor
 @Observable
 class LoginViewModel {
-    var pickerSelected: Int = 0
+    
+    // MARK: - Inputs
+    var pickerSelected: Int = 0 {
+        didSet { clearErrors() }
+    }
     var email: String = ""
     var password: String = ""
     var passwordConfirmation: String = ""
     var firstName: String = ""
     var lastName: String = ""
     
-    var manager: UserManager = .shared
-    var error: Error = LoginError.unknown
+    // MARK: - State
+    var isLoading: Bool = false
     var showError: Bool = false
-    var isWorking: Bool = false
-
-    func login(callback: (() -> Void)? = nil) async {
-        isWorking = true
-        defer { isWorking = false }
-        guard checkField() else { return }
+    var error: Error = LoginError.unknown
+    
+    // MARK: - Computed Properties
+    var isSignUp: Bool {
+        pickerSelected == 1
+    }
+    
+    var passwordStrength: PasswordStrength {
+        let pwd = password
+        if pwd.isEmpty { return .veryWeak }
+        if pwd.count < 6 { return .veryWeak }
         
-        do {
-            try await manager.login(email: email, password: password)
-            if let callback = callback {
-                await MainActor.run { callback() }
-            }
-        } catch let err {
-            self.error = err
-            self.showError = true
+        var score = 1
+        if pwd.range(of: "[A-Z]", options: .regularExpression) != nil { score += 1 }
+        if pwd.range(of: "\\d", options: .regularExpression) != nil { score += 1 }
+        if pwd.range(of: "[@$#!%*?&._-]", options: .regularExpression) != nil { score += 1 }
+        if pwd.count >= 12 { score += 1 }
+
+        switch score {
+        case 1: return .veryWeak
+        case 2: return .weak
+        case 3: return .medium
+        case 4: return .strong
+        default: return .veryStrong
         }
     }
     
-    func create(callback: (() -> Void)? = nil) async {
-        isWorking = true
-        defer { isWorking = false }
-        guard checkField() else { return }
-        
-        do {
-            try await manager.create(firstName: firstName, lastName: lastName, email: email, password: password)
-            if let callback = callback {
-                await MainActor.run { callback() }
-            }
-        } catch let err {
-            self.error = err
+    // MARK: - Dependencies
+    private let manager: CustomerManager = .shared
+    // MARK: - Actions
+
+    func login(onSuccess: () -> Void) async {
+        guard await performAction(action: {
+            try validateInputs()
+            try await manager.login(email: email, password: password)
+            onSuccess()
+        }) else {
+            self.error = error
             self.showError = true
+            return
         }
+    }
+    
+    func create(onSuccess: () -> Void) async {
+        guard await performAction(action: {
+            try validateInputs()
+            try await manager.create(
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: password
+            )
+        }) else { return }
+        
+        onSuccess()
     }
 
     func fetchUser() async {
-        do {
+        _ = await performAction {
             try await manager.fetchProfile()
-        } catch let err {
-            self.error = err
-            self.showError = true
         }
+    }
+    
+    // MARK: - Private Helpers
+    
+    /// Exécute une action asynchrone avec gestion d'erreur et loading state centralisés
+    private func performAction(action: () async throws -> Void) async -> Bool {
+        isLoading = true
+        clearErrors()
+        defer { isLoading = false }
+        
+        do {
+            try await action()
+            return true
+        } catch {
+            self.error = error
+            self.showError = true
+            return false
+        }
+    }
+    
+    private func clearErrors() {
+        showError = false
     }
 
-    @discardableResult
-    private func checkField() -> Bool {
-        if pickerSelected == 0 {
-            guard !email.isEmpty && !password.isEmpty else {
-                failValidation()
-                return false
-            }
-            guard email.isValidEmail, password.isValidPassword else {
-                failValidation()
-                return false
-            }
-        } else {
-            guard !email.isEmpty,
-                  !password.isEmpty,
-                  !passwordConfirmation.isEmpty,
-                  !firstName.isEmpty,
-                  !lastName.isEmpty else {
-                failValidation()
-                return false
-            }
-            
+    // MARK: - Validation Logic
+    
+    private func validateInputs() throws {
+        if email.isEmpty || password.isEmpty {
+            throw LoginError.emptyFields
         }
-        guard checkEmailAndPassword() else { return false }
-        return true
+        if isSignUp {
+            if firstName.isEmpty || lastName.isEmpty || passwordConfirmation.isEmpty {
+                throw LoginError.emptyFields
+            }
+            if password != passwordConfirmation {
+                throw LoginError.differentPasswords
+            }
+        }
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        let emailPredicate = NSPredicate(format:"SELF MATCHES %@", emailRegex)
+        if !emailPredicate.evaluate(with: email) {
+            throw LoginError.invalidEmail
+        }
+        
+        // 4. Format Mot de passe (min 6 chars)
+        if password.count < 6 {
+            throw LoginError.invalidPassword
+        }
     }
-    
-    private func failValidation(withError error: Error = LoginError.emptyFields) {
-        isWorking = false
-        self.error = error
-        self.showError = true
-    }
-    
-    private func checkEmailAndPassword() -> Bool {
-        guard email.isValidEmail else {
-            failValidation(withError: LoginError.invalidEmail(email))
-            return false
-        }
-        guard password.isValidPassword else {
-            failValidation(withError: LoginError.invalidPassword)
-            return false
-        }
-        if pickerSelected == 1 {
-            guard  password == passwordConfirmation else {
-                failValidation(withError: LoginError.differentPasswords)
-                return false
-            }
-        }
-        return true
-    }
-    
-    
 }

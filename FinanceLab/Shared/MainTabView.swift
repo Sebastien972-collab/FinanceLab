@@ -35,7 +35,7 @@ struct MainTabView: View {
                     
                 }
             case .notAuthenticated:
-                LoginView(loginVM: LoginViewModel(), authState: $tabVm.authState)
+                LiquidLoginView(loginVM: LoginViewModel(), authState: $tabVm.authState)
             case .firstLaunch:
                 OnboardingView()
                     .task {

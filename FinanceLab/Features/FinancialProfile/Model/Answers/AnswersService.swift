@@ -12,7 +12,7 @@ final class AnswersService{
     private init() {}
     let keychain = KeychainService.shared
     let service = NetworkingService.shared
-    let userManager = UserManager.shared
+    let userManager = CustomerManager.shared
     func fetchAnswer() async throws -> [AnswersData] {
         let token = try keychain.getToken()
         let answersRequest = APIRequest(endpoint: "/answers", httpMethod: .GET)

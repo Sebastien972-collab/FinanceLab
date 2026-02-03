@@ -10,7 +10,7 @@ import Foundation
 @Observable
 class InfoViewModel {
     // Services
-    var manager: UserManager = .shared
+    var manager: CustomerManager = .shared
     var articleService = ArticleService()
     var articleContentService = ArticleContentService()
     var definitionService = DefinitionService()

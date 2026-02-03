@@ -40,7 +40,7 @@ struct CircleImageProfil: View {
 
 #Preview {
     ScrollView {
-        CircleImageProfil(urlImage: User.userDatabase[2].profilePictureUrl)
+        CircleImageProfil(urlImage: Customer.userDatabase[2].profilePictureUrl)
         CircleImageProfil(urlImage: nil)
     }
 }

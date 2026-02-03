@@ -7,51 +7,55 @@
 
 import SwiftUI
 
-/// Vue réutilisable qui gère le swipe avec DragGesture
 struct SwipeableCard<Content: View>: View {
     @GestureState private var translation: CGFloat = 0
     @State private var offset: CGFloat = 0
+    
     let content: () -> Content
     let onDelete: () -> Void
     
-    init(@ViewBuilder content: @escaping () -> Content, onDelete: @escaping () -> Void) {
-        self.content = content
-        self.onDelete = onDelete
-    }
+    // Seuil de déclenchement
+    private let triggerThreshold: CGFloat = -80
     
     var body: some View {
         ZStack(alignment: .trailing) {
-            HStack {
-                Spacer()
-                if offset == -90 {
-                    Button {
-                        withAnimation(.spring()) {
-                            onDelete()
-                        }
-                    } label: {
-                        Image(systemName: "trash")
-                    }
-                    .padding(.trailing, 24)
-                    .buttonStyle(FinanceButton(state: .cancel, size: .delete))
-                }
+            // Fond Rouge de suppression (Arrière-plan)
+            ZStack(alignment: .trailing) {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Color.red.opacity(0.8))
+                
+                Image(systemName: "trash.fill")
+                    .font(.title2)
+                    .foregroundStyle(.white)
+                    .padding(.trailing, 30)
+                    .scaleEffect(offset < triggerThreshold ? 1.2 : 1.0) // Petite animation d'icône
             }
+            .opacity(offset < 0 ? 1 : 0) // Visible uniquement si on swipe
             
+            // Contenu (Premier plan)
             content()
                 .offset(x: offset + translation)
                 .gesture(
                     DragGesture()
                         .updating($translation) { value, state, _ in
+                            // On limite le swipe vers la droite (positif)
                             if value.translation.width < 0 {
-                                // limite pour éviter qu’on tire à l’infini
-                                state = max(value.translation.width, -120)
+                                state = value.translation.width
                             }
                         }
                         .onEnded { value in
-                            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                                if value.translation.width < -80 {
-                                    offset = -90 // reste ouvert
+                            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                                if value.translation.width < triggerThreshold {
+                                    // Swipe validé -> On supprime
+                                    // On décale complètement la carte vers la gauche avant de supprimer
+                                    offset = -1000
+                                    // Délai pour laisser l'animation de sortie se faire
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        onDelete()
+                                    }
                                 } else {
-                                    offset = 0 // revient fermé
+                                    // Swipe annulé -> Retour à 0
+                                    offset = 0
                                 }
                             }
                         }
@@ -59,7 +63,6 @@ struct SwipeableCard<Content: View>: View {
         }
     }
 }
-
 
 
 import FinanceCore

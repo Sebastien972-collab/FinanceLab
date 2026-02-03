@@ -10,8 +10,8 @@ import Foundation
 
 @Observable
 class ProfileViewModel {
-    let userManager: UserManager = .shared
-    var currentUser: User {
+    let userManager: CustomerManager = .shared
+    var currentUser: Customer {
         userManager.currentUser
     }
     

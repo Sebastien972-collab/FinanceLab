@@ -127,11 +127,81 @@ enum CategoryIcon: String, CaseIterable, Identifiable {
     }
     
     var image: Image { Image(resource) }
-    func getIconWith(_ string: String) -> CategoryIcon {
+    
+    // MARK: - Noms des catégories
+    var name: String {
+        switch self {
+        // Symboles généralistes
+        case .selectionFill: return "Divers"
+        case .currencyEurFill: return "Espèces"
+        case .bankFill: return "Frais bancaires"
+        case .handCoinsFill: return "Prêt / Remboursement"
+        case .walletFill: return "Virement / Salaire"
+            
+        // Courses
+        case .shoppingCartSimpleFill: return "Courses"
+        case .carrotFill: return "Alimentation"
+        case .tShirtFill: return "Vêtements"
+        case .sneakerFill: return "Chaussures"
+        case .dressFill: return "Mode"
+        case .armchairFill: return "Maison & Déco"
+            
+        // Immobilier
+        case .buildingOfficeFill: return "Loyer / Charges"
+        case .houseLineFill: return "Logement"
+            
+        // Transports
+        case .carFill: return "Auto"
+        case .gasPumpFill: return "Carburant"
+        case .trainFill: return "Transports"
+        case .bicycleFill: return "Mobilité douce"
+            
+        // Travail
+        case .bagFill: return "Vie pro"
+        case .laptopFill: return "High-Tech"
+            
+        // Famille
+        case .userFill: return "Personnel"
+        case .usersFourFill: return "Famille"
+        case .studentFill: return "Scolarité"
+        case .babyCarriageFill: return "Enfants"
+        case .catFill: return "Animaux"
+            
+        // Loisirs
+        case .monitorPlayFill: return "Streaming / TV"
+        case .ticketFill: return "Sorties culturelles"
+        case .booksFill: return "Livres"
+        case .discFill: return "Musique"
+        case .guitarFill: return "Hobbies"
+        case .gameControllerFill: return "Jeux vidéo"
+        case .basketballFill: return "Sport"
+            
+        // Fêtes
+        case .cakeFill: return "Cadeaux"
+        case .forkKnifeFill: return "Restaurant"
+        case .cheersFill: return "Bar & Soirées"
+            
+        // Vacances
+        case .airplaneTiltFill: return "Voyages"
+        case .tipiFill: return "Camping / Nature"
+        case .islandFill: return "Vacances"
+            
+        // Santé
+        case .firstAidKitFill: return "Pharmacie"
+        case .ambulanceFill: return "Santé"
+        case .wheelchairFill: return "Soins spécifiques"
+        case .lifebuoyFill: return "Assurances"
+            
+        // Autres
+        case .cigaretteFill: return "Tabac"
+        case .targetFill: return "Épargne / Objectif"
+        case .shieldSlashFill: return "Imprévus"
+        }
+    }
+    
+    static func getIconWith(_ string: String) -> CategoryIcon {
         CategoryIcon(rawValue: string) ?? .selectionFill
     }
-
-    
 }
 
 #Preview {

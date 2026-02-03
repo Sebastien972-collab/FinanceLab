@@ -8,7 +8,7 @@
 import Foundation
 
 /// Structure représentant la réponse JSON venant du serveur Vapor
-struct UserData: Decodable {
+struct UserData: Codable {
     let id: UUID
     let firstName: String
     let lastName: String
@@ -18,8 +18,8 @@ struct UserData: Decodable {
     let balance: Double
     
     /// Convertit le DTO en objet `User` utilisable dans l’app
-    func toUser() -> User {
-        let user = User(
+    func toUser() -> Customer {
+        let user = Customer(
             firstName: firstName,
             lastName: lastName,
             email: email

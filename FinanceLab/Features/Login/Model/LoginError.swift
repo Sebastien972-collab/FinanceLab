@@ -6,35 +6,22 @@
 //
 import Foundation
 
-enum LoginError: Error, LocalizedError, Sendable {
-    case invalidName(String? = nil)
-    case invalidEmail(String? = nil)
-    case invalidPassword
-    case emptyFields
+enum LoginError: LocalizedError {
     case unknown
+    case emptyFields
+    case invalidEmail
+    case invalidPassword
     case differentPasswords
-    
+    case custom(String)
+
     var errorDescription: String? {
         switch self {
-        case .invalidName(let name):
-            return "Le nom « \(name ?? "") » est invalide."
-            
-        case .invalidEmail(let email):
-            return "L'adresse email « \(email ?? "") » est invalide."
-            
-        case .invalidPassword:
-            return """
-            Mot de passe invalide.
-            Il doit contenir au minimum 6 caractères.
-            """
-            
-        case .emptyFields:
-            return "Veuillez remplir tous les champs."
-            
-        case .unknown:
-            return "Une erreur inattendue s'est produite. Veuillez réessayer."
-        case .differentPasswords:
-            return "Les mots de passe ne correspondent pas."
+        case .unknown: return "Une erreur inconnue est survenue."
+        case .emptyFields: return "Veuillez remplir tous les champs obligatoires."
+        case .invalidEmail: return "Le format de l'adresse email est invalide."
+        case .invalidPassword: return "Le mot de passe doit contenir au moins 6 caractères."
+        case .differentPasswords: return "Les mots de passe ne correspondent pas."
+        case .custom(let message): return message
         }
     }
 }

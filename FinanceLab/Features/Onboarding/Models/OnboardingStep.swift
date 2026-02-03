@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct OnboardingStep: Hashable {
-    let title: String
-    let content: String
-    let icon: String
-}
+//struct OnboardingStep: Hashable {
+//    let title: String
+//    let content: String
+//    let icon: String
+//}
