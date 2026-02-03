@@ -57,6 +57,9 @@ class NetworkingService {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
 
         // 204 No Content → retourner valeur vide si possible
         if httpResponse.statusCode == 204 || data.isEmpty {
@@ -85,4 +88,3 @@ class NetworkingService {
     }
 
 }
-

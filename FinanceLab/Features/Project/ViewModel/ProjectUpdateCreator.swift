@@ -20,8 +20,8 @@ class ProjectUpdateCreator: ProjectCreatorViewModel {
             let project = Project(name: name, iconName: selectedIcon.name, finalDate: finalDate, amount: goalAmount)
             project.id = idProject
             project.updateIcon(selectedIcon.rawValue)
-            let projectData = try await service.updatePrject(project: project.toProjectData())
-            setupProject(projectData)
+            let projectData = try await service.updateProject(project: project.toProjectData())
+            setupProject(projectData.toProject())
         } catch  {
             handleError(error)
         }

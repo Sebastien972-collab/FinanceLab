@@ -54,7 +54,7 @@ class AccountViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            try await service.postTransaction(transaction: transaction.toTransactionData())
+            try await service.postTransaction(transaction: transaction)
             // Mise à jour optimiste ou re-fetch
             await fetchTransactions()
             // Recalcul des charts après ajout
@@ -69,7 +69,7 @@ class AccountViewModel {
         isLoading = true
         defer { isLoading = false }
         do {
-            try await service.putTransaction(transaction: transaction.toTransactionData())
+            try await service.putTransaction(transaction: transaction)
             await fetchTransactions()
             calcSpendingRepartition()
             calcCategoryCharts()

@@ -13,7 +13,7 @@ class DatabaseManager {
     static let shared = DatabaseManager()
     private init() {}
     
-    private var db: Firestore {
+    var db: Firestore {
         Firestore.firestore()
     }
     var userCollection: CollectionReference { db.collection(DatabaseKey.users.rawValue) }
@@ -29,7 +29,7 @@ class DatabaseManager {
         try userCollection.document(id).setData(from: userData)
         return try await fetchProfile(withId: id)
     }
-    func updateBalaceUser(withId id: String, balance: Double) async throws {
+    func updateBalanceUser(withId id: String, balance: Double) async throws {
         try await userCollection.document(id).updateData(["balance": balance])
     }
     
@@ -40,4 +40,5 @@ class DatabaseManager {
 enum DatabaseKey: String {
     case users =  "users"
     case transactions = "transactions"
+    case projects = "projects"
 }

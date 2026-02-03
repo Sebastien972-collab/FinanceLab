@@ -3,7 +3,7 @@
 //  FinanceLab
 //
 //  Created by Anne Ferret on 16/10/2025.
-//  Redesigned by Gemini (Liquid UI Expert) 2026
+//
 //
 
 import SwiftUI

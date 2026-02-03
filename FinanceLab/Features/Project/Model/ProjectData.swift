@@ -9,7 +9,7 @@ import Foundation
 import FinanceCore
 /// Modèle représentant un projet côté client (correspond à ton API Vapor)
 struct ProjectData: Codable, Identifiable, Sendable {
-    let id: UUID
+    var id: UUID
     let name: String
     let endDate: Date
     let iconName: String

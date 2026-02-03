@@ -3,83 +3,97 @@
 //  FinanceLab
 //
 //  Created by Sébastien DAGUIN on 20/10/2025.
+//  Refactored for Firestore by Gemini 2026
 //
 
 import Foundation
 import FinanceCore
+import FirebaseFirestore
+import FirebaseAuth
 
-/// Service responsable des opérations réseau liées aux projets (CRUD).
-/// Utilise un token stocké en trousseau pour authentifier les requêtes.
-class ProjectService {
+/// Service responsable des opérations Firestore liées aux projets (CRUD).
+/// Structure de données : users/{userId}/projects/{projectId}
+final class ProjectService {
+    
     /// Instance singleton du service.
     static let shared = ProjectService()
     /// Initialisation privée pour forcer l'utilisation du singleton.
     private init() {}
-    /// Service d'accès au trousseau pour récupérer le token d'authentification.
-    private let keychain: KeychainService = .shared
-    /// Service réseau injecté (par défaut le singleton), rend le test possible en le remplaçant.
-    var service: NetworkingService = .shared
-    /// Chemin d'endpoint de base pour les ressources projets.
-    let endpoint = "projects"
-
-    /// Récupère la liste des projets de l'utilisateur.
-    /// - Returns: Un tableau de `Project` mappés depuis `ProjectData`.
-    /// - Throws: Une erreur réseau ou d'authentification si le token est manquant/invalid.
-    @discardableResult
-    func fetProjects() async throws -> [Project] {
-        // Récupération du token d'authentification.
-        let token = try keychain.getToken()
-        // Construction de la requête GET vers l'endpoint projets.
-        let apiResquest = APIRequest(endpoint: "projects", httpMethod: .GET)
-        // Exécution de l'appel réseau et décodage de la réponse.
-        let response = try await service.request(apiResquest, responseType: [ProjectData].self, token: token)
-        return response.map {$0.toProject()}
+    
+    // MARK: - Helpers
+    
+    /// Récupère l'ID de l'utilisateur connecté ou renvoie une erreur.
+    private var currentUserId: String {
+        get throws {
+            guard let uid = Auth.auth().currentUser?.uid else {
+                throw NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Utilisateur non connecté"])
+            }
+            return uid
+        }
     }
     
-    /// Crée un nouveau projet côté serveur.
-    /// - Parameter project: Le `ProjectData` à envoyer.
-    /// - Returns: Le `ProjectData` renvoyé par l'API (peut contenir des champs calculés côté serveur).
-    /// - Throws: Une erreur d'encodage ou réseau.
+    // MARK: - CRUD
+    
+    /// Récupère la liste des projets de l'utilisateur connecté.
+    /// - Returns: Un tableau de `Project`.
+    func fetchProjects() async throws -> [Project] {
+        let uid = try currentUserId
+        
+        let snapshot = try await DatabaseManager.shared.db.collection("users").document(uid)
+            .collection("projects")
+            .order(by: "endDate", descending: false) // Exemple de tri par date
+            .getDocuments()
+        
+        // Mapping sécurisé : ProjectData (DTO) -> Project (Domain)
+        return snapshot.documents.compactMap { doc in
+            try? doc.data(as: ProjectData.self).toProject()
+        }
+    }
+    
+    /// Crée un nouveau projet dans Firestore.
+    /// - Parameter project: Le `ProjectData` à sauvegarder.
+    /// - Returns: Le `ProjectData` mis à jour avec l'ID généré par Firestore.
     func addProject(project: ProjectData) async throws -> ProjectData {
-        // Prépare l'encodeur JSON avec la stratégie de dates attendue par l'API.
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(project)
-        // Récupère le token depuis le trousseau.
-        let token = try keychain.getToken()
-        // Construit la requête POST pour créer le projet.
-        let apiResquest = APIRequest(endpoint: endpoint, httpMethod: .POST, body: data)
-        // Envoie la requête et récupère la réponse typée.
-        let response = try await service.request(apiResquest, responseType: ProjectData.self, token: token)
-        return response
+        let uid = try currentUserId
+        
+        // Référence vers un nouveau document (ID auto-généré)
+        let newDocRef = DatabaseManager.shared.db.collection("users").document(uid)
+            .collection("projects").document()
+        
+        // On assigne l'ID généré par Firestore à l'objet pour la cohérence
+        var projectToSave = project
+        projectToSave.id = UUID(uuidString: newDocRef.documentID) ?? .init()
+        
+        // Enregistrement
+        try newDocRef.setData(from: projectToSave)
+        
+        return projectToSave
     }
     
     /// Met à jour un projet existant.
-    /// - Parameter project: Le projet à mettre à jour (doit contenir un identifiant).
-    /// - Returns: Le `Project` mis à jour.
-    /// - Throws: Une erreur d'encodage ou réseau.
-    func updatePrject(project: ProjectData) async throws -> Project {
-        let token = try keychain.getToken()
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(project)
-        let apiResquest = APIRequest(endpoint: endpoint + "/\(project.id)" , httpMethod: .PUT, body: data)
-        return try await service.request(apiResquest, responseType: ProjectData.self, token: token).toProject()
+    /// - Parameter project: Le `ProjectData` contenant les modifications.
+    /// - Returns: Le `Project` mis à jour (pour mise à jour locale).
+    func updateProject(project: ProjectData) async throws -> ProjectData {
+        let uid = try currentUserId
+        
+        let docRef = DatabaseManager.shared.db.collection("users").document(uid)
+            .collection("projects").document(project.id.uuidString)
+        
+        // setData avec merge: true permet de ne mettre à jour que les champs modifiés
+        // ou d'écraser proprement si on passe tout l'objet.
+        try docRef.setData(from: project, merge: true)
+        
+        return project
     }
     
     /// Supprime un projet.
     /// - Parameter projectID: Identifiant du projet à supprimer.
-    /// - Throws: Une erreur réseau si la suppression échoue.
     func removeProject(projectID: String) async throws {
-        // Récupère le token d'authentification.
-        let token = try keychain.getToken()
-        // Construit la requête DELETE pour l'ID fourni.
-        let apiResquest = APIRequest(endpoint: "projects/\(projectID)", httpMethod: .DELETE)
-        // Exécute la requête; la réponse peut être vide (204).
-        _ = try await service.request(apiResquest, responseType: EmptyResponse.self, token: token)
+        let uid = try currentUserId
+        
+        let docRef = DatabaseManager.shared.db.collection("users").document(uid)
+            .collection("projects").document(projectID)
+        
+        try await docRef.delete()
     }
-    
-    // MARK: - Remarques
-    // - Les méthodes utilisent `ProjectData` (DTO) pour la communication réseau et mappent vers `Project` pour le domaine.
-    // - Injectez un `NetworkingService` de test dans `service` pour les tests unitaires.
 }

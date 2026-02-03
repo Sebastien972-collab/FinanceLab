@@ -79,7 +79,7 @@ final class UserService {
     
     func updateBalance(balance: Double) async throws -> Double {
         guard let userId =  Auth.auth().currentUser?.uid else { throw LoginError.unknown }
-        try await databaseManager.updateBalaceUser(withId: userId, balance: balance)
+        try await databaseManager.updateBalanceUser(withId: userId, balance: balance)
         return balance
     }
     
@@ -94,7 +94,7 @@ final class UserService {
     /// Vérifie localement l'expiration du token JWT via la claim `exp`.
     /// - Returns: `true` si le token est manquant, mal formé, ou expiré; `false` sinon.
     func isTokenExpired() -> Bool {
-        Auth.auth().currentUser != nil
+        Auth.auth().currentUser == nil
     }
     
     func logOut() throws {

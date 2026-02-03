@@ -10,8 +10,6 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var dashboardVM: DashboardViewModel = .init()
-    
-    // Animation d'apparition
     @State private var showContent = false
     
     var body: some View {
@@ -24,12 +22,8 @@ struct DashboardView: View {
                 // 2. Contenu Défilant
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 24) {
-                        
-                        // En-tête (Profil + Salutation)
                         headerView
                             .padding(.top, 10)
-                        
-                        // Carte Principale (Budget & Santé)
                         LiquidBudgetCard(
                             healthScore: dashboardVM.healthScore,
                             monthlyRAS: dashboardVM.monthlyRAS,
@@ -37,14 +31,10 @@ struct DashboardView: View {
                             isLoading: dashboardVM.isLoading
                         )
                         .transition(.scale(scale: 0.9).combined(with: .opacity))
-                        
-                        // Carte Mascotte (Conseil)
                         LiquidDemboCard {
                             Text("Tu t'en sors bien ce mois-ci ! Continue comme ça 🚀")
                         }
                         .transition(.move(edge: .trailing).combined(with: .opacity))
-                        
-                        // Bouton d'action principal
                         NavigationLink(destination: TransactionListView()) {
                             LiquidGradientButton(title: "Je fais mes comptes", icon: "pencil.line")
                         }
@@ -82,16 +72,19 @@ struct DashboardView: View {
             }
             
             Spacer()
-            
-            // Avatar Profile (Simulé)
-            Circle()
-                .fill(LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 50, height: 50)
-                .overlay(
-                    Image(systemName: "person.fill")
-                        .foregroundStyle(.white)
-                )
-                .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
+            NavigationLink {
+                UserProfileView()
+            } label: {
+                Circle()
+                    .fill(LinearGradient(colors: [.purple, .blue], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .frame(width: 50, height: 50)
+                    .overlay(
+                        Image(systemName: "person.fill")
+                            .foregroundStyle(.white)
+                    )
+                    .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 5)
+            }
+
         }
     }
 }
@@ -161,7 +154,7 @@ struct LiquidBudgetCard: View {
         }
         .padding(24)
         .background(.ultraThinMaterial)
-        .cornerRadius(30)
+        .clipShape(RoundedRectangle(cornerRadius: 30))
         .overlay(
             RoundedRectangle(cornerRadius: 30)
                 .stroke(LinearGradient(colors: [.white.opacity(0.5), .white.opacity(0.1)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
@@ -215,7 +208,6 @@ struct LiquidDemboCard<Content: View>: View {
             }
         }
         .padding(20)
-        // Fond légèrement teinté pour différencier de la carte budget
         .background(
             LinearGradient(colors: [Color.green.opacity(0.2), Color.blue.opacity(0.1)], startPoint: .leading, endPoint: .trailing)
         )

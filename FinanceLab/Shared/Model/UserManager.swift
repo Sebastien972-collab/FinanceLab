@@ -57,14 +57,20 @@ class CustomerManager {
         self.currentUser =  try await service.fetchProfile(id: currentUserId)
     }
     /// Met à jour localement l'utilisateur courant (sans appel réseau).
-    func upadateUser(_ newUser: Customer) {
+    func updateUser(_ newUser: Customer) {
         self.currentUser = newUser
     }
     func updateBalance(of balance: Decimal) async throws {
-        self.currentUser.balance = try await Decimal(service.updateBalance(balance: balance.toDoucble()))
+        let newBalance = try await service.updateBalance(balance: balance.toDoucble())
+        self.currentUser.balance = Decimal(newBalance)
     }
     /// Réinitialise l'état utilisateur en le repassant à `.guest`.
     func logout() {
+        do {
+            try AuthManager.shared.logout()
+        } catch {
+            print("Logout error: \(error)")
+        }
         // Supprimer le token dans le Keychain
         KeychainService.shared.delete(service: "com.financelab.auth", account: "jwtToken")
         // Réinitialiser l’utilisateur actuel

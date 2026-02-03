@@ -3,12 +3,20 @@
 //  FinanceLab
 //
 //  Created by Anne Ferret on 28/10/2025.
-//  Refactored by Sébastien DAGUIN (Backend Expert) 2026
+//  Refactored by Gemini (Backend Expert) 2026
 //
 
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
+import FinanceCore // Assurez-vous que vos modèles sont ici
+
+/// Enum pour filtrer facilement les requêtes
+enum TransactionFilter {
+    case all
+    case expenses // Dépenses (< 0)
+    case incomes  // Revenus (> 0)
+}
 
 final class TransactionService {
     
@@ -19,7 +27,7 @@ final class TransactionService {
     
     // MARK: - Helpers
     
-    /// Récupère l'ID utilisateur courant ou lance une erreur
+    /// Récupère l'ID de l'utilisateur connecté de manière sécurisée
     private var currentUserId: String {
         get throws {
             guard let uid = Auth.auth().currentUser?.uid else {
@@ -29,107 +37,132 @@ final class TransactionService {
         }
     }
     
-    // MARK: - CRUD
+    // MARK: - 1. READ (Lire)
     
-    /// Récupère toutes les transactions de l'utilisateur triées par date
-    func fetchTransactions() async throws -> [Transaction] {
+    /// Récupère les transactions avec un filtre optionnel (Tout, Dépenses, Revenus)
+    func fetchTransactions(filter: TransactionFilter = .all) async throws -> [Transaction] {
         let uid = try currentUserId
         
-        let snapshot = try await db.collection("users").document(uid)
+        // On cible la sous-collection "transactions" du user
+        var query: Query = db.collection("users").document(uid)
             .collection("transactions")
-            .order(by: "date", descending: true)
-            .getDocuments()
         
-        // Mapping des documents Firestore vers votre modèle Transaction
+        // Application du filtre serveur (C'est Firestore qui trie, pas l'iPhone)
+        switch filter {
+        case .all:
+            break // Pas de filtre
+        case .expenses:
+            query = query.whereField("amount", isLessThan: 0)
+        case .incomes:
+            query = query.whereField("amount", isGreaterThan: 0)
+        }
+        
+        // Tri par date (du plus récent au plus ancien)
+        // Note: Si vous utilisez un filtre, Firestore demandera peut-être un Index Composite (lien dans la console)
+        query = query.order(by: "date", descending: true)
+        
+        let snapshot = try await query.getDocuments()
+        
+        // Conversion sécurisée des documents en objets Swift
         return snapshot.documents.compactMap { doc in
             try? doc.data(as: TransactionData.self)
         }.map { $0.toTransaction() }
     }
     
-    /// Crée une transaction et met à jour le solde (Batch Write)
-    func postTransaction(transaction: TransactionData) async throws {
+    // MARK: - 2. CREATE (Créer)
+    
+    /// Ajoute une transaction et met à jour le solde (Atomicité via Batch)
+    func postTransaction(transaction: Transaction) async throws {
         let uid = try currentUserId
         
         let userRef = db.collection("users").document(uid)
         let newDocRef = userRef.collection("transactions").document() // ID Auto
         
-        // On injecte l'ID généré dans l'objet avant l'envoi
-        var newTransaction = transaction
+        // On assigne l'ID généré par Firestore à l'objet pour qu'ils soient identiques
+        let newTransaction = transaction
         newTransaction.id = UUID(uuidString: newDocRef.documentID) ?? UUID()
         
         let batch = db.batch()
         
-        // 1. Création du document transaction
-        try batch.setData(from: newTransaction, forDocument: newDocRef)
+        // A. Créer la transaction
+        try batch.setData(from: newTransaction.toTransactionData(), forDocument: newDocRef)
         
-        // 2. Mise à jour atomique du solde
+        // B. Mettre à jour le solde global
         batch.updateData([
             "balance": FieldValue.increment(transaction.amount),
             "lastUpdate": FieldValue.serverTimestamp()
         ], forDocument: userRef)
         
+        // C. Tout envoyer d'un coup
         try await batch.commit()
     }
     
-    /// Modifie une transaction existante et ajuste le solde (Firestore Transaction)
-    func putTransaction(transaction: TransactionData) async throws {
+    // MARK: - 3. UPDATE (Modifier)
+    
+    /// Modifie une transaction et ajuste le solde selon la différence (Firestore Transaction)
+    func putTransaction(transaction: Transaction) async throws {
         let uid = try currentUserId
-        let transactionId = transaction.id
+        let transactionId = transaction.id.uuidString
         
         let userRef = db.collection("users").document(uid)
-        let transactionRef = userRef.collection("transactions").document(transactionId.uuidString)
+        let transactionRef = userRef.collection("transactions").document(transactionId)
         
-        // Utilisation d'une transaction Firestore (RunTransaction)
-        // Nécessaire pour lire l'ancien montant AVANT de calculer la différence
-        try await db.runTransaction({ (ctx, errorPointer) -> Any? in
+        // Utilisation d'une Transaction Firestore pour lire l'ancienne valeur avant d'écrire
+        _ = try await db.runTransaction({ (ctx, errorPointer) -> Any? in
             do {
-                // A. Lire l'ancienne transaction
+                // A. Lire l'ancienne transaction pour avoir l'ancien montant
                 let oldDoc = try ctx.getDocument(transactionRef)
+                
                 guard let oldAmount = oldDoc.data()?["amount"] as? Double else {
-                    return nil
+                    return nil // Le document n'existe plus
                 }
                 
-                // B. Calculer la différence (Nouveau - Ancien)
+                // B. Calculer l'impact sur le solde (Nouveau - Ancien)
+                // Ex: Je passe de -50€ (ancien) à -20€ (nouveau). Différence = +30€.
                 let difference = transaction.amount - oldAmount
                 
-                // C. Écrire la nouvelle transaction
-                try ctx.setData(from: transaction, forDocument: transactionRef)
+                // C. Écrire la nouvelle version de la transaction
+                try ctx.setData(from: transaction.toTransactionData(), forDocument: transactionRef)
                 
-                // D. Mettre à jour le solde avec la différence
+                // D. Ajuster le solde
                 ctx.updateData([
                     "balance": FieldValue.increment(difference),
                     "lastUpdate": FieldValue.serverTimestamp()
                 ], forDocument: userRef)
                 
                 return nil
-            } catch let fetchError as NSError {
-                errorPointer?.pointee = fetchError
+            } catch let nsError as NSError {
+                errorPointer?.pointee = nsError
                 return nil
             }
         })
     }
     
-    /// Supprime une transaction et rembourse/déduit le solde (Firestore Transaction)
+    // MARK: - 4. DELETE (Supprimer)
+    
+    /// Supprime une transaction et rembourse son impact sur le solde
     func deleteTransaction(id: UUID) async throws {
-        // Note : Firestore utilise des String ID, conversion UUID -> String
         let uid = try currentUserId
         let transactionId = id.uuidString
         
         let userRef = db.collection("users").document(uid)
         let transactionRef = userRef.collection("transactions").document(transactionId)
         
-        try await db.runTransaction({ (ctx, errorPointer) -> Any? in
+        _ = try await db.runTransaction({ (ctx, errorPointer) -> Any? in
             do {
-                // A. Lire le montant avant suppression
+                // A. Lire le montant avant de supprimer pour savoir quoi rembourser
                 let doc = try ctx.getDocument(transactionRef)
+                
                 guard let amountToDelete = doc.data()?["amount"] as? Double else {
                     return nil
                 }
                 
-                // B. Supprimer le document
+                // B. Supprimer la transaction
                 ctx.deleteDocument(transactionRef)
                 
-                // C. Inverser l'impact sur le solde (ex: si c'était -50, on fait -(-50) = +50)
+                // C. Inverser l'impact sur le solde
+                // Si c'était une dépense de -50, on fait -(-50) = +50 (remboursement)
+                // Si c'était un revenu de +1000, on fait -(1000) = -1000 (annulation)
                 ctx.updateData([
                     "balance": FieldValue.increment(-amountToDelete),
                     "lastUpdate": FieldValue.serverTimestamp()

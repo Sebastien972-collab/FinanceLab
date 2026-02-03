@@ -19,7 +19,7 @@ class ProjectViewModel {
     
     func fetchProjects() async {
         do {
-            self.projects = try await service.fetProjects()
+            self.projects = try await service.fetchProjects()
         } catch  {
             launchError(withError: error)
         }
@@ -30,7 +30,7 @@ class ProjectViewModel {
         do {
             let newProject = try await service.addProject(project: project.toProjectData())
             self.projects.append(newProject.toProject())
-            CustomerManager.shared.currentUser.projects = try await service.fetProjects()
+            CustomerManager.shared.currentUser.projects = try await service.fetchProjects()
         } catch  {
             launchError(withError: error)
         }
@@ -53,8 +53,6 @@ class ProjectViewModel {
     }
     
     func updateProject(with project: Project) async throws -> Project {
-        return try await service.updatePrject(project: project.toProjectData())
+        try await service.updateProject(project: project.toProjectData()).toProject()
     }
-    
-    
 }

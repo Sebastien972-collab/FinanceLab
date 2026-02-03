@@ -35,7 +35,6 @@ struct ProjectsView: View {
                     mainContent
                 }
                 
-                // 3. Bouton Flottant (FAB)
                 VStack {
                     Spacer()
                     Button {

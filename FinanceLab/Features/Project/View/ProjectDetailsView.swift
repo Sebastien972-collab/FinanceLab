@@ -1,8 +1,9 @@
 //
-//  ProjectDetailsView.swift
+//  LiquidProjectDetailsView.swift
 //  FinanceLab
 //
 //  Created by Sébastien Daguin on 05/10/2025.
+//  Redesigned by Gemini (Liquid UI Expert) 2026
 //
 
 import SwiftUI
@@ -12,214 +13,297 @@ struct ProjectDetailsView: View {
     @State var project: Project
     @Environment(\.dismiss) private var dismiss
     @Environment(ProjectViewModel.self) private var projectVM
-    @State var manager: ProjectCreatorViewModel = .init()
-    @State private var updateManager: ProjectUpdateCreator = .init(project: .preview)
-    @State private var showAddView: Bool = false
+    
+    @State private var creatorVM = ProjectCreatorViewModel()
+    @State private var showAddAmountSheet = false
+    @State private var showEditSheet = false
+    
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            if let imageName = project.iconName {
-                Image(systemName: imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 400, height: 300)
-                    .opacity(0.15)
-                    .offset(x: 125, y: 20)
-                    .foregroundStyle(LinearGradient.greenGradient)
-                    .padding(.bottom)
+        NavigationStack {
+            ZStack {
+                // 1. Fond Animé
+                LiquidMeshBackground()
+                    .ignoresSafeArea()
                 
-            }
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text(project.name)
-                        .font(.title)
-                    StandardCard {
-                        VStack(alignment: .leading) {
-                            VStack(alignment: .leading) {
-                                Text("Avancée du projet")
-                                    .font(.cardTitle)
-                                Text("J'ai déja mis de côté")
-                                    .font(.cardSubtitle)
-                            }
-                            VStack(alignment: .leading, spacing: 5) {
-                                AmountView(amount: Decimal(project.progressPercentage), selection: .percent)
-                                PercentageSlider(percentage: project.progressPercentage, color: .greenToRed)
+                // 2. Icône Géante en Fond (Ambiance)
+                if let iconName = project.iconName, let icon = CategoryIcon(rawValue: iconName) {
+                    Image(icon.resource)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 300, height: 300)
+                        .blur(radius: 60) // Effet de lueur diffuse
+                        .opacity(0.3)
+                        .offset(x: 100, y: -200)
+                }
+                
+                // 3. Contenu Défilant
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 24) {
+                        
+                        // En-tête
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Projet")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundStyle(.white.opacity(0.6))
+                                .textCase(.uppercase)
+                            
+                            Text(project.name)
+                                .font(.system(size: 40, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+                                .lineLimit(2)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 24)
+                        .padding(.top, 20)
+                        
+                        // Carte Principale (Progression)
+                        progressCard
+                        
+                        // Cartes Détails (Grid)
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
+                            LiquidDetailCard(title: "Épargne/Mois", value: "\(project.monthlyAmount.formatted(.number.precision(.fractionLength(0)))) €", icon: "calendar")
+                            LiquidDetailCard(title: "Restant", value: "\(project.numberOfMonthsToReachGoal) mois", icon: "hourglass")
+                            LiquidDetailCard(title: "Objectif", value: project.deadlineFormatted, icon: "flag.checkered")
+                            LiquidDetailCard(title: "Montant", value: "\(project.goalAmount.formatted(.number.notation(.compactName))) €", icon: "target")
+                        }
+                        .padding(.horizontal, 24)
+                        
+                        // Bouton Action Principal
+                        Button {
+                            showAddAmountSheet = true
+                        } label: {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(LinearGradient(colors: [.blue, .cyan], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                    .shadow(color: .blue.opacity(0.4), radius: 10, x: 0, y: 5)
+                                
                                 HStack {
-                                    AmountView(amount: project.amountSaved)
-                                    Spacer()
-                                    Text("/ " + project.goalAmount.formatted() + " €")
-                                        .font(.body)
-                                        .foregroundStyle(Color.Text.secondary)
+                                    Image(systemName: "plus.circle.fill")
+                                    Text("Ajouter à ma cagnotte")
+                                        .fontWeight(.bold)
                                 }
+                                .font(.system(size: 18, design: .rounded))
+                                .foregroundStyle(.white)
+                                .padding(.vertical, 16)
                             }
                         }
-                        .foregroundStyle(Color.Text.primary)
-                        .padding()
+                        .padding(.horizontal, 24)
+                        .padding(.top, 10)
+                        
+                        Spacer(minLength: 50)
                     }
-                    Text("Dans le détail")
+                }
+            }
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    Button { dismiss() } label: {
+                        CircleButton(icon: "chevron.left")
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        creatorVM.setupForEditing(project: project)
+                        showEditSheet = true
+                    } label: {
+                        CircleButton(icon: "pencil")
+                    }
+                }
+            }
+            // Sheet Ajout Montant
+            .sheet(isPresented: $showAddAmountSheet) {
+                LiquidAddAmountSheet(project: $project) { addedAmount in
+                    saveAmountChange()
+                }
+                .presentationDetents([.fraction(0.35)])
+                .presentationBackground(.ultraThinMaterial)
+            }
+            // Sheet Édition
+            .sheet(isPresented: $showEditSheet) {
+                ProjectCreatorView(projectManager: creatorVM, action: {
+                    // Refresh project data locally
+                    if let updated = projectVM.projects.first(where: { $0.id == project.id }) {
+                        self.project = updated
+                    }
+                })
+            }
+            .presentationDetents([.medium, .large])
+            .presentationBackground(.ultraThinMaterial)
+        }
+    }
+    
+    // MARK: - Subviews
+    
+    private var progressCard: some View {
+        VStack(spacing: 20) {
+            // Jauge Circulaire
+            ZStack {
+                // Fond
+                Circle()
+                    .stroke(.white.opacity(0.1), lineWidth: 15)
+                    .frame(width: 180, height: 180)
+                
+                // Progression
+                Circle()
+                    .trim(from: 0, to: CGFloat(project.progressPercentage / 100))
+                    .stroke(
+                        LinearGradient(colors: [.green, .mint], startPoint: .top, endPoint: .bottom),
+                        style: StrokeStyle(lineWidth: 15, lineCap: .round)
+                    )
+                    .frame(width: 180, height: 180)
+                    .rotationEffect(.degrees(-90))
+                    .animation(.spring(response: 1.0, dampingFraction: 0.8), value: project.amountSaved)
+                
+                // Texte Central
+                VStack(spacing: 4) {
+                    Text("\(Int(project.progressPercentage))%")
+                        .font(.system(size: 42, weight: .bold, design: .rounded))
+                        .foregroundStyle(.white)
+                    
+                    Text("Complété")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.6))
+                        .textCase(.uppercase)
+                }
+            }
+            .padding(.top, 10)
+            
+            // Montants
+            HStack {
+                VStack(alignment: .leading) {
+                    Text("Actuel")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text("\(project.amountSaved.formatted(.number.precision(.fractionLength(0)))) €")
                         .font(.title2)
-                    VStack(alignment: .leading, spacing: 16) {
-                        ProjectDetailsCardView(
-                            title: "Épargne mensuelle",
-                            subtitle: "Je mets de côté chaque mois",
-                            info: "\(project.monthlyAmount.formatted(.number.precision(.fractionLength(2)))) €"
-                        )
-                        ProjectDetailsCardView(
-                            title: "Durée restante",
-                            subtitle: "Ce projet est prévu pour durer",
-                            info: "\(project.numberOfMonthsToReachGoal) mois"
-                        )
-                        ProjectDetailsCardView(
-                            title: "Fin",
-                            subtitle: "À ce rythme, ce projet sera fini en",
-                            info: project.deadlineFormatted
-                        )
-                    }
-                    Button(action: {
-                        showAddView.toggle()
-                    }, label: {
-                        Text("J'ajoute à ma cagnotte")
-                    })
-                    .buttonStyle(FinanceButton(state: .validate))
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
                 }
-                .foregroundStyle(Color.Text.contrasted)
-                .padding()
-            }
-        }
-        .sheet(isPresented: $manager.isEditing) {
-            ProjectCreatorView(projectManager: updateManager)
-                .presentationDetents([.medium, .large])
-                .presentationDragIndicator(.hidden)
-        }
-        .sheet(isPresented: $showAddView) {
-            AddAmountSheetView(project: $project) { addedAmount in
-                let oldValue = project.amountSaved
-                Task {
-                    do {
-                        print("Le montant que j'envoi est de \(project.amountSaved)")
-                        self.project = try await projectVM.updateProject(with: project)
-                        print("Le montant que j'e recois est de \(project.amountSaved)")
-                    } catch {
-                        project.amountSaved = oldValue // rollback
-                        projectVM.launchError(withError: error)
-                    }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing) {
+                    Text("Cible")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.5))
+                    Text("\(project.goalAmount.formatted(.number.precision(.fractionLength(0)))) €")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(.white)
                 }
             }
-            .presentationDetents([.fraction(0.20)])
-            .presentationDragIndicator(.hidden)
+            .padding(.horizontal, 10)
         }
-        
-        .toolbar {
-            ToolbarItem(placement: .navigation) {
-                Button("Précédent", systemImage: "chevron.left") {
+        .padding(24)
+        .background(.ultraThinMaterial)
+        .cornerRadius(30)
+        .overlay(
+            RoundedRectangle(cornerRadius: 30)
+                .stroke(.white.opacity(0.2), lineWidth: 1)
+        )
+        .padding(.horizontal, 24)
+    }
+    
+    // MARK: - Logic
+    
+    private func saveAmountChange() {
+        Task {
+            // Update via VM
+            try await projectVM.updateProject(with: project)
+        }
+    }
+}
+
+// MARK: - Components
+
+struct LiquidDetailCard: View {
+    let title: String
+    let value: String
+    let icon: String
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundStyle(.white.opacity(0.8))
+                Spacer()
+            }
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                
+                Text(title)
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+        }
+        .padding(16)
+        .background(.ultraThinMaterial)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(.white.opacity(0.1), lineWidth: 1)
+        )
+    }
+}
+
+struct LiquidAddAmountSheet: View {
+    @Binding var project: Project
+    var onSave: (Decimal) -> Void
+    
+    @Environment(\.dismiss) var dismiss
+    @State private var amountText = ""
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        VStack(spacing: 24) {
+            Text("Ajouter une épargne")
+                .font(.headline)
+                .foregroundStyle(.white)
+                .padding(.top, 20)
+            
+            HStack(spacing: 4) {
+                TextField("0", text: $amountText)
+                    .keyboardType(.decimalPad)
+                    .focused($isFocused)
+                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 150)
+                
+                Text("€")
+                    .font(.system(size: 48, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white.opacity(0.5))
+            }
+            
+            Button {
+                if let amount = Decimal(string: amountText.replacingOccurrences(of: ",", with: ".")) {
+                    project.amountSaved += amount
+                    onSave(amount)
                     dismiss()
                 }
-                .buttonStyle(FinanceButton(size: .round))
+            } label: {
+                Text("Valider")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(amountText.isEmpty ? Color.gray.opacity(0.3) : Color.blue)
+                    .foregroundStyle(.white)
+                    .cornerRadius(16)
             }
-            .sharedBackgroundVisibility(.hidden)
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Modifier") {
-                    updateManager.manager = projectVM
-                    updateManager.setupProject(project)
-                    manager.isEditing = true
-                }
-                .buttonStyle(FinanceButton(state: .validate, size: .mini))
-            }
-            .sharedBackgroundVisibility(.hidden)
+            .disabled(amountText.isEmpty)
+            .padding(.horizontal, 24)
         }
-        .navigationBarBackButtonHidden()
-        .background {
-            FinancialBackground()
-                .ignoresSafeArea(.all)
-        }
+        .onAppear { isFocused = true }
     }
 }
 
 #Preview {
-    NavigationStack {
-        ProjectDetailsView(project: .preview)
-            .environment(ProjectViewModel())
-    }
-}
-
-
-fileprivate struct AmountView: View {
-    var amount: Decimal
-    enum Selection: String {
-        case eur = "€"
-        case percent = "%"
-    }
-    
-    var size: CGFloat = 32
-    var selection: Selection = .eur
-    var body: some View {
-        HStack(spacing: 4) {
-            // On convertit et formate correctement selon le type
-            let displayedText: String = {
-                switch selection {
-                case .eur:
-                    amount.formatted(.number.precision(.fractionLength(2)))
-                case .percent:
-                    "\(decimalToInt(amount))"
-                }
-            }()
-            Text(LocalizedStringResource(stringLiteral: displayedText))
-                .font(.cardNumber)
-            Text(selection.rawValue)
-                .font(.cardCurrency)
-                .foregroundStyle(Color.Text.secondary)
-        }
-        .foregroundStyle(Color.Text.primary)
-    }
-    
-    /// Conversion sécurisée Decimal → Int
-    private func decimalToInt(_ value: Decimal) -> Int {
-        var decimal = value
-        var result = Decimal()
-        // On arrondit à 0 décimales, mode .plain = arrondi classique (0.5 → 1)
-        NSDecimalRound(&result, &decimal, 0, .plain)
-        return NSDecimalNumber(decimal: result).intValue
-    }
-}
-
-struct AddAmountSheetView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Binding var project: Project
-    @State private var amountText: String = ""
-    var onValidate: ((Decimal) -> Void)? = nil
-    var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Spacer()
-            CustomFieldView(label: "J'ai mis de côté", text: $amountText, placeholder: "0.00 €", state: .amount)
-                .keyboardType(.decimalPad)
-            Spacer()
-            HStack {
-                Button("Annuler") {
-                    dismiss()
-                }
-                .buttonStyle(FinanceButton(state: .normal))
-                Button("Ajouter") {
-                    if let value = decimalFromString(amountText) {
-                        project.amountSaved += value
-                        onValidate?(value)
-                        dismiss()
-                    }
-                }
-                .buttonStyle(FinanceButton(state: .validate))
-                .disabled(decimalFromString(amountText) == nil)
-            }
-        }
-        .foregroundStyle(Color.Text.contrasted)
-        .padding()
-    }
-    
-    private func decimalFromString(_ text: String) -> Decimal? {
-        let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.numberStyle = .decimal
-        
-        if let number = formatter.number(from: text) {
-            return number.decimalValue
-        }
-        return nil
-    }
+    ProjectDetailsView(project: Project.preview)
+        .environment(ProjectViewModel())
 }

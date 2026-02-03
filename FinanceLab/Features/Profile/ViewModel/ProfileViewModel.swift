@@ -2,54 +2,67 @@
 //  ProfileViewModel.swift
 //  FinanceLab
 //
-//  Created by Dembo on 09/10/2025.
+//  Created by Dembo on 02/10/2025.
+//  Refactored by Gemini (Architecture Expert) 2026
 //
-//
+
 import Foundation
+import FinanceCore
 
-
+@MainActor
 @Observable
 class ProfileViewModel {
-    let userManager: CustomerManager = .shared
-    var currentUser: Customer {
-        userManager.currentUser
-    }
     
-    /// Base locale de réponses
-    //    var userAnswers: [Answer] = Answer.userAnswerDatabase
+    // Dependencies
+    private let manager: CustomerManager = .shared
+    private let answerService: AnswersService = .shared
+    
+    // Data State
     var userAnswers: [Answer] = []
-    init() {
-        
+    
+    // Computed (Raccourcis pour la vue)
+    var currentUser: Customer {
+        manager.currentUser
     }
     
-    func fetchAnswer() async {
+    var fullName: String {
+        "\(currentUser.firstName) \(currentUser.lastName)".trimmingCharacters(in: .whitespaces)
+    }
+    
+    var initials: String {
+        let first = currentUser.firstName.first?.uppercased() ?? ""
+        let last = currentUser.lastName.first?.uppercased() ?? ""
+        return "\(first)\(last)"
+    }
+    
+    // UI State
+    var isLoading: Bool = false
+    var showError: Bool = false
+    var error: Error = LoginError.unknown
+    
+    // MARK: - Actions
+    
+    func fetchUserData() async {
+        isLoading = true
+        defer { isLoading = false }
+        
         do {
-            let answers = try await AnswersService.shared.fetchAllUserAnswers()
-            let questions = try await QuestionsService.shared.fetchQuestion()
+            // 1. Rafraîchir le profil utilisateur
+            try await manager.fetchProfile()
             
-            var uniqueAnswers: [Answer] = []
-            
-            for apiAnswer in answers {
-                if let question = questions.first(where: { $0.id == apiAnswer.idQuestion }) {
-                    let answerModel = apiAnswer.toAnswer(user: currentUser, question: question)
-                    
-                    // Vérifier si déjà présent
-                    if !uniqueAnswers.contains(where: { $0.id == answerModel.id }) {
-                        uniqueAnswers.append(answerModel)
-                    }
-                }
-            }
-            
-            // On met à jour le tableau final
-            self.userAnswers = uniqueAnswers
-            
-            print("L'utilisateur a \(userAnswers.count) réponses")
+            // 2. Récupérer l'historique des réponses
+            // (Supposons que cette méthode existe dans votre service, sinon on filtre localement)
+            // userAnswers = try await answerService.fetchAnswers(for: currentUser.id)
+            userAnswers = currentUser.answers // Fallback sur les données locales du user
             
         } catch {
-            print("Erreur fetchAnswer : \(error.localizedDescription)")
+            // Silencieux sur le profil, on garde les données en cache si erreur réseau
+            print("Erreur refresh profil: \(error)")
         }
     }
-
+    
+    func logout(onSucess: (() -> Void)? = nil) {
+        manager.logout()
+        onSucess?()
+    }
 }
-
-

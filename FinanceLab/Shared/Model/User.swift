@@ -36,7 +36,7 @@ class Customer: Identifiable {
     }
     
     func addTransaction(_ transaction: Transaction) {
-        guard transactions.contains(transaction) else { return }
+        guard !transactions.contains(transaction) else { return }
         transactions.append(transaction)
     }
     
