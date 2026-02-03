@@ -56,18 +56,12 @@ final class ProjectService {
     func addProject(project: ProjectData) async throws -> ProjectData {
         let uid = try currentUserId
         
-        // Référence vers un nouveau document (ID auto-généré)
-        let newDocRef = DatabaseManager.shared.db.collection("users").document(uid)
-            .collection("projects").document()
+        let docRef = DatabaseManager.shared.db.collection("users").document(uid)
+            .collection("projects").document(project.id.uuidString)
         
-        // On assigne l'ID généré par Firestore à l'objet pour la cohérence
-        var projectToSave = project
-        projectToSave.id = UUID(uuidString: newDocRef.documentID) ?? .init()
+        try docRef.setData(from: project)
         
-        // Enregistrement
-        try newDocRef.setData(from: projectToSave)
-        
-        return projectToSave
+        return project
     }
     
     /// Met à jour un projet existant.

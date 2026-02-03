@@ -53,6 +53,13 @@ class ProjectViewModel {
     }
     
     func updateProject(with project: Project) async throws -> Project {
-        try await service.updateProject(project: project.toProjectData()).toProject()
+        let updatedProjectData = try await service.updateProject(project: project.toProjectData())
+        let updatedProject = updatedProjectData.toProject()
+        
+        if let index = self.projects.firstIndex(where: { $0.id == updatedProject.id }) {
+            self.projects[index] = updatedProject
+        }
+        
+        return updatedProject
     }
 }

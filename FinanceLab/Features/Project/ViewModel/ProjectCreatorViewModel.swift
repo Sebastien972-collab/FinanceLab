@@ -36,6 +36,7 @@ class ProjectCreatorViewModel {
     // MARK: - Dependencies
     var manager: ProjectViewModel? // Référence faible ou injectée
     let service: ProjectService = .shared
+    var projectToEdit: Project?
     
     // MARK: - Computed
     var goalAmount: Decimal {
@@ -60,10 +61,10 @@ class ProjectCreatorViewModel {
         do {
             let newProject = Project(
                 name: name,
-                iconName: selectedIcon.rawValue,
                 finalDate: finalDate,
                 amount: goalAmount
             )
+            newProject.iconName = selectedIcon.rawValue
             
             // Appel via le ViewModel parent pour mettre à jour la liste globale
             if let manager = manager {
@@ -81,8 +82,8 @@ class ProjectCreatorViewModel {
         }
     }
     
-    func update(project: Project, onSuccess: () -> Void) async {
-        guard isFormValid else { return }
+    func update(onSuccess: () -> Void) async {
+        guard isFormValid, let project = projectToEdit else { return }
         isLoading = true
         defer { isLoading = false }
         
@@ -110,6 +111,7 @@ class ProjectCreatorViewModel {
     
     // Pré-remplit le formulaire pour l'édition
     func setupForEditing(project: Project) {
+        self.projectToEdit = project
         self.name = project.name
         self.stringGoalAmount = "\(project.goalAmount)"
         self.finalDate = project.deadline
@@ -124,6 +126,7 @@ class ProjectCreatorViewModel {
         stringGoalAmount = ""
         finalDate = Calendar.current.date(byAdding: .month, value: 3, to: .now) ?? .now
         selectedIcon = .targetFill
+        projectToEdit = nil
         isEditing = false
         showError = false
     }

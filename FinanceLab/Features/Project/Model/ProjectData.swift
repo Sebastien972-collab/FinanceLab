@@ -12,7 +12,7 @@ struct ProjectData: Codable, Identifiable, Sendable {
     var id: UUID
     let name: String
     let endDate: Date
-    let iconName: String
+    let iconName: String?
     let creationDate: Date
     let amountTotal: Decimal
     let amountSaved: Decimal

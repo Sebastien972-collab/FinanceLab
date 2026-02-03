@@ -218,10 +218,7 @@ struct ProjectCreatorView: View {
         focusedField = nil
         Task {
             if projectManager.isEditing {
-                // Cas Édition : on doit récupérer le projet original quelque part ou le passer
-                // Ici on suppose que le ViewModel gère l'update via une méthode dédiée ou que le parent gère
-                // Note : Pour l'édition, il faudrait idéalement passer le projet complet au VM
-                await projectManager.validate {
+                await projectManager.update {
                     dismiss()
                     action?()
                 }
