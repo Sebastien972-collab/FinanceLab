@@ -7,6 +7,8 @@
 
 import Foundation
 import FirebaseAuth
+import FirebaseFirestore
+import FinanceCore
 
 /// Service utilisateur responsable des appels réseau liés à l'authentification et au profil.
 ///
@@ -18,8 +20,6 @@ final class UserService {
     static let shared = UserService()
     /// Initialisation privée pour imposer le pattern singleton.
     private init() {}
-    /// Couche réseau utilisée pour effectuer les requêtes.
-    private let service = NetworkingService.shared
     private let authManager = AuthManager.shared
     private let databaseManager = DatabaseManager.shared
     
@@ -32,16 +32,16 @@ final class UserService {
     /// - Returns: L'utilisateur courant (`User`) mappé depuis `UserData`.
     /// - Throws: Une erreur réseau ou d'encodage JSON.
     func create(firstName: String, lastName: String, email: String, password: String) async throws -> Customer {
-        let rents = Decimal(string: UserStorage.shared.getUserString(forKey: .totalRent) ?? "") ?? 0
-        let expenses = Decimal(string: UserStorage.shared.getUserString(forKey: .totalExpenses) ?? "") ?? 0
         let credentials: [String: Any] = [
             "id": UUID().uuidString,
             "firstName": firstName,
             "lastName": lastName,
-            "userCategory": "batisseur",
+            "userCategory": FinancialProfile.none.rawValue,
             "profilePictureURL": "",
             "email": email,
-            "balance": rents.toDoucble() - expenses.toDoucble()
+            "balance": 0,
+            "monthlyRevenue": 0,
+            "monthlyExpenses": 0
         ]
         
         let jsonData = try JSONSerialization.data(withJSONObject: credentials)
@@ -50,8 +50,6 @@ final class UserService {
         // Appel API pour créer l'utilisateur, en envoyant les informations nécessaires.
         let userId = result.user.uid
         try await databaseManager.createUser(withID: userId, userData: userData)
-        
-        _ = try await updateBalance(balance: rents.toDoucble() - expenses.toDoucble())
         return try await fetchProfile(id: userId)
     }
     
@@ -63,7 +61,6 @@ final class UserService {
     /// - Throws: Une erreur réseau ou d'encodage JSON.
     func login(email: String, password: String) async throws -> Customer {
         let result = try await authManager.signIn(withEmail: email, password: password)
-        print(result.user.uid)
         return try await fetchProfile(id: result.user.uid)
     }
     
@@ -83,13 +80,32 @@ final class UserService {
         return balance
     }
     
+    func updateFinancialProfileSummary(_ summary: FinancialProfileSummary) async throws {
+        guard let userId = Auth.auth().currentUser?.uid else { throw LoginError.unknown }
+        try await databaseManager.updateFinancialProfileSummary(
+            withId: userId,
+            monthlyRevenue: summary.monthlyRevenue.toDoucble(),
+            monthlyExpenses: summary.monthlyExpenses.toDoucble(),
+            userCategory: summary.profile.rawValue
+        )
+    }
+
     /// Récupère le profil de l'utilisateur courant à partir de l'API.
     /// - Returns: Un objet `User` mappé depuis `UserData`.
     /// - Throws: Une erreur si le token est absent/expiré ou si l'appel échoue.
     func fetchProfile(id: String) async throws -> Customer  {
-        let userData = try await databaseManager.fetchProfile(withId: id)
-        print("Les données de l'utilisateur sont: \(userData)")
-        return userData.toUser()
+        do {
+            let userData = try await databaseManager.fetchProfile(withId: id)
+            return userData.toUser()
+        } catch let nsError as NSError
+            where nsError.domain == FirestoreErrorDomain &&
+            nsError.code == FirestoreErrorCode.permissionDenied.rawValue {
+            throw LoginError.custom(
+                "Accès Firestore refusé. Vérifie les règles de sécurité sur users/{uid} et la connexion Firebase du projet."
+            )
+        } catch {
+            throw error
+        }
     }
     /// Vérifie localement l'expiration du token JWT via la claim `exp`.
     /// - Returns: `true` si le token est manquant, mal formé, ou expiré; `false` sinon.

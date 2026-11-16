@@ -47,13 +47,8 @@ class ProfileViewModel {
         defer { isLoading = false }
         
         do {
-            // 1. Rafraîchir le profil utilisateur
             try await manager.fetchProfile()
-            
-            // 2. Récupérer l'historique des réponses
-            // (Supposons que cette méthode existe dans votre service, sinon on filtre localement)
-            // userAnswers = try await answerService.fetchAnswers(for: currentUser.id)
-            userAnswers = currentUser.answers // Fallback sur les données locales du user
+            userAnswers = currentUser.answers
             
         } catch {
             // Silencieux sur le profil, on garde les données en cache si erreur réseau
@@ -61,8 +56,21 @@ class ProfileViewModel {
         }
     }
     
-    func logout(onSucess: (() -> Void)? = nil) {
-        manager.logout()
-        onSucess?()
+    func updateAnswer(_ answer: Answer, with content: String) async {
+        do {
+            let updatedAnswer = Answer(
+                id: answer.id,
+                content: content.replacingOccurrences(of: ",", with: "."),
+                user: currentUser,
+                question: answer.question
+            )
+            let updatedAnswers = try await answerService.upsertAnswer(updatedAnswer)
+            manager.currentUser.answers = updatedAnswers
+            userAnswers = updatedAnswers
+        } catch {
+            self.error = error
+            self.showError = true
+        }
     }
+
 }

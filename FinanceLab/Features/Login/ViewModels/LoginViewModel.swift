@@ -56,12 +56,15 @@ class LoginViewModel {
     
     // MARK: - Dependencies
     private let manager: CustomerManager = .shared
+    private let answersService: AnswersService = .shared
+    private let questionnaireDraftStore: QuestionnaireDraftStore = .shared
     // MARK: - Actions
 
     func login(onSuccess: () -> Void) async {
         guard await performAction(action: {
             try validateInputs()
             try await manager.login(email: email, password: password)
+            questionnaireDraftStore.clear()
             onSuccess()
         }) else {
             self.error = error
@@ -79,6 +82,14 @@ class LoginViewModel {
                 email: email,
                 password: password
             )
+
+            if questionnaireDraftStore.hasDraft {
+                let syncedAnswers = try await answersService.replaceAllAnswers(
+                    questionnaireDraftStore.buildAnswers(for: manager.currentUser)
+                )
+                manager.currentUser.answers = syncedAnswers
+                questionnaireDraftStore.clear()
+            }
         }) else { return }
         
         onSuccess()

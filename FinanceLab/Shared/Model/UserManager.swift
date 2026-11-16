@@ -24,37 +24,44 @@ class CustomerManager {
     private let service: UserService = .shared
     /// Représentation de l'utilisateur courant (invité par défaut).
     private(set) var currentUser: Customer = .guest
-    /// Indique si un utilisateur est connecté (différent de `.guest`).`
+    /// Indique si un utilisateur est connecté (différent de `.guest`).
     var isLoggedIn: Bool {
-        currentUser != .guest
+        AuthManager.shared.isAuth
     }
+    private let answersService: AnswersService = .shared
     
     /// Crée un utilisateur puis met à jour `currentUser` avec le profil obtenu.
     func create(firstName: String, lastName: String, email: String, password: String) async throws {
-        do {
-            let user = try await service.create(firstName: firstName, lastName: lastName, email: email, password: password)
-            self.currentUser = user
-            
-        } catch  {
-            throw error
-        }
+        self.currentUser = try await service.create(
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password
+        )
     }
     
     
     /// Authentifie l'utilisateur puis met à jour `currentUser`.
     func login(email: String, password: String) async throws {
-        do {
-            self.currentUser = try await service.login(email: email, password: password)
-        } catch  {
-            throw error
-        }
+        let profile = try await service.login(email: email, password: password)
+        guard let uid = Auth.auth().currentUser?.uid else { throw CancellationError() }
+        try await loadAnswers(for: profile, uid: uid)
     }
     /// Récupère le profil depuis l'API et met à jour `currentUser`.
     func fetchProfile() async throws {
         guard let currentUserId = Auth.auth().currentUser?.uid else {
             throw LoginError.unknown
         }
-        self.currentUser =  try await service.fetchProfile(id: currentUserId)
+        let profile = try await service.fetchProfile(id: currentUserId)
+        try await loadAnswers(for: profile, uid: currentUserId)
+    }
+
+    private func loadAnswers(for profile: Customer, uid: String) async throws {
+        guard Auth.auth().currentUser?.uid == uid else { throw CancellationError() }
+        let answers = try await answersService.fetchAllUserAnswers(for: profile)
+        guard Auth.auth().currentUser?.uid == uid else { throw CancellationError() }
+        profile.answers = answers
+        currentUser = profile
     }
     /// Met à jour localement l'utilisateur courant (sans appel réseau).
     func updateUser(_ newUser: Customer) {
@@ -64,16 +71,18 @@ class CustomerManager {
         let newBalance = try await service.updateBalance(balance: balance.toDoucble())
         self.currentUser.balance = Decimal(newBalance)
     }
+
+    func updateFinancialProfileSummary(_ summary: FinancialProfileSummary) async throws {
+        try await service.updateFinancialProfileSummary(summary)
+        currentUser.applyFinancialSummary(summary)
+    }
     /// Réinitialise l'état utilisateur en le repassant à `.guest`.
-    func logout() {
-        do {
-            try AuthManager.shared.logout()
-        } catch {
-            print("Logout error: \(error)")
-        }
+    func logout() throws {
+        try AuthManager.shared.logout()
         // Supprimer le token dans le Keychain
         KeychainService.shared.delete(service: "com.financelab.auth", account: "jwtToken")
         // Réinitialiser l’utilisateur actuel
+        QuestionnaireDraftStore.shared.clear()
         self.currentUser = .guest // ou un User() vide selon ton modèle
         print("Utilisateur déconnecté")
     }

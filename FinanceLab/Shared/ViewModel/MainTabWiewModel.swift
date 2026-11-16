@@ -27,7 +27,6 @@ class TabViewModel {
             self.authState = .firstLaunch
         } else {
             self.authState = .loading
-            Task { await checkSession() }
         }
     }
     
@@ -48,15 +47,16 @@ class TabViewModel {
     /// - Réinitialise l'état d'authentification et l'UI
     /// - Capture et affiche les erreurs éventuelles
     func logout() {
-        // Met l'UI dans un état neutre pendant la déconnexion
-        authState = .loading
-        manager.logout()
-        authState = .notAuthenticated
+        do {
+            try manager.logout()
+            authState = .notAuthenticated
+        } catch {
+            launchError(error)
+        }
     }
     func login(email: String, password: String) async {
         do {
             try await manager.login(email: email, password: password)
-            try await manager.fetchProfile()
             authState = .authenticated
         } catch {
             launchError(error)

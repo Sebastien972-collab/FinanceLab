@@ -20,11 +20,13 @@ struct SingleTransactionView: View {
     @FocusState private var isAmountFocused: Bool
     @State private var showCategorySheet = false
     @State private var showDatePicker = false
+    @State private var saveError = ""
+    @State private var showSaveError = false
     @State private var showDeleteAlert = false
     
     init(transaction: Transaction? = nil) {
         self.initialTransaction = transaction
-        _editableTransaction = State(initialValue: transaction ?? Transaction(name: "", iconName: .shoppingCartSimpleFill, amount: 0, date: Date(), contractor: ""))
+        _editableTransaction = State(initialValue: transaction?.toTransactionData().toTransaction() ?? Transaction(name: "", iconName: .shoppingCartSimpleFill, amount: 0, date: Date(), contractor: ""))
         // Détection automatique Dépense/Recette selon le signe
         _pickerSelected = State(initialValue: (transaction?.amount ?? 0) > 0 ? 1 : 0)
     }
@@ -199,14 +201,19 @@ struct SingleTransactionView: View {
                 }
                 .presentationDetents([.medium])
             }
+            .alert("Enregistrement impossible", isPresented: $showSaveError) {
+                Button("OK") {}
+            } message: { Text(saveError) }
             // Alert Suppression
             .alert("Supprimer ?", isPresented: $showDeleteAlert) {
                 Button("Annuler", role: .cancel) {}
                 Button("Supprimer", role: .destructive) {
                     Task {
                         if let id = initialTransaction?.id {
-                            await accountVM.deleteTransaction(id)
-                            dismiss()
+                            do {
+                                try await accountVM.deleteTransaction(id)
+                                dismiss()
+                            } catch { display(error) }
                         }
                     }
                 }
@@ -218,6 +225,11 @@ struct SingleTransactionView: View {
     
     // MARK: - Logic
     
+    private func display(_ error: Error) {
+        saveError = error.localizedDescription
+        showSaveError = true
+    }
+
     private func saveTransaction() {
         // Appliquer le signe correct selon la sélection (Dépense/Recette)
         if pickerSelected == 0 {
@@ -227,12 +239,10 @@ struct SingleTransactionView: View {
         }
         
         Task {
-            if initialTransaction != nil {
-                await accountVM.putTransaction(editableTransaction)
-            } else {
-                await accountVM.postTransaction(editableTransaction)
-            }
-            dismiss()
+            do {
+                try await accountVM.save(editableTransaction, editing: initialTransaction != nil)
+                dismiss()
+            } catch { display(error) }
         }
     }
 }

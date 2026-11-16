@@ -8,20 +8,24 @@
 import Foundation
 import FinanceCore
 
+@Observable
 class Customer: Identifiable {
-    private(set) var id: UUID = UUID()
+    let id: UUID
     private(set) var firstName: String
     private(set) var lastName: String
     private(set) var email: String
     var displayName: String { "\(self.firstName) \(self.lastName)" }
     var dateOfRegistration: Date = Date()
     var balance: Decimal = 0.00
+    var monthlyRevenue: Decimal = 0.00
+    var monthlyExpenses: Decimal = 0.00
     var profilePictureUrl: String?
     var transactions: [Transaction] = []
     var answers: [Answer] = []
     var projects: [Project] = []
     var userCategory: FinancialProfile = .none
-    init(firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
+    init(id: UUID = UUID(), firstName: String, lastName: String, email: String, profilePictureUrl: String? = nil) {
+        self.id = id
         self.firstName = firstName
         self.lastName = lastName
         self.email = email
@@ -36,19 +40,28 @@ class Customer: Identifiable {
     }
     
     func addTransaction(_ transaction: Transaction) {
-        guard !transactions.contains(transaction) else { return }
+        guard !transactions.contains(where: { $0.id == transaction.id }) else { return }
         transactions.append(transaction)
     }
     
     func updateTransaction(_ transaction: Transaction) {
-        if let index = transactions.firstIndex(of: transaction) {
+        if let index = transactions.firstIndex(where: { $0.id == transaction.id }) {
             transactions[index] = transaction
         }
     }
     
     func removeTransaction(_ transaction: Transaction) {
-        guard transactions.contains(transaction) else { return }
-        transactions.removeAll { $0 == transaction }
+        removeTransaction(withId: transaction.id)
+    }
+
+    func removeTransaction(withId id: UUID) {
+        transactions.removeAll { $0.id == id }
+    }
+
+    func applyFinancialSummary(_ summary: FinancialProfileSummary) {
+        monthlyRevenue = summary.monthlyRevenue
+        monthlyExpenses = summary.monthlyExpenses
+        userCategory = summary.profile
     }
 }
 
@@ -74,6 +87,16 @@ extension Customer: Equatable {
     }
     
     func toUserData() -> UserData {
-        UserData(id: self.id, firstName: self.firstName, lastName: self.lastName, userCategory: self.userCategory.rawValue, profilePictureURL: self.profilePictureUrl ?? "", email: self.email, balance: self.balance.toDoucble())
+        UserData(
+            id: self.id,
+            firstName: self.firstName,
+            lastName: self.lastName,
+            userCategory: self.userCategory.rawValue,
+            profilePictureURL: self.profilePictureUrl ?? "",
+            email: self.email,
+            balance: self.balance.toDoucble(),
+            monthlyRevenue: self.monthlyRevenue.toDoucble(),
+            monthlyExpenses: self.monthlyExpenses.toDoucble()
+        )
     }
 }

@@ -36,7 +36,6 @@ struct TransactionListView: View {
             .toolbar { toolbarContent }
             .task {
                 isLoading = true
-                try? await Task.sleep(for: .milliseconds(50)) // Micro-delay pour fluidité transition
                 await accountVM.initializeView()
                 isLoading = false
             }
@@ -71,6 +70,10 @@ struct TransactionListView: View {
                     }
                     
                     transactionsListSection
+                    if accountVM.hasMoreHistory {
+                        Button("Afficher les transactions précédentes") { Task { await accountVM.loadMoreHistory() } }
+                            .disabled(accountVM.isLoading)
+                    }
                 }
                 
                 Spacer(minLength: 80)

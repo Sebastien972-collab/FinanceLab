@@ -10,6 +10,7 @@ import Foundation
 import Testing
 @testable import FinanceLab
 
+@MainActor
 struct TransactionTests {
     
     // MARK: - Initialization Tests

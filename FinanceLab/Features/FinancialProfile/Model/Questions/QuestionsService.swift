@@ -7,10 +7,8 @@
 
 import Foundation
 
-final class QuestionsService{
+final class QuestionsService {
     static let shared = QuestionsService()
-    private let keychain = KeychainService.shared
-    private let service = NetworkingService.shared
     private var questions: [Question] = []
     
     func getQuestionByGroup(_ questionGroup: QuestionGroup ) async throws -> [Question] {
@@ -27,8 +25,14 @@ final class QuestionsService{
     }
     
     func getQuestion(byID idQuestion: UUID) async throws -> Question {
-        let questionRequest = APIRequest(endpoint: "/questions/\(idQuestion)", httpMethod: .GET)
-        let response = try await service.request(questionRequest, responseType: QuestionsData.self)
-        return response.toQuestion()
+        if questions.isEmpty {
+            _ = try await fetchQuestion()
+        }
+
+        guard let question = questions.first(where: { $0.id == idQuestion }) else {
+            throw LoginError.custom("Question introuvable.")
+        }
+
+        return question
     }
 }

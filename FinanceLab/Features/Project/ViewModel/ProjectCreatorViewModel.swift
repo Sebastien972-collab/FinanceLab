@@ -68,7 +68,7 @@ class ProjectCreatorViewModel {
             
             // Appel via le ViewModel parent pour mettre à jour la liste globale
             if let manager = manager {
-                await manager.addProject(newProject)
+                try await manager.addProject(newProject)
             } else {
                 // Fallback direct service si pas de manager (cas rare)
                 _ = try await service.addProject(project: newProject.toProjectData())
@@ -83,7 +83,8 @@ class ProjectCreatorViewModel {
     }
     
     func update(onSuccess: () -> Void) async {
-        guard isFormValid, let project = projectToEdit else { return }
+        guard isFormValid, let original = projectToEdit else { return }
+        let project = original.toProjectData().toProject()
         isLoading = true
         defer { isLoading = false }
         
@@ -98,7 +99,7 @@ class ProjectCreatorViewModel {
             if let manager = manager {
                 _ = try await manager.updateProject(with: project)
             } else {
-                // _ = try await service.updateProject(project: project.toProjectData())
+                _ = try await service.updateProject(project: project.toProjectData())
             }
             
             reset()

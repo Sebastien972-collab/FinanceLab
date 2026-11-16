@@ -59,7 +59,7 @@ final class ProjectService {
         let docRef = DatabaseManager.shared.db.collection("users").document(uid)
             .collection("projects").document(project.id.uuidString)
         
-        try docRef.setData(from: project)
+        try await docRef.setData(Firestore.Encoder().encode(project))
         
         return project
     }
@@ -73,11 +73,16 @@ final class ProjectService {
         let docRef = DatabaseManager.shared.db.collection("users").document(uid)
             .collection("projects").document(project.id.uuidString)
         
-        // setData avec merge: true permet de ne mettre à jour que les champs modifiés
-        // ou d'écraser proprement si on passe tout l'objet.
-        try docRef.setData(from: project, merge: true)
-        
-        return project
+        // Metadata edits must never overwrite concurrent contributions.
+        try await docRef.updateData([
+            "name": project.name,
+            "endDate": project.endDate,
+            "iconName": project.iconName as Any? ?? FieldValue.delete(),
+            "amountTotal": NSDecimalNumber(decimal: project.amountTotal)
+        ])
+        let snapshot = try await docRef.getDocument()
+        return try snapshot.data(as: ProjectData.self)
+
     }
     
     /// Supprime un projet.

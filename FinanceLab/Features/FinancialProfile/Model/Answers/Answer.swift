@@ -8,16 +8,18 @@
 import Foundation
 
 struct Answer: Identifiable, Equatable {
-    let id = UUID()
+    let id: UUID
     var content: String
     var user: Customer
     let question: Question
     
     init(
+        id: UUID? = nil,
         content: String,
         user: Customer,
-        question: Question,
+        question: Question
     ) {
+        self.id = id ?? question.id
         self.content = content
         self.user = user
         self.question = question

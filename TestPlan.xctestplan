@@ -13,13 +13,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : {
-        "suites" : [
-          {
-            "name" : "FinanceLabTests"
-          }
-        ]
-      },
       "target" : {
         "containerPath" : "container:FinanceLab.xcodeproj",
         "identifier" : "CF7DC9652E85715A0084762E",

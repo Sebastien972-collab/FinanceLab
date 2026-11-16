@@ -25,7 +25,8 @@ struct MainTabView: View {
                           .tag(TabViewModel.Selection.home)
                     }
                     Tab("Projets", systemImage: "powermeter") {
-                        ProjectsView()
+                        SessionProjectsView()
+                            .id(tabVm.currentUser.id)
                             .tag(TabViewModel.Selection.project)
                     }
                     Tab("Ressources", systemImage: "newspaper.fill") {
@@ -57,6 +58,14 @@ struct MainTabView: View {
         }
         .animation(.easeInOut, value: tabVm.authState)
         
+    }
+}
+
+private struct SessionProjectsView: View {
+    @State private var projects = ProjectViewModel()
+
+    var body: some View {
+        ProjectsView().environment(projects)
     }
 }
 

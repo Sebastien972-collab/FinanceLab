@@ -13,11 +13,10 @@ struct UserProfileView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var profilVM = ProfileViewModel()
-    // On garde une instance séparée pour le flow de questions
-    @State private var financialVM = FinancialProfileViewModel()
     
     @State private var showQuestions = false
     @State private var showLogoutAlert = false
+    @State private var selectedAnswer: Answer?
     @State private var scrollOffset: CGFloat = 0
     
     var body: some View {
@@ -68,7 +67,12 @@ struct UserProfileView: View {
                                 
                                 LazyVStack(spacing: 12) {
                                     ForEach(profilVM.userAnswers) { answer in
-                                        LiquidAnswerRow(answer: answer)
+                                        Button {
+                                            selectedAnswer = answer
+                                        } label: {
+                                            LiquidAnswerRow(answer: answer)
+                                        }
+                                        .buttonStyle(.plain)
                                     }
                                 }
                                 .padding(.horizontal, 20)
@@ -98,9 +102,17 @@ struct UserProfileView: View {
                 }
             }
             .navigationDestination(isPresented: $showQuestions) {
-                // On passe isNewQuestion: true pour forcer le mode "Questionnaire"
-                FinancialQuestionView(isNewQuestion: true)
+                FinancialQuestionView(flowMode: .completion)
                     .environment(tabVm) // On repasse l'environnement si nécessaire
+            }
+            .sheet(item: $selectedAnswer) { answer in
+                AnswerEditSheet(answer: answer) { newContent in
+                    Task {
+                        await profilVM.updateAnswer(answer, with: newContent)
+                    }
+                }
+                .presentationDetents([.fraction(0.35)])
+                .presentationBackground(.ultraThinMaterial)
             }
             .alert("Déconnexion", isPresented: $showLogoutAlert) {
                 Button("Annuler", role: .cancel) {}
@@ -109,6 +121,11 @@ struct UserProfileView: View {
                 }
             } message: {
                 Text("Êtes-vous sûr de vouloir nous quitter ?")
+            }
+            .alert("Oups", isPresented: $profilVM.showError) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(profilVM.error.localizedDescription)
             }
             .task {
                 await profilVM.fetchUserData()
@@ -248,9 +265,14 @@ struct LiquidAnswerRow: View {
             Spacer()
             
             // La réponse (Montant ou texte)
-            Text(answer.content)
-                .font(.system(size: 16, weight: .bold, design: .rounded))
-                .foregroundStyle(.cyan)
+            HStack(spacing: 8) {
+                Text(answer.content)
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .foregroundStyle(.cyan)
+                Image(systemName: "pencil")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.45))
+            }
         }
         .padding(16)
         .background(.ultraThinMaterial)
