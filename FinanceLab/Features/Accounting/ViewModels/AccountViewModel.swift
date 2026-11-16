@@ -7,15 +7,18 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 @MainActor
 @Observable
 class AccountViewModel {
     
     // Services
-    private var manager: CustomerManager = .shared
-    private var service = TransactionService.shared// Assurez-vous que ce service est thread-safe ou @MainActor
-    
+    private let service = TransactionService.shared
+    private var monthStart = Date()
+    private var cursor: DocumentSnapshot?
+    var hasMoreHistory: Bool { cursor != nil }
+
     // UI State
     var transactionsList: [Transaction] = []
     var transactionsChartSpent: [(icon: CategoryIcon, amount: Double)] = []
@@ -33,67 +36,65 @@ class AccountViewModel {
         isLoading = true
         defer { isLoading = false }
         
-        await fetchTransactions()
-        // Les calculs sont rapides, on peut les laisser sur le MainActor pour simplifier,
-        // ou les passer en Task.detached si la liste est énorme.
+        do {
+            let today = Date()
+            monthStart = Calendar.current.dateInterval(of: .month, for: today)?.start ?? today
+            let recent = try await service.recentTransactions(since: monthStart)
+            let history = try await service.history(before: monthStart, after: nil)
+            transactionsList = recent + history.items
+            cursor = history.next
+            refreshCharts()
+        } catch {
+            handleError(error)
+        }
+    }
+
+    func loadMoreHistory() async {
+        guard let cursor, !isLoading else { return }
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            let page = try await service.history(before: monthStart, after: cursor)
+            let known = Set(transactionsList.map(\.id))
+            transactionsList += page.items.filter { !known.contains($0.id) }
+            self.cursor = page.next
+        } catch {
+            handleError(error)
+        }
+    }
+
+    func save(_ entry: Transaction, editing: Bool) async throws {
+        guard !isLoading else { throw CancellationError() }
+        isLoading = true
+        defer { isLoading = false }
+        if editing {
+            try await service.putTransaction(transaction: entry)
+        } else {
+            _ = try await service.postTransaction(transaction: entry)
+        }
+        transactionsList.removeAll { $0.id == entry.id }
+        transactionsList.append(entry)
+        transactionsList.sort { $0.date > $1.date }
+        refreshCharts()
+    }
+
+    func deleteTransaction(_ id: UUID) async throws {
+        guard !isLoading else { throw CancellationError() }
+        isLoading = true
+        defer { isLoading = false }
+        try await service.deleteTransaction(id: id)
+        transactionsList.removeAll { $0.id == id }
+        refreshCharts()
+    }
+
+    private func refreshCharts() {
         calcSpendingRepartition()
         calcCategoryCharts()
     }
-    
-    func fetchTransactions() async {
-        do {
-            transactionsList = try await service.fetchTransactions()
-                .sorted(by: { $0.date > $1.date })
-            manager.currentUser.transactions = transactionsList
-        } catch {
-            handleError(error)
-        }
-    }
-    
-    func postTransaction(_ transaction: Transaction) async {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            try await service.postTransaction(transaction: transaction)
-            // Mise à jour optimiste ou re-fetch
-            await fetchTransactions()
-            // Recalcul des charts après ajout
-            calcSpendingRepartition()
-            calcCategoryCharts()
-        } catch {
-            handleError(error)
-        }
-    }
-    
-    func putTransaction(_ transaction: Transaction) async {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            try await service.putTransaction(transaction: transaction)
-            await fetchTransactions()
-            calcSpendingRepartition()
-            calcCategoryCharts()
-        } catch {
-            handleError(error)
-        }
-    }
-    
-    func deleteTransaction(_ id: UUID) async {
-        isLoading = true
-        defer { isLoading = false }
-        do {
-            try await service.deleteTransaction(id: id)
-            await fetchTransactions()
-            calcSpendingRepartition()
-            calcCategoryCharts()
-        } catch {
-            handleError(error)
-        }
-    }
-    
+
     // MARK: - Calculation Logic
     
-    private func calcCurrentMonthTransactions() -> [Transaction] {
+    func calcCurrentMonthTransactions() -> [Transaction] {
         let calendar = Calendar.current
         let now = Date()
         let currentMonth = calendar.component(.month, from: now)
@@ -106,7 +107,7 @@ class AccountViewModel {
         }
     }
     
-    private func calcSpendingRepartition() {
+    func calcSpendingRepartition() {
         let monthly = calcCurrentMonthTransactions()
         
         // Utilisation de reduce pour plus de performance et de lisibilité
@@ -114,7 +115,7 @@ class AccountViewModel {
         gained = monthly.filter { $0.amount > 0 }.reduce(0) { $0 + $1.amount }
     }
     
-    private func calcCategoryCharts() {
+    func calcCategoryCharts() {
         let monthly = calcCurrentMonthTransactions()
         
         // Helper interne pour éviter la duplication de code
@@ -135,6 +136,7 @@ class AccountViewModel {
         transactionsChartGained = processTransactions(monthly.filter { $0.amount > 0 })
     }
     
+
     private func handleError(_ error: Error) {
         self.error = error
         self.showError = true

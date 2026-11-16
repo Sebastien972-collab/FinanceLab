@@ -15,7 +15,6 @@ class ProjectViewModel {
     var showError: Bool = false
     var creatorMode: Bool = false
     var service: ProjectService = .shared
-    var manager: CustomerManager = .shared
     
     func fetchProjects() async {
         do {
@@ -25,22 +24,28 @@ class ProjectViewModel {
         }
     }
     
-    func addProject(_ project: Project) async {
-        guard projects.contains(project) == false else { return}
-        do {
-            let newProject = try await service.addProject(project: project.toProjectData())
-            self.projects.append(newProject.toProject())
-            CustomerManager.shared.currentUser.projects = try await service.fetchProjects()
-        } catch  {
-            launchError(withError: error)
-        }
-        
+    func addProject(_ project: Project) async throws {
+        let created = try await service.addProject(project: project.toProjectData())
+        projects.removeAll { $0.id == created.id }
+        projects.append(created.toProject())
     }
+
+    func contribute(_ amount: Decimal, to project: Project, operationID: UUID) async throws {
+        guard amount > 0 else { throw ProjectCreatorError.emptyFiels }
+        let expense = Transaction(id: operationID, name: "Épargne projet", iconName: .targetFill,
+                                  amount: -amount.toDoucble(), date: .now, contractor: project.name)
+        guard let saved = try await TransactionService.shared.postTransaction(transaction: expense, projectID: project.id) else {
+            throw LoginError.custom("Le montant de la cagnotte est indisponible.")
+        }
+        project.amountSaved = saved
+        projects.first { $0.id == project.id }?.amountSaved = saved
+    }
+
     func remove(_ project: Project) async {
-        guard projects.contains(project), let index = projects.firstIndex(of: project) else { return}
+        guard projects.contains(where: { $0.id == project.id }) else { return }
         do {
             try await service.removeProject(projectID: project.id.uuidString)
-            projects.remove(at: index)
+            projects.removeAll { $0.id == project.id }
         } catch  {
             launchError(withError: error)
         }

@@ -50,4 +50,8 @@ enum QuestionGroup: String, CaseIterable, Codable, Identifiable {
         case .risk:         return "Risque"
         }
     }
+
+    static var completionOrder: [QuestionGroup] {
+        [.personal, .savings, .protection, .patrimony, .risk]
+    }
 }

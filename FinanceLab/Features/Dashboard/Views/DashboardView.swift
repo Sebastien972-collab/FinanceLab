@@ -10,46 +10,53 @@ import SwiftUI
 
 struct DashboardView: View {
     @State private var dashboardVM: DashboardViewModel = .init()
+    @State private var refreshError = ""
+    @State private var showRefreshError = false
     @State private var showContent = false
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // 1. Fond Animé
                 LiquidMeshBackground()
                     .ignoresSafeArea()
-                
-                // 2. Contenu Défilant
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 24) {
                         headerView
                             .padding(.top, 10)
-                        LiquidBudgetCard(
-                            healthScore: dashboardVM.healthScore,
-                            monthlyRAS: dashboardVM.monthlyRAS,
-                            dailyRAS: dashboardVM.dailyRAS,
-                            isLoading: dashboardVM.isLoading
-                        )
+                        TimelineView(.periodic(from: .now, by: 60)) { context in
+                            LiquidBudgetCard(
+                                monthlyRAS: dashboardVM.monthlyRAS,
+                                dailyRAS: MonthlyBudget.dailyAllowance(remaining: dashboardVM.monthlyRAS, on: context.date, calendar: .current)
+                            )
+                        }
                         .transition(.scale(scale: 0.9).combined(with: .opacity))
                         LiquidDemboCard {
-                            Text("Tu t'en sors bien ce mois-ci ! Continue comme ça 🚀")
+                            Text("Solde après déduction de l’épargne prévue (\(dashboardVM.budget.reserved.formatted(.currency(code: "EUR")))). Le montant quotidien répartit ce reste sur les jours du mois, aujourd’hui inclus. Les factures à venir restent à déduire.")
                         }
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                         NavigationLink(destination: TransactionListView()) {
                             LiquidGradientButton(title: "Je fais mes comptes", icon: "pencil.line")
                         }
                         .padding(.top, 10)
-                        
-                        Spacer(minLength: 100) // Espace pour le tab bar éventuel
+
+                        Spacer(minLength: 100)
                     }
                     .padding(.horizontal, 20)
                 }
-                .refreshable {
-                    dashboardVM.setup()
+
+            }
+            .refreshable {
+                do { try await dashboardVM.refresh() }
+                catch is CancellationError { }
+                catch {
+                    refreshError = error.localizedDescription
+                    showRefreshError = true
                 }
             }
+            .alert("Actualisation impossible", isPresented: $showRefreshError) {
+                Button("OK") {}
+            } message: { Text(refreshError) }
             .onAppear {
-                dashboardVM.setup()
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
                     showContent = true
                 }
@@ -93,10 +100,8 @@ struct DashboardView: View {
 
 /// 3. Carte Budget (Verre + Indicateurs)
 struct LiquidBudgetCard: View {
-    var healthScore: Double
     var monthlyRAS: Decimal
     var dailyRAS: Decimal
-    var isLoading: Bool
     
     var body: some View {
         VStack(spacing: 0) {
@@ -106,14 +111,6 @@ struct LiquidBudgetCard: View {
                     .font(.system(size: 18, weight: .semibold, design: .rounded))
                     .foregroundStyle(.white.opacity(0.9))
                 Spacer()
-                // Indicateur de santé (Cercle animé)
-                HStack(spacing: 6) {
-                    Text("Santé")
-                        .font(.caption)
-                        .foregroundStyle(.white.opacity(0.7))
-                    HealthRing(score: healthScore)
-                        .frame(width: 30, height: 30)
-                }
             }
             .padding(.bottom, 20)
             
@@ -121,9 +118,7 @@ struct LiquidBudgetCard: View {
                 .background(.white.opacity(0.2))
                 .padding(.bottom, 20)
             
-            if isLoading {
-                ProgressView().tint(.white).padding(20)
-            } else {
+            Group {
                 // Affichage du RAS (Reste à Survivre)
                 VStack(spacing: 8) {
                     Text("Reste à dépenser")

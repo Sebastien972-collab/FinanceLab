@@ -20,6 +20,8 @@ struct ProjectData: Codable, Identifiable, Sendable {
     func toProject() -> Project {
         let project = Project(name: self.name, finalDate: self.endDate, amount: self.amountTotal, transactions: [], currency: .eur)
         project.id = self.id
+        project.creationDate = creationDate
+        project.startedDate = creationDate
         project.amountSaved = self.amountSaved
         project.iconName = self.iconName
         return project

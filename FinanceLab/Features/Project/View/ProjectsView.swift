@@ -59,9 +59,7 @@ struct ProjectsView: View {
                 withAnimation { isLoading = false }
             }
             .sheet(isPresented: $showCreator) {
-                ProjectCreatorView(projectManager: projectCreatorVM, action: {
-                    Task { await projectVM.fetchProjects() }
-                })
+                ProjectCreatorView(projectManager: projectCreatorVM)
                 .presentationDetents([.medium, .large])
                 .presentationBackground(.ultraThinMaterial)
             }
@@ -86,10 +84,12 @@ struct ProjectsView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 24)
                     .padding(.top, 10)
-                
+
                 if projectVM.projects.isEmpty {
                     emptyState
                 } else {
+                    projectsSection
+
                     // Liste des cartes
                     LazyVStack(spacing: 20) {
                         ForEach(projectVM.projects) { project in
@@ -106,20 +106,85 @@ struct ProjectsView: View {
                     }
                     .padding(.bottom, 100) // Espace pour le FAB
                 }
+
+                savingsSection
             }
         }
     }
     
     private var emptyState: some View {
-        LiquidDemboCard {
-            Text("Crée ton premier projet dès maintenant et commence à réaliser tes rêves ! 🚀")
+        VStack(alignment: .leading, spacing: 16) {
+            projectsSection
+
+            LiquidDemboCard {
+                Text("Crée ton premier projet dès maintenant et commence à réaliser tes rêves ! 🚀")
+            }
+            .padding(.horizontal, 20)
+            .onTapGesture {
+                openCreator()
+            }
         }
-        .padding(.horizontal, 20)
-        .onTapGesture {
-            openCreator()
+    }
+
+    private var savingsPlan: SavingsPlan {
+        SavingsPlan.make()
+    }
+
+    private var savingsSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Épargne")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(.white)
+
+                Spacer()
+
+                if savingsPlan.totalRecommended > 0 {
+                    Text("\(savingsPlan.totalRecommended.formatted(.number.precision(.fractionLength(0)))) € / mois")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.75))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.white.opacity(0.08))
+                        .clipShape(Capsule())
+                }
+            }
+            .padding(.horizontal, 24)
+
+            if savingsPlan.pockets.isEmpty {
+                LiquidDemboCard {
+                    Text("Complète ton profil financier pour afficher les poches d'épargne calculées avec FinanceCore.")
+                }
+                .padding(.horizontal, 20)
+            } else {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Profil \(savingsPlan.profile.rawValue)")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.white.opacity(0.9))
+
+                    Text("Solde actuel pris en compte : \(savingsPlan.currentBalance.formatted(.currency(code: "EUR")))")
+                        .font(.caption)
+                        .foregroundStyle(.white.opacity(0.65))
+                }
+                .padding(.horizontal, 24)
+
+                LazyVStack(spacing: 16) {
+                    ForEach(savingsPlan.pockets) { pocket in
+                        SavingsPocketCard(pocket: pocket)
+                    }
+                }
+                .padding(.horizontal, 20)
+            }
         }
     }
     
+    private var projectsSection: some View {
+        Text("Mes cagnottes")
+            .font(.system(size: 24, weight: .bold, design: .rounded))
+            .foregroundStyle(.white)
+            .padding(.horizontal, 24)
+    }
+
     // MARK: - Actions
     
     private func openCreator() {

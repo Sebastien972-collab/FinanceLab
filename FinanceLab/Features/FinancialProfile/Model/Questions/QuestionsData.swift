@@ -20,10 +20,11 @@ struct QuestionsData: Identifiable, Equatable, Codable {
             label: label,
             content: content,
             followUpLabel: followUpLabel,
-            questionGroup:  QuestionGroup(rawValue: questionGroup) ?? .essential
+            questionGroup:  QuestionGroup(rawValue: questionGroup) ?? .essential,
+            inputKind: .currency,
+            financialRole: .neutral
         )
     }
     
 }
-
 

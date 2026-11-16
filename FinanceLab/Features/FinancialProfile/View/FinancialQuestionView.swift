@@ -14,12 +14,7 @@ struct FinancialQuestionView: View {
     
     @State var viewModel = FinancialProfileViewModel()
     @FocusState private var isInputFocused: Bool
-    
-    var currentQuestion: Question {
-        viewModel.currentQuestion ?? Question.questionDatabase[0]
-    }
-    
-    var isNewQuestion: Bool = false
+    var flowMode: FinancialQuestionFlowMode = .onboarding
     
     var body: some View {
         NavigationStack {
@@ -27,44 +22,62 @@ struct FinancialQuestionView: View {
                 LiquidMeshBackground()
                     .ignoresSafeArea()
                     .onTapGesture { isInputFocused = false }
-                VStack {
-                    Spacer()
-                    VStack(spacing: 30) {
-                        headerSection
-                        Text(currentQuestion.content)
-                            .font(.system(size: 22, weight: .medium, design: .rounded))
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .id("QuestionText-\(currentQuestion.id)")
-                            .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                        LiquidCurrencyField(
-                            label: currentQuestion.followUpLabel ?? "Montant",
-                            text: $viewModel.textAnswer
-                        )
-                        .focused($isInputFocused)
-                        .onSubmit {
-                            submitAnswer()
+                if let currentQuestion = viewModel.currentQuestion {
+                    VStack {
+                        Spacer()
+                        VStack(spacing: 30) {
+                            headerSection(for: currentQuestion)
+                            progressPill
+                            Text(currentQuestion.content)
+                                .font(.system(size: 22, weight: .medium, design: .rounded))
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(.white)
+                                .padding(.horizontal)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .id("QuestionText-\(currentQuestion.id)")
+                                .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                            LiquidQuestionInputField(
+                                question: currentQuestion,
+                                text: $viewModel.textAnswer
+                            )
+                            .focused($isInputFocused)
+                            .onSubmit {
+                                submitAnswer()
+                            }
+                            actionButton
                         }
-                        actionButton
+                        .padding(.vertical, 40)
+                        .padding(.horizontal, 24)
+                        .background(.ultraThinMaterial)
+                        .clipShape(RoundedRectangle(cornerRadius: 25))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 35)
+                                .stroke(.white.opacity(0.3), lineWidth: 1)
+                        )
+                        .shadow(color: .black.opacity(0.2), radius: 25, x: 0, y: 15)
+                        .padding(.horizontal, 20)
+
+                        Spacer()
+
+                        if viewModel.isWorking {
+                             ProgressView().tint(.white)
+                                .padding(.bottom, 20)
+                        }
                     }
-                    .padding(.vertical, 40)
-                    .padding(.horizontal, 24)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 25))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 35)
-                            .stroke(.white.opacity(0.3), lineWidth: 1)
-                    )
-                    .shadow(color: .black.opacity(0.2), radius: 25, x: 0, y: 15)
+                } else if viewModel.isWorking {
+                    ProgressView()
+                        .tint(.white)
+                } else {
+                    LiquidDemboCard {
+                        Text(flowMode == .onboarding ? "Ton profil de départ est prêt. Tu peux créer ton compte." : "Ton questionnaire est à jour.")
+                    }
                     .padding(.horizontal, 20)
-                    
-                    Spacer()
-                    
-                    if viewModel.isWorking {
-                         ProgressView().tint(.white)
-                            .padding(.bottom, 20)
+                    .onTapGesture {
+                        if flowMode == .onboarding {
+                            tabVm.authState = .notAuthenticated
+                        } else {
+                            dismiss()
+                        }
                     }
                 }
             }
@@ -77,7 +90,7 @@ struct FinancialQuestionView: View {
             }
         }
         .task {
-            viewModel.isNewQuestion = isNewQuestion
+            viewModel.flowMode = flowMode
             viewModel.action = { dismiss() }
             await viewModel.fetchQuestions()
         }
@@ -86,32 +99,42 @@ struct FinancialQuestionView: View {
         } message: {
             Text(viewModel.error.localizedDescription)
         }
-        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: currentQuestion.id)
+        .animation(.spring(response: 0.5, dampingFraction: 0.8), value: viewModel.currentQuestion?.id)
     }
     
     // MARK: - Subviews
     
-    private var headerSection: some View {
+    private func headerSection(for question: Question) -> some View {
         VStack(spacing: 16) {
             ZStack {
                 Circle()
                     .fill(LinearGradient(colors: [.red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing).opacity(0.3))
                     .frame(width: 70, height: 70)
                     .blur(radius: 10)
-                currentQuestion.questionGroup.icon.image
+                question.questionGroup.icon.image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 35, height: 35)
                     .foregroundStyle(.white)
             }
             
-            Text(currentQuestion.questionGroup.displayName.uppercased())
+            Text(question.questionGroup.displayName.uppercased())
                 .font(.system(size: 14, weight: .bold, design: .rounded))
                 .tracking(2) // Espacement des lettres style "Luxe"
                 .foregroundStyle(.white.opacity(0.7))
         }
     }
     
+    private var progressPill: some View {
+        Text(viewModel.progressLabel)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.white.opacity(0.75))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(.white.opacity(0.08))
+            .clipShape(Capsule())
+    }
+
     private var actionButton: some View {
         Button {
             submitAnswer()
@@ -121,8 +144,8 @@ struct FinancialQuestionView: View {
                 .foregroundStyle(.white)
                 .padding(16)
         }
-        .disabled(viewModel.isWorking)
-        .opacity(viewModel.isWorking ? 0.7 : 1)
+        .disabled(viewModel.isWorking || viewModel.textAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+        .opacity(viewModel.isWorking || viewModel.textAnswer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.7 : 1)
         .scaleEffect(viewModel.isWorking ? 0.98 : 1)
         .background {
             RoundedRectangle(cornerRadius: 16)
@@ -158,22 +181,43 @@ struct FinancialQuestionView: View {
 
 // MARK: - Composant : Champ Monétaire Liquide
 // Spécialement conçu pour l'entrée de chiffres avec style
-struct LiquidCurrencyField: View {
-    let label: String
+struct LiquidQuestionInputField: View {
+    let question: Question
     @Binding var text: String
     
+    private var keyboardType: UIKeyboardType {
+        switch question.inputKind {
+        case .currency, .percentage:
+            return .decimalPad
+        case .count, .years:
+            return .numberPad
+        }
+    }
+
     var body: some View {
         HStack(spacing: 15) {
-            Text("€") // Ou symbole dynamique selon la locale
-                .font(.title2)
-                .fontWeight(.bold)
-                .foregroundStyle(.white.opacity(0.8))
+            if question.inputKind == .currency, let suffix = question.inputKind.suffix {
+                Text(suffix)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.white.opacity(0.8))
+            }
             
-            TextField("", text: $text, prompt: Text(label).foregroundColor(.white.opacity(0.4)))
+            TextField(
+                "",
+                text: $text,
+                prompt: Text(question.followUpLabel ?? "Ta réponse").foregroundColor(.white.opacity(0.4))
+            )
                 .font(.system(size: 24, weight: .bold, design: .rounded))
                 .foregroundStyle(.white)
-                .keyboardType(.decimalPad)
+                .keyboardType(keyboardType)
                 .multilineTextAlignment(.leading)
+
+            if question.inputKind != .currency, let suffix = question.inputKind.suffix {
+                Text(suffix)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
         }
         .padding(.vertical, 15)
         .padding(.horizontal, 20)

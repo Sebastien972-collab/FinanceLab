@@ -3,69 +3,101 @@
 //  FinanceLab
 //
 //  Created by Dembo on 30/10/2025.
+//  Refactored by Codex on 20/03/2026.
 //
 
 import Foundation
+import FirebaseAuth
+import FirebaseFirestore
 
-final class AnswersService{
+final class AnswersService {
     static let shared = AnswersService()
     private init() {}
-    let keychain = KeychainService.shared
-    let service = NetworkingService.shared
-    let userManager = CustomerManager.shared
-    func fetchAnswer() async throws -> [AnswersData] {
-        let token = try keychain.getToken()
-        let answersRequest = APIRequest(endpoint: "/answers", httpMethod: .GET)
-        let response = try await service.request(answersRequest, responseType: [AnswersData].self, token: token)
-        return response
-    }
     
-    func postAnswer(answer: AnswersData) async throws -> AnswersData {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(answer)
-        let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answers/", httpMethod: .POST, body: data)
-        let answer = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
-        return answer
-    }
-    func postAllAnswers(answers: [AnswersData]) async throws -> [AnswersData] {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(answers)
-        let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answers/bulk", httpMethod: .POST, body: data)
-        let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
-        return answer
-    }
-    func fetchAllUserAnswers() async throws -> [AnswersData] {
-        let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answers/", httpMethod: .GET)
-        let answer = try await service.request(apiRequest, responseType: [AnswersData].self, token: token)
-        return answer
-    }
-    func fetchAllUserAnsweredQuestionGroups() async throws -> [QuestionGroup] {
-        let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "answers/groups/", httpMethod: .GET)
-        let questionGroups = try await service.request(apiRequest, responseType: [String].self, token: token)
-        return questionGroups.compactMap { QuestionGroup(rawValue: $0) }
-    }
-    
-    func putAnswer(answer: AnswersData) async throws {
-        let encoder = JSONEncoder()
-        encoder.dateEncodingStrategy = .iso8601
-        let data = try encoder.encode(answer)
-        let token = try keychain.getToken()
-        guard let id = answer.id else {
-            throw NSError(domain: "Missing answer ID", code: -1)
+    private var db: Firestore { Firestore.firestore() }
+
+    private var currentUserId: String {
+        get throws {
+            guard let uid = Auth.auth().currentUser?.uid else {
+                throw LoginError.custom("Connecte-toi pour enregistrer ton profil financier.")
+            }
+            return uid
         }
-        let apiRequest = APIRequest(endpoint: "/answers/\(id)", httpMethod: .PUT, body: data)
-        let _ = try await service.request(apiRequest, responseType: AnswersData.self, token: token)
+    }
+
+    private func answersCollection(for userId: String) -> CollectionReference {
+        db.collection(DatabaseKey.users.rawValue)
+            .document(userId)
+            .collection("answers")
+    }
+
+    func fetchAllUserAnswers(for profile: Customer? = nil) async throws -> [Answer] {
+        let uid = try currentUserId
+        let snapshot = try await answersCollection(for: uid).getDocuments()
+
+        let allQuestions = Dictionary(uniqueKeysWithValues: Question.questionDatabase.map { ($0.id, $0) })
+
+        return snapshot.documents.compactMap { document in
+            guard
+                let data = try? document.data(as: AnswersData.self),
+                let question = allQuestions[data.idQuestion]
+            else {
+                return nil
+            }
+
+            return data.toAnswer(user: profile ?? CustomerManager.shared.currentUser, question: question)
+        }
+        .sorted { lhs, rhs in
+            questionIndex(for: lhs.question) < questionIndex(for: rhs.question)
+        }
+    }
+
+    func upsertAnswer(_ answer: Answer) async throws -> [Answer] {
+        let uid = try currentUserId
+        let answerData = answer.toAnswerData()
+
+        try await answersCollection(for: uid)
+            .document(answer.question.id.uuidString)
+            .setData(Firestore.Encoder().encode(answerData))
+
+        let answers = try await fetchAllUserAnswers()
+        try await syncFinancialSummary(with: answers)
+        return answers
     }
     
-    func deleteAnswer(id: UUID) async throws {
-        let token = try keychain.getToken()
-        let apiRequest = APIRequest(endpoint: "/answers/\(id)", httpMethod: .DELETE)
-        let _ = try await service.request(apiRequest, responseType: EmptyResponse.self, token: token)
+    func replaceAllAnswers(_ answers: [Answer]) async throws -> [Answer] {
+        let uid = try currentUserId
+        let collection = answersCollection(for: uid)
+        let batch = db.batch()
+
+        for answer in answers {
+            try batch.setData(
+                from: answer.toAnswerData(),
+                forDocument: collection.document(answer.question.id.uuidString)
+            )
+        }
+
+        try await batch.commit()
+        let persistedAnswers = try await fetchAllUserAnswers()
+        try await syncFinancialSummary(with: persistedAnswers)
+        return persistedAnswers
+    }
+
+    func deleteAnswer(id: UUID) async throws -> [Answer] {
+        let uid = try currentUserId
+        try await answersCollection(for: uid).document(id.uuidString).delete()
+        let remainingAnswers = try await fetchAllUserAnswers()
+        try await syncFinancialSummary(with: remainingAnswers)
+        return remainingAnswers
+    }
+
+    private func syncFinancialSummary(with answers: [Answer]) async throws {
+        let summary = FinancialProfileSummary.from(answers: answers)
+        try await CustomerManager.shared.updateFinancialProfileSummary(summary)
+        CustomerManager.shared.currentUser.answers = answers
+    }
+    
+    private func questionIndex(for question: Question) -> Int {
+        Question.questionDatabase.firstIndex(where: { $0.id == question.id }) ?? .max
     }
 }
